@@ -85,7 +85,7 @@
             position: relative;
             width: 100%;
             height: 100%;
-            background-color: #008080; /* Дефолтный бирюзовый */
+            background-color: #008080;
             display: none;
             flex-direction: column;
             justify-content: space-between;
@@ -97,12 +97,12 @@
             padding: 20px;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 15px;
             width: fit-content;
         }
 
         .icon {
-            width: 80px;
+            width: 85px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -128,31 +128,22 @@
             font-size: 18px;
         }
 
-        /* Перемещаемая бумажка-заметка */
+        /* Записка-стикер */
         .sticker-note {
             position: absolute;
-            top: 30px;
-            right: 30px;
+            top: 25px;
+            right: 25px;
             width: 210px;
-            height: 140px;
+            height: 120px;
             background-color: #fdfd96;
             box-shadow: 5px 5px 10px rgba(0,0,0,0.3);
             padding: 12px;
             color: #333;
             font-size: 13px;
-            transform: rotate(1deg);
+            transform: rotate(-1deg);
             cursor: move;
             z-index: 5;
             border: 1px solid #e6e680;
-        }
-
-        .sticker-header {
-            font-size: 9px;
-            color: #888;
-            margin-bottom: 5px;
-            border-bottom: 1px dashed #ccc;
-            padding-bottom: 3px;
-            text-align: right;
         }
 
         /* Окна общие */
@@ -205,7 +196,6 @@
             overflow-y: auto;
         }
 
-        /* Окно CMD и Консоли сервера */
         .window-content-dark {
             padding: 10px;
             background-color: #000000;
@@ -221,134 +211,61 @@
         #cmd-win .window-content-dark { height: 320px; color: #00ff00; }
         #console-win .window-content-dark { height: 320px; color: #ffaa00; display: flex; flex-direction: column; justify-content: space-between;}
 
-        .cmd-output, .console-output {
-            white-space: pre-wrap;
-            line-height: 1.4;
-            flex-grow: 1;
-        }
-
-        .input-line {
-            display: flex;
-            align-items: center;
-            margin-top: 5px;
-        }
-
+        .cmd-output, .console-output { white-space: pre-wrap; line-height: 1.4; flex-grow: 1; }
+        .input-line { display: flex; align-items: center; margin-top: 5px; }
         .prefix { color: #ffffff; margin-right: 5px; }
-        .dark-input {
-            background: transparent;
-            border: none;
-            font-family: inherit;
-            font-size: inherit;
-            font-weight: inherit;
-            flex-grow: 1;
-            outline: none;
-        }
+        .dark-input { background: transparent; border: none; font-family: inherit; font-size: inherit; flex-grow: 1; outline: none; }
         #cmd-term-input { color: #00ff00; }
         #server-console-input { color: #ffaa00; }
 
+        /* --- ТЕМА БРАУЗЕРА ENTERNET EXPLORER --- */
+        .ie-navbar { display: flex; background: #c0c0c0; padding: 5px; gap: 5px; border-bottom: 2px solid #808080; }
+        .ie-tab { padding: 4px 12px; background: #a0a0a0; border: 2px solid #fff; border-bottom: none; cursor: pointer; font-size: 12px; }
+        .ie-tab.active { background: #fff; border-bottom: 2px solid #fff; margin-bottom: -2px; z-index: 11; }
+        .ie-address-bar { display: flex; align-items: center; padding: 5px; background: #c0c0c0; gap: 5px; font-size: 12px; }
+        .ie-address-input { flex-grow: 1; background: white; border: 2px solid #808080; padding: 2px 5px; outline: none; color: #333; }
+        .ie-page-content { height: 380px; background: #fff; overflow-y: auto; padding: 15px; border: 2px solid #808080; }
+        
+        /* Новости и игры внутри браузера */
+        .news-card { border-bottom: 2px dashed #808080; padding: 12px 0; }
+        .news-meta { font-size: 11px; color: #555; margin-bottom: 5px; }
+        .news-text { font-size: 13px; color: #000; line-height: 1.4; }
+        .news-link { color: #0000aa; text-decoration: underline; cursor: pointer; }
+        
+        /* Змейка */
+        #snake-canvas { background: #111; display: block; margin: 0 auto; border: 4px solid #808080; }
+        
+        /* КНБ */
+        .rps-btn { padding: 8px 16px; margin: 5px; background: #c0c0c0; border: 2px solid #fff; border-right-color:#000; border-bottom-color:#000; cursor:pointer; }
+        .rps-btn:active { border: 2px solid #000; border-right-color:#fff; border-bottom-color:#fff; }
+
+        /* --- РЕДАКТОР РЕЕСТРА --- */
+        .registry-container { display: flex; height: 320px; background: white; border: 2px solid #808080; }
+        .reg-tree { width: 45%; border-right: 2px solid #808080; padding: 10px; overflow-y: auto; font-size: 11px; color: #000; }
+        .reg-values { width: 55%; padding: 10px; overflow-y: auto; font-size: 11px; color: #000; background: #fafafa; }
+        .tree-node { margin-left: 12px; cursor: pointer; margin-top: 4px; }
+        .tree-children { display: none; }
+        .tree-node.expanded > .tree-children { display: block; }
+        .reg-item:hover { background: #0000aa; color: white; }
+
+        /* Кастомное модальное окно заражения */
+        #virus-alert {
+            position: fixed; top: 40%; left: 35%; width: 380px;
+            background: #c0c0c0; border: 2px solid #fff; border-right-color: #000; border-bottom-color: #000;
+            box-shadow: 5px 5px 20px rgba(0,0,0,0.5); display: none; flex-direction: column; z-index: 10000;
+        }
+
         /* Панель задач */
-        #taskbar {
-            width: 100%;
-            height: 40px;
-            background-color: #c0c0c0;
-            border-top: 2px solid #fff;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 2px 10px;
-            z-index: 1000;
-        }
-
-        .start-button {
-            height: 30px;
-            padding: 0 15px;
-            background-color: #c0c0c0;
-            border: 2px solid #fff;
-            border-right-color: #000;
-            border-bottom-color: #000;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        .start-button:active {
-            border: 2px solid #000;
-            border-right-color: #fff;
-            border-bottom-color: #fff;
-            padding: 2px 13px 0 17px;
-        }
-
-        /* Меню Пуск */
-        #start-menu {
-            position: absolute;
-            bottom: 42px;
-            left: 5px;
-            width: 240px;
-            background-color: #c0c0c0;
-            border: 2px solid #fff;
-            border-right-color: #000;
-            border-bottom-color: #000;
-            display: none;
-            flex-direction: column;
-            box-shadow: 2px 2px 10px rgba(0,0,0,0.5);
-        }
-
-        .start-menu-item {
-            padding: 10px 15px;
-            cursor: pointer;
-            font-size: 13px;
-            color: #000;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            position: relative;
-        }
-
-        .start-menu-item:hover {
-            background-color: #0000aa;
-            color: white;
-        }
-
-        /* Подменю изменения цветов */
-        .submenu {
-            position: absolute;
-            left: 236px;
-            bottom: 0;
-            width: 160px;
-            background-color: #c0c0c0;
-            border: 2px solid #fff;
-            border-right-color: #000;
-            border-bottom-color: #000;
-            display: none;
-            flex-direction: column;
-            box-shadow: 2px 2px 10px rgba(0,0,0,0.5);
-        }
-
-        .start-menu-item:hover .submenu {
-            display: flex;
-        }
-
-        .submenu-item {
-            padding: 8px 12px;
-            color: #000;
-            font-size: 12px;
-        }
-
-        .submenu-item:hover {
-            background-color: #0000aa;
-            color: #fff;
-        }
-
-        .system-tray {
-            border: 2px solid #808080;
-            border-right-color: #fff;
-            border-bottom-color: #fff;
-            padding: 2px 10px;
-            font-size: 13px;
-            background-color: #c0c0c0;
-        }
+        #taskbar { width: 100%; height: 40px; background-color: #c0c0c0; border-top: 2px solid #fff; display: flex; align-items: center; justify-content: space-between; padding: 2px 10px; z-index: 1000; }
+        .start-button { height: 30px; padding: 0 15px; background-color: #c0c0c0; border: 2px solid #fff; border-right-color: #000; border-bottom-color: #000; display: flex; align-items: center; gap: 5px; cursor: pointer; font-size: 14px; }
+        #start-menu { position: absolute; bottom: 42px; left: 5px; width: 240px; background-color: #c0c0c0; border: 2px solid #fff; border-right-color: #000; border-bottom-color: #000; display: none; flex-direction: column; box-shadow: 2px 2px 10px rgba(0,0,0,0.5); }
+        .start-menu-item { padding: 10px 15px; cursor: pointer; font-size: 13px; color: #000; display: flex; align-items: center; gap: 10px; position: relative; }
+        .start-menu-item:hover { background-color: #0000aa; color: white; }
+        .submenu { position: absolute; left: 236px; bottom: 0; width: 160px; background-color: #c0c0c0; border: 2px solid #fff; border-right-color: #000; border-bottom-color: #000; display: none; flex-direction: column; box-shadow: 2px 2px 10px rgba(0,0,0,0.5); }
+        .start-menu-item:hover .submenu { display: flex; }
+        .submenu-item { padding: 8px 12px; color: #000; font-size: 12px; }
+        .submenu-item:hover { background-color: #0000aa; color: #fff; }
+        .system-tray { border: 2px solid #808080; border-right-color: #fff; border-bottom-color: #fff; padding: 2px 10px; font-size: 13px; background-color: #c0c0c0; }
     </style>
 </head>
 <body>
@@ -358,7 +275,7 @@
         <div class="lk-logo">LK</div>
     </div>
 
-    <!-- 2. ЭКРАН ЗАГРУЗКИ (ЧЕРНЫЙ) -->
+    <!-- 2. ЭКРАН ЗАГРУЗКИ -->
     <div id="loading-screen">
         <p>Legion-King's Information Systems v0.98</p>
         <p>Copyright (C) 2026, LK Corp. All Rights Reserved.</p>
@@ -366,7 +283,6 @@
         <div id="boot-logs">
             <p>> Инициализация ядра системы...</p>
         </div>
-        
         <div class="loader-bar-container">
             <div class="loader-bar" id="progress"></div>
         </div>
@@ -375,8 +291,15 @@
 
     <!-- 3. РАБОЧИЙ СТОЛ OS -->
     <div id="desktop">
-        <!-- Иконки -->
         <div class="desktop-icons">
+            <div class="icon" onclick="openWindow('ie-win')">
+                <div class="icon-box" style="background: linear-gradient(#fff, #00d2ff); color: #0000aa; font-size: 22px;">e</div>
+                <span>Enternet Explorer</span>
+            </div>
+            <div class="icon" onclick="openWindow('reg-win')">
+                <div class="icon-box" style="background: #fff; color: #ff0055; font-size: 20px;">▤</div>
+                <span>Registry Editor</span>
+            </div>
             <div class="icon" onclick="openWindow('cmd-win')">
                 <div class="icon-box" style="background: #000; color: #0f0; font-size: 14px;">_></div>
                 <span>Командная строка</span>
@@ -389,25 +312,108 @@
                 <div class="icon-box">📝</div>
                 <span>Задачи_LK</span>
             </div>
-            <div class="icon" onclick="disabledFeatureNotification()">
-                <div class="icon-box">📁</div>
-                <span>Архив_LK</span>
-            </div>
         </div>
 
         <!-- Перемещаемая бумажка-заметка -->
         <div class="sticker-note" id="lk-sticker">
-            <div class="sticker-header">заметка.txt</div>
+            <div style="font-size: 9px; color: #888; margin-bottom: 5px; border-bottom: 1px dashed #ccc; text-align: right;">заметка.txt</div>
             <p>Цель до 27 июня: сделать LK VIII</p>
         </div>
 
-        <!-- Окно: Блокнот (Задачи) -->
-        <div class="window" id="todo-win" style="top: 10%; left: 45%; width: 450px;">
+        <!-- ОКНО: ENTERNET EXPLORER -->
+        <div class="window" id="ie-win" style="top: 5%; left: 15%; width: 700px;">
+            <div class="window-header">
+                <span>Enternet Explorer 5.0</span>
+                <div class="window-close" onclick="closeWindow('ie-win')">X</div>
+            </div>
+            <div class="ie-navbar">
+                <div class="ie-tab active" id="tab-btn-news" onclick="switchIeTab('news')">📰 Новости</div>
+                <div class="ie-tab" id="tab-btn-snake" onclick="switchIeTab('snake')">🎮 Змейка</div>
+                <div class="ie-tab" id="tab-btn-rps" onclick="switchIeTab('rps')">✊ Камень-Ножницы</div>
+            </div>
+            <div class="ie-address-bar">
+                <span>Адрес:</span>
+                <input type="text" class="ie-address-input" id="ie-url" readonly value="http://lk-server.net/news">
+            </div>
+            <div class="ie-page-content">
+                <!-- Вкладка Новости -->
+                <div id="ie-page-news">
+                    <div class="news-card">
+                        <div class="news-meta">Источник: <b>leo__king</b> | Дата: 15.06.2026</div>
+                        <div class="news-text">Сегодня на сервере появился неизвестный таймер до "финального ивента", пока никто не знает что это, но может быть, это имеет значение. Телеграм канал: <span class="news-link" onclick="window.open('https://t.me/boloto_leo_king','_blank')">t.me/boloto_leo_king</span></div>
+                    </div>
+                    <div class="news-card">
+                        <div class="news-meta">Источник: <b>poping_LK</b> | Время: 17:44, 15.06.26</div>
+                        <div class="news-text">Сегодня с игроком Ilovelvl произошло нечто страшное. По достоверным источникам, он сегодня очень хорошо поел гречневую кашу. Следим за развитием событий.</div>
+                    </div>
+                    <div class="news-card">
+                        <div class="news-meta">Источник: <b>_RundeR_</b> | Статус: СВАДЬБА</div>
+                        <div class="news-text">Сегодня willdie и _RundeR_ официально поженились! ГОРЬКООО!! 🎉🎉💍</div>
+                    </div>
+                </div>
+                <!-- Вкладка Змейка -->
+                <div id="ie-page-snake" style="display:none; text-align:center;">
+                    <div style="font-size:12px; margin-bottom:5px; color:#000;">Счет: <span id="snake-score">0</span> | Управление стрелочками</div>
+                    <canvas id="snake-canvas" width="300" height="300"></canvas>
+                </div>
+                <!-- Вкладка КНБ -->
+                <div id="ie-page-rps" style="display:none; text-align:center; color:#000; padding-top:20px;">
+                    <h3>Мини-игра: Камень, Ножницы, Бумага</h3><br>
+                    <p>Победы: <span id="rps-wins">0</span> | Поражения: <span id="rps-losses">0</span></p><br>
+                    <div>
+                        <button class="rps-btn" onclick="playRPS('камень')">✊ Камень</button>
+                        <button class="rps-btn" onclick="playRPS('ножницы')">✌ Ножницы</button>
+                        <button class="rps-btn" onclick="playRPS('бумага')">✋ Бумага</button>
+                    </div><br>
+                    <p id="rps-result" style="color:#0000aa;"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ОКНО: REGISTRY EDITOR -->
+        <div class="window" id="reg-win" style="top: 25%; left: 40%; width: 550px;">
+            <div class="window-header">
+                <span>Registry Editor</span>
+                <div class="window-close" onclick="closeWindow('reg-win')">X</div>
+            </div>
+            <div class="registry-container">
+                <div class="reg-tree">
+                    <div class="tree-node" onclick="toggleRegNode(this, event)">📁 HKEY_CLASSES_ROOT</div>
+                    <div class="tree-node" onclick="toggleRegNode(this, event)">📁 HKEY_CURRENT_USER</div>
+                    <div class="tree-node" onclick="toggleRegNode(this, event)">📁 HKEY_LOCAL_MACHINE
+                        <div class="tree-children">
+                            <div class="tree-node" onclick="toggleRegNode(this, event)">📁 HARDWARE</div>
+                            <div class="tree-node" onclick="toggleRegNode(this, event)">📁 SOFTWARE
+                                <div class="tree-children">
+                                    <div class="tree-node" onclick="toggleRegNode(this, event)">📁 Microsoft</div>
+                                    <div class="tree-node" onclick="toggleRegNode(this, event)">📁 LK_Systems
+                                        <div class="tree-children">
+                                            <div class="tree-node" onclick="toggleRegNode(this, event)">📁 Hardware</div>
+                                            <div class="tree-node" onclick="toggleRegNode(this, event)">📁 Processor
+                                                <div class="tree-children">
+                                                    <div class="tree-node" onclick="showRegValues('consoleAuth')">📁 ConsoleAuth</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="reg-values" id="reg-values-pane">
+                    <span style="color:#888;">(Выберите конечную папку реестра)</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ОКНО: БЛОКНОТ (ЗАДАЧИ) -->
+        <div class="window" id="todo-win" style="top: 10%; left: 50%; width: 450px;">
             <div class="window-header">
                 <span>todo.txt - Блокнот</span>
                 <div class="window-close" onclick="closeWindow('todo-win')">X</div>
             </div>
-            <div class="window-content" style="height: 250px; user-select: text; white-space: pre-wrap; line-height: 1.5;">-Протестировать моды
+            <div class="window-content" style="height: 280px; user-select: text; white-space: pre-wrap; line-height: 1.4;">-Протестировать моды
 -Протестировать плагины
 -Протестировать NPC
 -Протестировать кейсы
@@ -417,41 +423,39 @@
 -Сделать LK VIII по айпи legion-kings.ru
 -Прогрузить обычный мир
 -Прогрузить Ад
--Прогрузить [Данные потеряны]</div>
+-Прогрузить [Данные потеряны]
+-[ВАЖНО] Исправить ошибки энда командой "download broken end" в консоли</div>
         </div>
 
-        <!-- Окно: Командная строка (CMD) -->
-        <div class="window" id="cmd-win" style="top: 15%; left: 10%; width: 550px;">
+        <!-- ОКНО: КОМАНДНАЯ СТРОКА (CMD) -->
+        <div class="window" id="cmd-win" style="top: 15%; left: 5%; width: 520px;">
             <div class="window-header">
                 <span>Командная строка - lkos_cmd.exe</span>
                 <div class="window-close" onclick="closeWindow('cmd-win')">X</div>
             </div>
             <div class="window-content-dark" onclick="focusInput('cmd-term-input')">
                 <div id="cmd-history" class="cmd-output">Legion-King's OS [Version 0.98]
-(c) Корпорация LK, 2026. Все права защищены.
+(c) Корпорация LK, 2026.
 
 Введите 'help' для просмотра списка доступных команд.</div>
                 <div class="input-line">
                     <span class="prefix">LK:\Users\leo__king></span>
-                    <input type="text" id="cmd-term-input" class="dark-input" autofocus autocomplete="off" spellcheck="false">
+                    <input type="text" id="cmd-term-input" class="dark-input" autocomplete="off" spellcheck="false">
                 </div>
             </div>
         </div>
 
-        <!-- Окно: Консоль LK -->
-        <div class="window" id="console-win" style="top: 45%; left: 30%; width: 580px;">
+        <!-- ОКНО: КОНСОЛЬ LK -->
+        <div class="window" id="console-win" style="top: 42%; left: 20%; width: 580px;">
             <div class="window-header">
                 <span>Консоль сервера - legion-kings.ru</span>
                 <div class="window-close" onclick="closeWindow('console-win')">X</div>
             </div>
             <div class="window-content-dark" onclick="focusInput('server-console-input')">
-                <div id="console-history" class="console-output">[INFO] Запуск мониторинга legion-kings.ru...
-[INFO] Статус хостинга: АКТИВЕН
-[INFO] Загруженные миры: world, world_nether
+                <div id="console-history" class="console-output">[INFO] Запуск мониторинга...
+[INFO] Статус хостинга: АКТИВЕН [legion-kings.ru]
 [INFO] Онлайн: 0/100 игроков.
 --------------------------------------------------</div>
-                
-                <!-- Эта строка ввода появится ТОЛЬКО после разблокировки через CMD -->
                 <div class="input-line" id="console-input-row" style="display: none; border-top: 1px dashed #ffaa00; padding-top: 5px;">
                     <span class="prefix" style="color: #ffaa00;">CONSOLES@LK_SERVER></span>
                     <input type="text" id="server-console-input" class="dark-input" autocomplete="off" spellcheck="false">
@@ -459,16 +463,27 @@
             </div>
         </div>
 
-        <!-- Панель задач -->
+        <!-- КАСТОМНОЕ ОКНО ПРЕДУПРЕЖДЕНИЯ ВИРУСА -->
+        <div id="virus-alert">
+            <div class="window-header" style="background:linear-gradient(90deg, #aa0000, #ff3333)">
+                <span>⚠️ КРИТИЧЕСКАЯ ОШИБКА ЯДРА СЕРВЕРА</span>
+                <div class="window-close" onclick="document.getElementById('virus-alert').style.display='none'">X</div>
+            </div>
+            <div class="window-content" style="background:#fff; text-align:center; padding: 20px; color:#000;">
+                <p style="font-size:16px; color:#aa0000; margin-bottom:10px;">[СБОЙ ИЗМЕРЕНИЙ]</p>
+                <p>измерение end успешно заражено</p><br>
+                <button class="rps-btn" style="width:100px;" onclick="document.getElementById('virus-alert').style.display='none'">ОК</button>
+            </div>
+        </div>
+
+        <!-- ПАНЕЛЬ ЗАДАЧ -->
         <div id="taskbar">
             <div class="start-button" onclick="toggleStartMenu()">
                 <span style="background:#00d2ff; color:black; padding: 0 4px; font-size:11px; box-shadow: 0 0 5px #fff;">LK</span>
                 <span style="margin-left: 3px;">Пуск</span>
             </div>
-            
             <div id="start-menu">
                 <div class="start-menu-item">🎨 Цвет экрана
-                    <!-- Кастомизация тем заднего фона -->
                     <div class="submenu">
                         <div class="submenu-item" onclick="changeBg('#008080')">■ Бирюзовый</div>
                         <div class="submenu-item" onclick="changeBg('#0d4212')">■ Темно-зеленый</div>
@@ -476,134 +491,152 @@
                         <div class="submenu-item" onclick="changeBg('#4a0505')">■ Темно-красный</div>
                     </div>
                 </div>
+                <div class="start-menu-item" onclick="openWindow('ie-win')">e Enternet Explorer</div>
+                <div class="start-menu-item" onclick="openWindow('reg-win')">▤ Registry Editor</div>
                 <div class="start-menu-item" onclick="openWindow('cmd-win')">_> Командная строка</div>
                 <div class="start-menu-item" onclick="openWindow('console-win')">⚡ Консоль LK</div>
-                <div class="start-menu-item" onclick="openWindow('todo-win')">📝 Задачи (todo)</div>
                 <hr style="border-color: #808080;">
                 <div class="start-menu-item" onclick="location.reload()">🔄 Перезагрузка</div>
             </div>
-
             <div class="system-tray" id="clock">12:00</div>
         </div>
     </div>
 
     <script>
         let isConsoleUnlocked = false;
-        const logMessages = [
-            "> Проверка оперативной памяти... OK",
-            "> Подключение к серверу Minecraft LK... Подключено",
-            "> Загрузка видеодрайвера... OK",
-            "> Авторизация пользователя: leo__king...",
-            "> Запуск графического интерфейса 'Legion-King'sOS'..."
-        ];
+        let snakeTimer = null;
 
         function startBootSequence() {
             document.getElementById('boot-screen').style.display = 'none';
             document.getElementById('loading-screen').style.display = 'block';
-
             let progress = 0;
-            const progressBar = document.getElementById('progress');
-            const percentText = document.getElementById('percent-text');
-            const logsContainer = document.getElementById('boot-logs');
-
             const bootInterval = setInterval(() => {
                 progress += 1;
-                progressBar.style.width = progress + '%';
-                percentText.innerText = `Загрузка: ${progress}%`;
-
-                if (progress % 18 === 0 && logMessages.length > 0) {
-                    let nextLog = logMessages.shift();
-                    let p = document.createElement('p');
-                    p.innerText = nextLog;
-                    logsContainer.appendChild(p);
-                }
-
+                document.getElementById('progress').style.width = progress + '%';
+                document.getElementById('percent-text').innerText = `Загрузка: ${progress}%`;
                 if (progress >= 100) {
                     clearInterval(bootInterval);
                     showDesktop();
                 }
-            }, 150); 
+            }, 50); 
         }
 
         function showDesktop() {
             document.getElementById('loading-screen').style.display = 'none';
             document.getElementById('desktop').style.display = 'flex';
-            updateClock();
             setInterval(updateClock, 1000);
             
-            // Инициализация перемещений
             makeDraggable(document.getElementById('cmd-win'), document.querySelector('#cmd-win .window-header'));
             makeDraggable(document.getElementById('console-win'), document.querySelector('#console-win .window-header'));
             makeDraggable(document.getElementById('todo-win'), document.querySelector('#todo-win .window-header'));
+            makeDraggable(document.getElementById('ie-win'), document.querySelector('#ie-win .window-header'));
+            makeDraggable(document.getElementById('reg-win'), document.querySelector('#reg-win .window-header'));
             makeDraggable(document.getElementById('lk-sticker'), document.getElementById('lk-sticker'));
             
-            // Авто-открытие Блокнота при старте
             openWindow('todo-win');
-
-            // Запуск логики терминалов и TPS
             initCmdLogic();
+            initConsoleLogic();
             startTpsMonitor();
         }
 
-        function disabledFeatureNotification() {
-            alert("Ошибка доступа: Структура папок повреждена ИИ. Используйте консольные утилиты.");
-        }
-
         function openWindow(id) {
-            const win = document.getElementById(id);
-            win.style.display = 'flex';
-            // Фокус на соответствующий инпут при открытии
+            document.getElementById(id).style.display = 'flex';
             if(id === 'cmd-win') setTimeout(() => focusInput('cmd-term-input'), 50);
             if(id === 'console-win' && isConsoleUnlocked) setTimeout(() => focusInput('server-console-input'), 50);
         }
+        function closeWindow(id) { document.getElementById(id).style.display = 'none'; if(id === 'ie-win') clearInterval(snakeTimer); }
+        function toggleStartMenu() { const m = document.getElementById('start-menu'); m.style.display = m.style.display === 'flex' ? 'none' : 'flex'; }
+        function changeBg(c) { document.getElementById('desktop').style.backgroundColor = c; document.getElementById('start-menu').style.display = 'none'; }
+        function focusInput(id) { const el = document.getElementById(id); if (el) el.focus(); }
+        function updateClock() { const n = new Date(); document.getElementById('clock').innerText = `${n.getHours().toString().padStart(2, '0')}:${n.getMinutes().toString().padStart(2, '0')}`; }
+        function disabledFeatureNotification() { alert("Раздел поврежден."); }
 
-        function closeWindow(id) {
-            document.getElementById(id).style.display = 'none';
+        // --- РЕДАКТОР РЕЕСТРА ---
+        function toggleRegNode(element, event) {
+            event.stopPropagation();
+            element.classList.toggle('expanded');
         }
-
-        function toggleStartMenu() {
-            const menu = document.getElementById('start-menu');
-            menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
-        }
-
-        // Изменение цвета стола
-        function changeBg(color) {
-            document.getElementById('desktop').style.backgroundColor = color;
-            document.getElementById('start-menu').style.display = 'none';
-        }
-
-        document.getElementById('desktop').addEventListener('click', function(e) {
-            if (!e.target.closest('.start-button') && !e.target.closest('#start-menu')) {
-                document.getElementById('start-menu').style.display = 'none';
+        function showRegValues(key) {
+            event.stopPropagation();
+            const pane = document.getElementById('reg-values-pane');
+            if(key === 'consoleAuth') {
+                pane.innerHTML = `<div class="reg-item"><b>Name:</b> TokenActivation<br><b>Type:</b> REG_SZ<br><b>Value:</b> unlock server consol [пароль]</div>`;
             }
-        });
-
-        function updateClock() {
-            const now = new Date();
-            document.getElementById('clock').innerText = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
         }
 
-        function focusInput(id) {
-            const el = document.getElementById(id);
-            if (el) el.focus();
+        // --- ENTERNET EXPLORER ЛОГИКА ---
+        function switchIeTab(tab) {
+            document.getElementById('ie-page-news').style.display = 'none';
+            document.getElementById('ie-page-snake').style.display = 'none';
+            document.getElementById('ie-page-rps').style.display = 'none';
+            document.querySelectorAll('.ie-tab').forEach(t => t.classList.remove('active'));
+            clearInterval(snakeTimer);
+
+            document.getElementById(`ie-page-${tab}`).style.display = 'block';
+            document.getElementById(`tab-btn-${tab}`).classList.add('active');
+            document.getElementById('ie-url').value = `http://lk-server.net/${tab}`;
+
+            if(tab === 'snake') startSnakeGame();
         }
 
-        // --- ДИНАМИЧЕСКИЙ TPS МОНИТОР (каждые 10 секунд) ---
+        // КНБ ИГРА
+        let rpsW = 0, rpsL = 0;
+        function playRPS(user) {
+            const arr = ['камень', 'ножницы', 'бумага'];
+            const ai = arr[Math.floor(Math.random() * 3)];
+            let res = "";
+            if(user === ai) res = `Ничья! Сервер тоже выбрал ${ai}.`;
+            else if((user==='камень'&&ai==='ножницы') || (user==='ножницы'&&ai==='бумага') || (user==='бумага'&&ai==='камень')) {
+                res = `Вы победили! Сервер выбрал ${ai}.`; rpsW++;
+            } else { res = `Вы проиграли! Сервер выбрал ${ai}.`; rpsL++; }
+            document.getElementById('rps-wins').innerText = rpsW;
+            document.getElementById('rps-losses').innerText = rpsL;
+            document.getElementById('rps-result').innerText = res;
+        }
+
+        // ЗМЕЙКА ИГРА
+        function startSnakeGame() {
+            const canvas = document.getElementById('snake-canvas');
+            const ctx = canvas.getContext('2d');
+            let score = 0; document.getElementById('snake-score').innerText = score;
+            let snake = [{x: 10, y: 10}];
+            let food = {x: 5, y: 5};
+            let dx = 1, dy = 0;
+            const size = 15; const cells = canvas.width / size;
+
+            window.onkeydown = function(e) {
+                if(e.key === 'ArrowUp' && dy === 0) { dx = 0; dy = -1; }
+                else if(e.key === 'ArrowDown' && dy === 0) { dx = 0; dy = 1; }
+                else if(e.key === 'ArrowLeft' && dx === 0) { dx = -1; dy = 0; }
+                else if(e.key === 'ArrowRight' && dx === 0) { dx = 1; dy = 0; }
+            };
+
+            snakeTimer = setInterval(() => {
+                let head = {x: snake[0].x + dx, y: snake[0].y + dy};
+                if(head.x < 0 || head.x >= cells || head.y < 0 || head.y >= cells) return reset();
+                for(let i=0; i<snake.length; i++) if(snake[i].x === head.x && snake[i].y === head.y) return reset();
+                
+                snake.unshift(head);
+                if(head.x === food.x && head.y === food.y) {
+                    score++; document.getElementById('snake-score').innerText = score;
+                    food = {x: Math.floor(Math.random()*cells), y: Math.floor(Math.random()*cells)};
+                } else { snake.pop(); }
+
+                ctx.fillStyle = '#111'; ctx.fillRect(0,0,canvas.width,canvas.height);
+                ctx.fillStyle = '#ff0000'; ctx.fillRect(food.x*size, food.y*size, size-1, size-1);
+                ctx.fillStyle = '#00ff00'; snake.forEach(s => ctx.fillRect(s.x*size, s.y*size, size-1, size-1));
+            }, 120);
+
+            function reset() { alert("Игра окончена! Счет: " + score); clearInterval(snakeTimer); startSnakeGame(); }
+        }
+
+        // --- МОНИТОРИНГ TPS ---
         function startTpsMonitor() {
-            const consoleHistory = document.getElementById('console-history');
-            const consoleContent = document.querySelector('#console-win .window-content-dark');
-
             setInterval(() => {
-                // Генерация случайного TPS между 19.80 и 19.99
                 const randomTps = (Math.random() * (19.99 - 19.80) + 19.80).toFixed(2);
-                const now = new Date().toLocaleTimeString();
-                
-                let logLine = `\n[${now}] [Server thread/INFO]: Current TPS = ${randomTps}. Memory: Free 4102MB/Total 8192MB.`;
-                consoleHistory.innerHTML += logLine;
-                
-                // Скроллим консоль вниз, если она не в режиме ввода
+                document.getElementById('console-history').innerHTML += `\n[${new Date().toLocaleTimeString()}] [Server thread/INFO]: Current TPS = ${randomTps}.`;
                 if(!isConsoleUnlocked) {
-                    consoleContent.scrollTop = consoleContent.scrollHeight;
+                    const c = document.querySelector('#console-win .window-content-dark'); c.scrollTop = c.scrollHeight;
                 }
             }, 10000);
         }
@@ -612,99 +645,85 @@
         function initCmdLogic() {
             const input = document.getElementById('cmd-term-input');
             const history = document.getElementById('cmd-history');
-            const container = document.querySelector('#cmd-win .window-content-dark');
-
             input.addEventListener('keydown', function(e) {
                 if (e.key === 'Enter') {
-                    const rawValue = input.value;
-                    const command = rawValue.trim();
+                    history.innerHTML += `\n\nLK:\\Users\\leo__king>${input.value}`;
+                    let lowerCmd = input.value.trim().toLowerCase().replace(/\s+/g, ' ');
+                    if (lowerCmd === 'unlock server consol skibidi') {
+                        isConsoleUnlocked = true;
+                        history.innerHTML += `\n[УСПЕХ]: Консоль LK разблокирована.`;
+                        document.getElementById('console-input-row').style.display = 'flex';
+                    } else if (lowerCmd.startsWith('unlock server consol')) {
+                        historyElement.innerHTML += `\n[ОШИБКА]: Неверный авторизационный токен.`;
+                    } else if (lowerCmd === 'help') {
+                        history.innerHTML += `\nКоманды: help, user, clear, exit`;
+                    } else if (lowerCmd === 'clear') { history.innerHTML = '[Очищено]'; }
+                    else { history.innerHTML += `\nНеизвестная команда.`; }
+                    input.value = '';
+                    document.querySelector('#cmd-win .window-content-dark').scrollTop = document.querySelector('#cmd-win .window-content-dark').scrollHeight;
+                }
+            });
+        }
+
+        // --- ЛОГИКА КОНСОЛИ СЕРВЕРА (DOWNLOAD BROKEN END) ---
+        function initConsoleLogic() {
+            const input = document.getElementById('server-console-input');
+            const history = document.getElementById('console-history');
+            const container = document.querySelector('#console-win .window-content-dark');
+
+            input.addEventListener('keydown', function(e) {
+                if(e.key === 'Enter') {
+                    const val = input.value.trim();
+                    history.innerHTML += `\n\nCONSOLES@LK_SERVER>${val}`;
                     
-                    history.innerHTML += `\n\nLK:\\Users\\leo__king>${rawValue}`;
-                    processCmdCommand(command, history);
-                    
+                    if(val.toLowerCase() === 'download broken end') {
+                        history.innerHTML += `\n[CONNECT]: Установка соединения с удаленным репозиторием протокола...`;
+                        history.innerHTML += `\n[DOWNLOAD]: Скачивание пакета 'broken_end_dimension.dat' [0%...]`;
+                        
+                        let p = 0;
+                        input.disabled = true;
+                        let dlInterval = setInterval(() => {
+                            p += 25;
+                            history.innerHTML += `\n[DOWNLOAD]: Скачивание... ${p}%`;
+                            container.scrollTop = container.scrollHeight;
+                            
+                            if(p >= 100) {
+                                clearInterval(dlInterval);
+                                history.innerHTML += `\n[SUCCESS]: Инъекция кода завершена. Инициализация изменений...`;
+                                input.disabled = false;
+                                input.value = '';
+                                focusInput('server-console-input');
+                                
+                                // Показываем критическое окно заражения
+                                document.getElementById('virus-alert').style.display = 'flex';
+                            }
+                        }, 800);
+                    } else if(val !== '') {
+                        history.innerHTML += `\n[ERROR]: Unknown command or lacking permissions inside core server thread.`;
+                    }
                     input.value = '';
                     container.scrollTop = container.scrollHeight;
                 }
             });
         }
 
-        function processCmdCommand(cmd, historyElement) {
-            const lowerCmd = cmd.toLowerCase().replace(/\s+/g, ' ');
-
-            if (lowerCmd === 'help') {
-                historyElement.innerHTML += `\nДоступные команды:\n  help                 Вывести список команд\n  user                 Информация о текущей сессии\n  read node [имя]      Чтение данных указанного узла\n  clear                Очистить экран\n  exit                 Закрыть терминал`;
-            } 
-            else if (lowerCmd === 'user') {
-                historyElement.innerHTML += `\nТекущий пользователь: leo__king\nСтатус: Администратор системы\nСессия: Активна.`;
-            } 
-            else if (lowerCmd === 'clear') {
-                historyElement.innerHTML = 'Legion-King\'s OS Terminal [Очищено]';
-            } 
-            else if (lowerCmd === 'exit') {
-                closeWindow('cmd-win');
-            } 
-            // ХАКЕРСКАЯ КОМАНДА РАЗБЛОКИРОВКИ СЕРВЕРА
-            else if (lowerCmd === 'unlock server consol skibidi') {
-                isConsoleUnlocked = true;
-                historyElement.innerHTML += `\n[УСПЕХ]: Протокол расшифрован.\nДоступ разрешен. Консоль LK разблокирована под сессией администратора.`;
-                
-                // Обновляем состояние окна Консоли
-                document.getElementById('console-input-row').style.display = 'flex';
-                const consoleHistory = document.getElementById('console-history');
-                consoleHistory.innerHTML += `\n\n[SYSTEM]: ВНИМАНИЕ! Терминал перехвачен пользователем leo__king.\n[SYSTEM]: Переход в интерактивный режим разработчика.\n`;
-                
-                const consoleContent = document.querySelector('#console-win .window-content-dark');
-                consoleContent.scrollTop = consoleContent.scrollHeight;
-            }
-            else if (lowerCmd.startsWith('unlock server consol')) {
-                historyElement.innerHTML += `\n[ОШИБКА]: Доступ заблокирован. Неверный пароль авторизации ядра.`;
-            }
-            else if (lowerCmd === 'read node lkviii') {
-                historyElement.innerHTML += `\n\nМир пытается вдохнуть по новому, но измерения не пытаются дышать, они живут своей жизнью, и кто то разозлился`;
-            } 
-            else if (lowerCmd.startsWith('read node ')) {
-                const nodeName = cmd.substring(10);
-                historyElement.innerHTML += `\nОшибка: Узел "${nodeName}" не найден.`;
-            } 
-            else if (cmd !== '') {
-                historyElement.innerHTML += `\n"${cmd}" не является внутренней командой. Введите "help".`;
-            }
-        }
-
-        // --- УНИВЕРСАЛЬНЫЙ СКРИПТ ПЕРЕТАСКИВАНИЯ ---
+        // --- СКРИПТ ПЕРЕТАСКИВАНИЯ ---
         function makeDraggable(element, handle) {
-            let isDragging = false;
-            let offsetX, offsetY;
-
+            let isDragging = false; let offsetX, offsetY;
             handle.addEventListener('mousedown', (e) => {
-                if(e.target.classList.contains('window-close')) return;
-                
+                if(e.target.classList.contains('window-close') || e.target.closest('.ie-navbar')) return;
                 isDragging = true;
-                
                 document.querySelectorAll('.window, .sticker-note').forEach(el => el.style.zIndex = "5");
                 element.style.zIndex = "100";
-
-                offsetX = e.clientX - element.offsetLeft;
-                offsetY = e.clientY - element.offsetTop;
+                offsetX = e.clientX - element.offsetLeft; offsetY = e.clientY - element.offsetTop;
             });
-
             document.addEventListener('mousemove', (e) => {
                 if (!isDragging) return;
-
-                let x = e.clientX - offsetX;
-                let y = e.clientY - offsetY;
-
-                const maxTop = window.innerHeight - 45; 
+                let x = e.clientX - offsetX; let y = e.clientY - offsetY;
                 if (y < 0) y = 0;
-                if (y > maxTop) y = maxTop;
-
-                element.style.left = x + 'px';
-                element.style.top = y + 'px';
+                element.style.left = x + 'px'; element.style.top = y + 'px';
             });
-
-            document.addEventListener('mouseup', () => {
-                isDragging = false;
-            });
+            document.addEventListener('mouseup', () => isDragging = false);
         }
     </script>
 </body>
