@@ -241,8 +241,18 @@
         #snake-canvas { background: #111; display: block; margin: 0 auto; border: 4px solid #808080; }
         
         /* КНБ */
-        .rps-btn { padding: 8px 16px; margin: 5px; background: #c0c0c0; border: 2px solid #fff; border-right-color:#000; border-bottom-color:#000; cursor:pointer; }
+        .rps-btn { padding: 8px 16px; margin: 5px; background: #c0c0c0; border: 2px solid #fff; border-right-color:#000; border-bottom-color:#000; cursor:pointer; font-size: 12px;}
         .rps-btn:active { border: 2px solid #000; border-right-color:#fff; border-bottom-color:#fff; }
+
+        /* --- СТИЛИ ДЛЯ ИГРЫ "САПЕР" --- */
+        .minesweeper-container { display: flex; flex-direction: column; align-items: center; justify-content: center; color: #000; }
+        .minesweeper-grid { display: grid; grid-template-columns: repeat(8, 25px); grid-template-rows: repeat(8, 25px); gap: 1px; background-color: #808080; border: 3px solid #808080; width: fit-content; margin-top: 10px; }
+        .mine-cell { width: 25px; height: 25px; background-color: #c0c0c0; border: 2px solid #fff; border-right-color: #808080; border-bottom-color: #808080; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; cursor: pointer; }
+        .mine-cell.revealed { background-color: #dbdbdb; border: 1px solid #a0a0a0; }
+        .mine-cell.mine { background-color: #ff3333; }
+        
+        /* Цвета для цифр сапера */
+        .c-1 { color: blue; } .c-2 { color: green; } .c-3 { color: red; } .c-4 { color: darkblue; }
 
         /* --- СЕКРЕТНЫЙ САЙТ (FALLEN END) --- */
         .secret-site { background: #14021a; color: #d633ff; padding: 20px; font-family: monospace; min-height: 100%; text-shadow: 0 0 5px #d633ff; }
@@ -337,6 +347,7 @@
             </div>
             <div class="ie-navbar">
                 <div class="ie-tab active" id="tab-btn-news" onclick="switchIeTab('news')">📰 Новости</div>
+                <div class="ie-tab" id="tab-btn-mines" onclick="switchIeTab('mines')">💣 Сапер</div>
                 <div class="ie-tab" id="tab-btn-snake" onclick="switchIeTab('snake')">🎮 Змейка</div>
                 <div class="ie-tab" id="tab-btn-rps" onclick="switchIeTab('rps')">✊ Камень-Ножницы</div>
             </div>
@@ -357,6 +368,14 @@
                     <div class="news-card">
                         <div class="news-meta">Источник: <b>_RundeR_</b> | Статус: СВАДЬБА</div>
                         <div class="news-text">Сегодня willdie и _RundeR_ официально поженились! ГОРЬКООО!! 🎉🎉💍</div>
+                    </div>
+                </div>
+                <div id="ie-page-mines" style="display:none;">
+                    <div class="minesweeper-container">
+                        <div style="font-size: 14px;">Minesweeper 8x8 (Мины: <span id="mine-count">10</span>)</div>
+                        <button class="rps-btn" onclick="initMinesweeper()">Рестарт</button>
+                        <div class="minesweeper-grid" id="mines-grid" oncontextmenu="return false;"></div>
+                        <div id="mines-status" style="margin-top: 5px; font-size:12px; color: blue;"></div>
                     </div>
                 </div>
                 <div id="ie-page-snake" style="display:none; text-align:center;">
@@ -504,21 +523,22 @@
 
     <script>
         let isConsoleUnlocked = false;
+        let isEndDownloaded = false; // Состояние разблокировки узла 'end'
         let snakeTimer = null;
 
-        // Пул логируемых процессов для создания задержки и атмосферы
+        // Пул логируемых процессов (15 секунд загрузки)
         const bootProcesses = [
-            { text: "> Поиск компонентов Legion-kingsOS...", time: 500 },
-            { text: "> Проверка CPU", time: 1200 },
+            { text: "> Поиск аппаратных компонентов LK_Systems...", time: 500 },
+            { text: "> Проверка CPU: Legion Core v8 обнаружен.", time: 1200 },
             { text: "> Выделение оперативной памяти: 16384MB OK.", time: 2000 },
-            { text: "> Загрузка модулей расширений", time: 3100 },
-            { text: "> Legion-kingsOS Copyright C legion-king's & leo__king", time: 4000 },
+            { text: "> Загрузка модулей расширения Fabric Loader...", time: 3100 },
+            { text: "> [Fabric]: Загружен мод mineflayer-bot-core.jar", time: 4000 },
             { text: "> Подключение к локальным хранилищам данных...", time: 5200 },
             { text: "> Проверка целостности секторов реестра...", time: 6500 },
-            { text: "> Чтение конфигурации HKEY_LOCAL_MACHINE", time: 7300 },
+            { text: "> Чтение конфигурации HKEY_LOCAL_MACHINE\\SOFTWARE\\LK_Systems...", time: 7300 },
             { text: "> [СИСТЕМА]: Обнаружен заблокированный токен ConsoleAuth.", time: 8200 },
-            { text: "> Попытка запроса доступа к консоли сервера LK... DENYED", time: 9400 },
-            { text: "> [CONSOL]: Код доступа частично поврежден. Пропуск...", time: 10800 },
+            { text: "> Попытка дешифрования логов SERAPHIM...", time: 9400 },
+            { text: "> [SERAPHIM]: Код доступа частично поврежден. Пропуск...", time: 10800 },
             { text: "> Инициализация графического интерфейса пользователя...", time: 12000 },
             { text: "> Синхронизация с сервером автоматизации legion-kings.ru...", time: 13500 },
             { text: "> Проверка сетевых интерфейсов... Соединение установлено.", time: 14400 },
@@ -531,12 +551,11 @@
             
             const logContainer = document.getElementById('boot-logs');
             let progress = 0;
-            const totalDuration = 15000; // 15 секунд
-            const intervalTime = 30; // Обновление каждые 30мс
+            const totalDuration = 15000; 
+            const intervalTime = 30; 
             const steps = totalDuration / intervalTime;
             const increment = 100 / steps;
 
-            // Обработка текстовых логов на экране
             bootProcesses.forEach(proc => {
                 setTimeout(() => {
                     const p = document.createElement('p');
@@ -545,7 +564,6 @@
                 }, proc.time);
             });
 
-            // Плавное заполнение полосы загрузки ровно 15 секунд
             const bootInterval = setInterval(() => {
                 progress += increment;
                 if (progress > 100) progress = 100;
@@ -577,6 +595,7 @@
             initConsoleLogic();
             initIeNavigationLogic();
             startTpsMonitor();
+            initMinesweeper(); // Генерация сапера в фоне
         }
 
         function openWindow(id) {
@@ -606,17 +625,19 @@
             }
         }
 
-        // --- ENTERNET EXPLORER ЛОГИКА И СЕКРЕТНЫЙ САЙТ ---
+        // --- ENTERNET EXPLORER ЛОГИКА ---
         function switchIeTab(tab) {
             const body = document.getElementById('ie-body');
             body.style.background = "#fff";
             body.style.color = "#000";
 
             document.getElementById('ie-page-news').style.display = 'none';
+            document.getElementById('ie-page-mines').style.display = 'none';
             document.getElementById('ie-page-snake').style.display = 'none';
             document.getElementById('ie-page-rps').style.display = 'none';
             document.querySelectorAll('.ie-tab').forEach(t => t.classList.remove('active'));
             clearInterval(snakeTimer);
+            
             document.getElementById(`ie-page-${tab}`).style.display = 'block';
             document.getElementById(`tab-btn-${tab}`).classList.add('active');
             document.getElementById('ie-url').value = `http://lk-server.net/${tab}`;
@@ -634,6 +655,7 @@
                     if(targetUrl === 'https://willdieoc.github.io/LK-earth-crush/fallen-end.html') {
                         clearInterval(snakeTimer);
                         document.getElementById('ie-page-news').style.display = 'none';
+                        document.getElementById('ie-page-mines').style.display = 'none';
                         document.getElementById('ie-page-snake').style.display = 'none';
                         document.getElementById('ie-page-rps').style.display = 'none';
                         document.querySelectorAll('.ie-tab').forEach(t => t.classList.remove('active'));
@@ -643,7 +665,7 @@
                                 <div class="secret-glitch">▲ СИСТЕМА ОБНАРУЖИЛА ИСКАЖЕНИЕ ИЗМЕРЕНИЯ ▲</div><br>
                                 <p style="color: #ffaa00;">[STATUS]: СВЯЗЬ С СЕРВЕРОМ СОРВАНА.</p>
                                 <p>Код ошибки: END_FALLEN_OS_2026</p><br><br>
-                                <p>> Лог: "На сервере появилось неизвестное существо. Если вы ничего не вносили - не запускайте сервер"</p><br>
+                                <p>> Лог Серафима: "На сервере появилось неизвестное существо. Если вы ничего не вносили - не запускайте сервер"</p><br>
                                 <p style="color: #00ff00;">Прогресс сжатия мира: [████████████░░░] 78%</p>
                             </div>
                         `;
@@ -652,6 +674,147 @@
                     }
                 }
             });
+        }
+
+        // --- ЛОГИКА МИНИ-ИГРЫ "САПЕР" ---
+        let mineGrid = [];
+        const rows = 8, cols = 8, totalMines = 10;
+        let gameOver = false;
+
+        function initMinesweeper() {
+            const gridContainer = document.getElementById('mines-grid');
+            document.getElementById('mines-status').innerText = "";
+            gridContainer.innerHTML = "";
+            mineGrid = [];
+            gameOver = false;
+
+            // Создаем массив клеток
+            for (let r = 0; r < rows; r++) {
+                mineGrid[r] = [];
+                for (let c = 0; c < cols; c++) {
+                    mineGrid[r][c] = { r, c, isMine: false, isRevealed: false, isFlagged: false, count: 0 };
+                    
+                    const cellEl = document.createElement('div');
+                    cellEl.classList.add('mine-cell');
+                    cellEl.id = `cell-${r}-${c}`;
+                    
+                    // Левый клик — открыть клетку
+                    cellEl.addEventListener('click', () => revealCell(r, c));
+                    // Правый клик — поставить флаг
+                    cellEl.addEventListener('contextmenu', (e) => {
+                        e.preventDefault();
+                        toggleFlag(r, c);
+                    });
+
+                    gridContainer.appendChild(cellEl);
+                }
+            }
+
+            // Случайная расстановка 10 мин
+            let minesPlaced = 0;
+            while (minesPlaced < totalMines) {
+                let r = Math.floor(Math.random() * rows);
+                let c = Math.floor(Math.random() * cols);
+                if (!mineGrid[r][c].isMine) {
+                    mineGrid[r][c].isMine = true;
+                    minesPlaced++;
+                }
+            }
+
+            // Подсчет мин вокруг каждой клетки
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    if (!mineGrid[r][c].isMine) {
+                        mineGrid[r][c].count = countMinesAround(r, c);
+                    }
+                }
+            }
+        }
+
+        function countMinesAround(r, c) {
+            let count = 0;
+            for (let i = -1; i <= 1; i++) {
+                for (let j = -1; j <= 1; j++) {
+                    if (mineGrid[r + i] && mineGrid[r + i][c + j] && mineGrid[r + i][c + j].isMine) {
+                        count++;
+                    }
+                }
+            }
+            return count;
+        }
+
+        function revealCell(r, c) {
+            if (gameOver || mineGrid[r][c].isRevealed || mineGrid[r][c].isFlagged) return;
+
+            const cell = mineGrid[r][c];
+            const cellEl = document.getElementById(`cell-${r}-${c}`);
+            cell.isRevealed = true;
+            cellEl.classList.add('revealed');
+
+            if (cell.isMine) {
+                cellEl.classList.add('mine');
+                cellEl.innerText = "💣";
+                endMinesweeper(false);
+                return;
+            }
+
+            if (cell.count > 0) {
+                cellEl.innerText = cell.count;
+                cellEl.classList.add(`c-${cell.count}`);
+            } else {
+                // Если мин нет, рекурсивно открываем соседей
+                for (let i = -1; i <= 1; i++) {
+                    for (let j = -1; j <= 1; j++) {
+                        if (mineGrid[r + i] && mineGrid[r + i][c + j]) {
+                            revealCell(r + i, c + j);
+                        }
+                    }
+                }
+            }
+            checkMinesweeperWin();
+        }
+
+        function toggleFlag(r, c) {
+            if (gameOver || mineGrid[r][c].isRevealed) return;
+            const cell = mineGrid[r][c];
+            const cellEl = document.getElementById(`cell-${r}-${c}`);
+
+            cell.isFlagged = !cell.isFlagged;
+            cellEl.innerText = cell.isFlagged ? "🚩" : "";
+        }
+
+        function checkMinesweeperWin() {
+            let unrevealedSafeCells = 0;
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    if (!mineGrid[r][c].isMine && !mineGrid[r][c].isRevealed) {
+                        unrevealedSafeCells++;
+                    }
+                }
+            }
+            if (unrevealedSafeCells === 0) {
+                endMinesweeper(true);
+            }
+        }
+
+        function endMinesweeper(isWin) {
+            gameOver = true;
+            const status = document.getElementById('mines-status');
+            if (isWin) {
+                status.innerText = "ВЫ ПОБЕДИЛИ!";
+                status.style.color = "green";
+            } else {
+                status.innerText = "ИГРА ОКОНЧЕНА! ВЫ ПОДОРВАЛИСЬ.";
+                status.style.color = "red";
+                // Показываем остальные мины
+                for (let r = 0; r < rows; r++) {
+                    for (let c = 0; c < cols; c++) {
+                        if (mineGrid[r][c].isMine) {
+                            document.getElementById(`cell-${r}-${c}`).innerText = "💣";
+                        }
+                    }
+                }
+            }
         }
 
         // КНБ ИГРА
@@ -714,24 +877,45 @@
             }, 10000);
         }
 
-        // --- ЛОГИКА CMD ---
+        // --- ЛОГИКА КОМАНДНОЙ СТРОКИ (CMD) ---
         function initCmdLogic() {
             const input = document.getElementById('cmd-term-input');
             const history = document.getElementById('cmd-history');
             input.addEventListener('keydown', function(e) {
                 if (e.key === 'Enter') {
-                    history.innerHTML += `\n\nLK:\\Users\\leo__king>${input.value}`;
-                    let lowerCmd = input.value.trim().toLowerCase().replace(/\s+/g, ' ');
+                    const fullInput = input.value.trim();
+                    history.innerHTML += `\n\nLK:\\Users\\leo__king>${fullInput}`;
+                    let lowerCmd = fullInput.toLowerCase().replace(/\s+/g, ' ');
+                    
                     if (lowerCmd === 'unlock server consol skibidi') {
                         isConsoleUnlocked = true;
                         history.innerHTML += `\n[УСПЕХ]: Консоль LK разблокирована.`;
                         document.getElementById('console-input-row').style.display = 'flex';
                     } else if (lowerCmd.startsWith('unlock server consol')) {
                         history.innerHTML += `\n[ОШИБКА]: Неверный авторизационный токен.`;
+                    } else if (lowerCmd.startsWith('read node')) {
+                        // Обработка команды read node
+                        const nodeName = lowerCmd.substring(10).trim();
+                        if (nodeName === 'todo') {
+                            history.innerHTML += `\n\n=== Содержимое узла TODO ===\n-Протестировать моды\n-Протестировать плагины\n-Сделать LK VIII по айпи legion-kings.ru\n-Исправить ошибки энда командой "download broken end" в консоли.`;
+                        } else if (nodeName === 'end') {
+                            if (isEndDownloaded) {
+                                history.innerHTML += `\n\n=== Узел END успешно дешифрован ===\n[LINK]: https://willdieoc.github.io/LK-earth-crush/fallen-end.html`;
+                            } else {
+                                history.innerHTML += `\n\n[КРИТИЧЕСКАЯ ОШИБКА]: Сбой доступа. Узел поврежден или не синхронизирован с сервером.\nВведите "download broken end" в Консоль LK для восстановления структуры данных.`;
+                            }
+                        } else if (nodeName === "") {
+                            history.innerHTML += `\nИспользование: read node [название_файла] (Доступные узлы: todo, end)`;
+                        } else {
+                            history.innerHTML += `\nОшибка: Узел "${nodeName}" не найден в системе.`;
+                        }
                     } else if (lowerCmd === 'help') {
-                        history.innerHTML += `\nКоманды: help, user, clear, exit`;
-                    } else if (lowerCmd === 'clear') { history.innerHTML = '[Очищено]'; }
-                    else { history.innerHTML += `\nНеизвестная команда.`; }
+                        history.innerHTML += `\nДоступные команды:\n  help                          - Показать список команд\n  read node [название файла]     - Прочитать зашифрованный узел данных\n  clear                         - Очистить экран терминала\n  unlock server consol [пароль] - Авторизация консоли сервера`;
+                    } else if (lowerCmd === 'clear') { 
+                        history.innerHTML = '[Очищено]'; 
+                    } else { 
+                        history.innerHTML += `\nНеизвестная команда. Введите 'help' для справки.`; 
+                    }
                     input.value = '';
                     document.querySelector('#cmd-win .window-content-dark').scrollTop = document.querySelector('#cmd-win .window-content-dark').scrollHeight;
                 }
@@ -750,7 +934,7 @@
                     history.innerHTML += `\n\nCONSOLES@LK_SERVER>${val}`;
                     
                     if(val.toLowerCase() === 'download broken end') {
-                        history.innerHTML += `\n[CONNECT]: Установка соединения...`;
+                        history.innerHTML += `\n[CONNECT]: Установка соединения к удаленному репозиторию энда...`;
                         let p = 0;
                         input.disabled = true;
                         let dlInterval = setInterval(() => {
@@ -760,8 +944,9 @@
                             
                             if(p >= 100) {
                                 clearInterval(dlInterval);
-                                history.innerHTML += `\n[SUCCESS]: Инъекция кода завершена.`;
-                                history.innerHTML += `\n[LK-end]: Измерение получило новые изменения, для ознакомления перейдите по ссылке https://github.com/willdieOC/LK-earth-crush/fallen-end.html.`;
+                                isEndDownloaded = true; // РАЗБЛОКИРУЕМ КОМАНДУ В CMD
+                                history.innerHTML += `\n[SUCCESS]: Инъекция кода завершена. Узел реестра 'end' синхронизирован.`;
+                                history.innerHTML += `\n[LK-end]: Измерение получило новые изменения. Для ознакомления используйте 'read node end' в командной строке вашей ОС.`;
                                 input.disabled = false;
                                 input.value = '';
                                 document.getElementById('virus-alert').style.display = 'flex';
@@ -781,7 +966,7 @@
             let isDragging = false;
             let offsetX, offsetY;
             handle.addEventListener('mousedown', (e) => {
-                if(e.target.classList.contains('window-close') || e.target.closest('.ie-navbar') || e.target.closest('.ie-address-bar')) return;
+                if(e.target.classList.contains('window-close') || e.target.closest('.ie-navbar') || e.target.closest('.ie-address-bar') || e.target.closest('.minesweeper-grid')) return;
                 isDragging = true;
                 document.querySelectorAll('.window, .sticker-note').forEach(el => el.style.zIndex = "5");
                 element.style.zIndex = "100";
