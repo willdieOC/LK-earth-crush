@@ -294,6 +294,9 @@
 </head>
 <body>
 
+    <audio id="sound-startup" src="windows-95-1995-startup.mp3" preload="auto"></audio>
+    <audio id="sound-click" src="button-click-short-close-soft.mp3" preload="auto"></audio>
+
     <div id="boot-screen" onclick="startBootSequence()">
         <div class="lk-logo">LK</div>
     </div>
@@ -523,8 +526,16 @@
 
     <script>
         let isConsoleUnlocked = false;
-        let isEndDownloaded = false; // Состояние разблокировки узла 'end'
+        let isEndDownloaded = false; 
         let snakeTimer = null;
+
+        // --- ДВИЖОК ЗВУКОВЫХ ЭФФЕКТОВ ---
+        // Глобальный слушатель левого клика мыши
+        document.addEventListener('click', function() {
+            const clickSound = document.getElementById('sound-click');
+            clickSound.currentTime = 0; // Сброс времени, чтобы воспроизводить при быстрых частых кликах
+            clickSound.play().catch(err => console.log("Аудио не проигралось из-за политик браузера. Требуется клик пользователя."));
+        });
 
         // Пул логируемых процессов (15 секунд загрузки)
         const bootProcesses = [
@@ -546,6 +557,10 @@
         ];
 
         function startBootSequence() {
+            // Воспроизведение звука запуска Windows 95
+            const startupSound = document.getElementById('sound-startup');
+            startupSound.play().catch(err => console.log("Ошибка воспроизведения звука старта:", err));
+
             document.getElementById('boot-screen').style.display = 'none';
             document.getElementById('loading-screen').style.display = 'block';
             
@@ -595,7 +610,7 @@
             initConsoleLogic();
             initIeNavigationLogic();
             startTpsMonitor();
-            initMinesweeper(); // Генерация сапера в фоне
+            initMinesweeper(); 
         }
 
         function openWindow(id) {
@@ -688,7 +703,6 @@
             mineGrid = [];
             gameOver = false;
 
-            // Создаем массив клеток
             for (let r = 0; r < rows; r++) {
                 mineGrid[r] = [];
                 for (let c = 0; c < cols; c++) {
@@ -698,9 +712,7 @@
                     cellEl.classList.add('mine-cell');
                     cellEl.id = `cell-${r}-${c}`;
                     
-                    // Левый клик — открыть клетку
                     cellEl.addEventListener('click', () => revealCell(r, c));
-                    // Правый клик — поставить флаг
                     cellEl.addEventListener('contextmenu', (e) => {
                         e.preventDefault();
                         toggleFlag(r, c);
@@ -710,7 +722,6 @@
                 }
             }
 
-            // Случайная расстановка 10 мин
             let minesPlaced = 0;
             while (minesPlaced < totalMines) {
                 let r = Math.floor(Math.random() * rows);
@@ -721,7 +732,6 @@
                 }
             }
 
-            // Подсчет мин вокруг каждой клетки
             for (let r = 0; r < rows; r++) {
                 for (let c = 0; c < cols; c++) {
                     if (!mineGrid[r][c].isMine) {
@@ -762,7 +772,6 @@
                 cellEl.innerText = cell.count;
                 cellEl.classList.add(`c-${cell.count}`);
             } else {
-                // Если мин нет, рекурсивно открываем соседей
                 for (let i = -1; i <= 1; i++) {
                     for (let j = -1; j <= 1; j++) {
                         if (mineGrid[r + i] && mineGrid[r + i][c + j]) {
@@ -806,7 +815,6 @@
             } else {
                 status.innerText = "ИГРА ОКОНЧЕНА! ВЫ ПОДОРВАЛИСЬ.";
                 status.style.color = "red";
-                // Показываем остальные мины
                 for (let r = 0; r < rows; r++) {
                     for (let c = 0; c < cols; c++) {
                         if (mineGrid[r][c].isMine) {
@@ -894,7 +902,6 @@
                     } else if (lowerCmd.startsWith('unlock server consol')) {
                         history.innerHTML += `\n[ОШИБКА]: Неверный авторизационный токен.`;
                     } else if (lowerCmd.startsWith('read node')) {
-                        // Обработка команды read node
                         const nodeName = lowerCmd.substring(10).trim();
                         if (nodeName === 'todo') {
                             history.innerHTML += `\n\n=== Содержимое узла TODO ===\n-Протестировать моды\n-Протестировать плагины\n-Сделать LK VIII по айпи legion-kings.ru\n-Исправить ошибки энда командой "download broken end" в консоли.`;
@@ -944,7 +951,7 @@
                             
                             if(p >= 100) {
                                 clearInterval(dlInterval);
-                                isEndDownloaded = true; // РАЗБЛОКИРУЕМ КОМАНДУ В CMD
+                                isEndDownloaded = true; 
                                 history.innerHTML += `\n[SUCCESS]: Инъекция кода завершена. Узел реестра 'end' синхронизирован.`;
                                 history.innerHTML += `\n[LK-end]: Измерение получило новые изменения. Для ознакомления используйте 'read node end' в командной строке вашей ОС.`;
                                 input.disabled = false;
