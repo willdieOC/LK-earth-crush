@@ -63,12 +63,18 @@
             line-height: 1.5;
         }
 
+        #boot-logs {
+            max-height: 60vh;
+            overflow-y: hidden;
+            margin-bottom: 20px;
+        }
+
         .loader-bar-container {
             width: 100%;
             max-width: 500px;
             height: 30px;
             border: 3px solid #ffffff;
-            margin-top: 30px;
+            margin-top: 15px;
             padding: 3px;
             background: #000;
         }
@@ -77,7 +83,6 @@
             width: 0%;
             height: 100%;
             background-color: #00ff00;
-            transition: width 1.0s linear;
         }
 
         /* --- ЭКРАН 3: РАБОЧИЙ СТОЛ OS --- */
@@ -279,12 +284,10 @@
 </head>
 <body>
 
-    <!-- 1. ЭКРАН С ЛОГОТИПОМ -->
     <div id="boot-screen" onclick="startBootSequence()">
         <div class="lk-logo">LK</div>
     </div>
 
-    <!-- 2. ЭКРАН ЗАГРУЗКИ -->
     <div id="loading-screen">
         <p>Legion-King's Information Systems v0.98</p>
         <p>Copyright (C) 2026, LK Corp. All Rights Reserved.</p>
@@ -298,7 +301,6 @@
         <p style="margin-top: 10px;" id="percent-text">Загрузка: 0%</p>
     </div>
 
-    <!-- 3. РАБОЧИЙ СТОЛ OS -->
     <div id="desktop">
         <div class="desktop-icons">
             <div class="icon" onclick="openWindow('ie-win')">
@@ -323,13 +325,11 @@
             </div>
         </div>
 
-        <!-- Перемещаемая бумажка-заметка -->
         <div class="sticker-note" id="lk-sticker">
             <div style="font-size: 9px; color: #888; margin-bottom: 5px; border-bottom: 1px dashed #ccc; text-align: right;">заметка.txt</div>
             <p>Цель до 27 июня: сделать LK VIII</p>
         </div>
 
-        <!-- ОКНО: ENTERNET EXPLORER -->
         <div class="window" id="ie-win" style="top: 5%; left: 15%; width: 700px;">
             <div class="window-header">
                 <span>Enternet Explorer 5.0</span>
@@ -342,11 +342,9 @@
             </div>
             <div class="ie-address-bar">
                 <span>Адрес:</span>
-                <!-- Теперь сюда можно вводить текст вручную -->
                 <input type="text" class="ie-address-input" id="ie-url" value="http://lk-server.net/news" spellcheck="false">
             </div>
             <div class="ie-page-content" id="ie-body">
-                <!-- Вкладка Новости -->
                 <div id="ie-page-news">
                     <div class="news-card">
                         <div class="news-meta">Источник: <b>leo__king</b> | Дата: 15.06.2026</div>
@@ -361,12 +359,10 @@
                         <div class="news-text">Сегодня willdie и _RundeR_ официально поженились! ГОРЬКООО!! 🎉🎉💍</div>
                     </div>
                 </div>
-                <!-- Вкладка Змейка -->
                 <div id="ie-page-snake" style="display:none; text-align:center;">
                     <div style="font-size:12px; margin-bottom:5px; color:#000;">Счет: <span id="snake-score">0</span> | Управление стрелочками</div>
                     <canvas id="snake-canvas" width="300" height="300"></canvas>
                 </div>
-                <!-- Вкладка КНБ -->
                 <div id="ie-page-rps" style="display:none; text-align:center; color:#000; padding-top:20px;">
                     <h3>Мини-игра: Камень, Ножницы, Бумага</h3><br>
                     <p>Победы: <span id="rps-wins">0</span> | Поражения: <span id="rps-losses">0</span></p><br>
@@ -380,7 +376,6 @@
             </div>
         </div>
 
-        <!-- ОКНО: REGISTRY EDITOR -->
         <div class="window" id="reg-win" style="top: 25%; left: 40%; width: 550px;">
             <div class="window-header">
                 <span>Registry Editor</span>
@@ -417,7 +412,6 @@
             </div>
         </div>
 
-        <!-- ОКНО: БЛОКНОТ (ЗАДАЧИ) -->
         <div class="window" id="todo-win" style="top: 10%; left: 50%; width: 450px;">
             <div class="window-header">
                 <span>todo.txt - Блокнот</span>
@@ -437,7 +431,6 @@
 -[ВАЖНО] Скачать и перенести измерение энда на LK командой "download broken end" в консоли (не забудь починить его!)</div>
         </div>
 
-        <!-- ОКНО: КОМАНДНАЯ СТРОКА (CMD) -->
         <div class="window" id="cmd-win" style="top: 15%; left: 5%; width: 520px;">
             <div class="window-header">
                 <span>Командная строка - lkos_cmd.exe</span>
@@ -455,7 +448,6 @@
             </div>
         </div>
 
-        <!-- ОКНО: КОНСОЛЬ LK -->
         <div class="window" id="console-win" style="top: 42%; left: 20%; width: 580px;">
             <div class="window-header">
                 <span>Консоль сервера - legion-kings.ru</span>
@@ -473,7 +465,6 @@
             </div>
         </div>
 
-        <!-- КАСТОМНОЕ ОКНО ПРЕДУПРЕЖДЕНИЯ ВИРУСА -->
         <div id="virus-alert">
             <div class="window-header" style="background:linear-gradient(90deg, #aa0000, #ff3333)">
                 <span>⚠️ КРИТИЧЕСКАЯ ОШИБКА ЯДРА СЕРВЕРА</span>
@@ -486,7 +477,6 @@
             </div>
         </div>
 
-        <!-- ПАНЕЛЬ ЗАДАЧ -->
         <div id="taskbar">
             <div class="start-button" onclick="toggleStartMenu()">
                 <span style="background:#00d2ff; color:black; padding: 0 4px; font-size:11px; box-shadow: 0 0 5px #fff;">LK</span>
@@ -516,19 +506,58 @@
         let isConsoleUnlocked = false;
         let snakeTimer = null;
 
+        // Пул логируемых процессов для создания задержки и атмосферы
+        const bootProcesses = [
+            { text: "> Поиск аппаратных компонентов LK_Systems...", time: 500 },
+            { text: "> Проверка CPU: Legion Core v8 обнаружен.", time: 1200 },
+            { text: "> Выделение оперативной памяти: 16384MB OK.", time: 2000 },
+            { text: "> Загрузка модулей расширения Fabric Loader...", time: 3100 },
+            { text: "> [Fabric]: Загружен мод mineflayer-bot-core.jar", time: 4000 },
+            { text: "> Подключение к локальным хранилищам данных...", time: 5200 },
+            { text: "> Проверка целостности секторов реестра...", time: 6500 },
+            { text: "> Чтение конфигурации HKEY_LOCAL_MACHINE\\SOFTWARE\\LK_Systems...", time: 7300 },
+            { text: "> [СИСТЕМА]: Обнаружен заблокированный токен ConsoleAuth.", time: 8200 },
+            { text: "> Попытка дешифрования логов SERAPHIM...", time: 9400 },
+            { text: "> [SERAPHIM]: Код доступа частично поврежден. Пропуск...", time: 10800 },
+            { text: "> Инициализация графического интерфейса пользователя...", time: 12000 },
+            { text: "> Синхронизация с сервером автоматизации legion-kings.ru...", time: 13500 },
+            { text: "> Проверка сетевых интерфейсов... Соединение установлено.", time: 14400 },
+            { text: "> Запуск рабочего стола Legion-King'sOS...", time: 14900 }
+        ];
+
         function startBootSequence() {
             document.getElementById('boot-screen').style.display = 'none';
             document.getElementById('loading-screen').style.display = 'block';
+            
+            const logContainer = document.getElementById('boot-logs');
             let progress = 0;
+            const totalDuration = 15000; // 15 секунд
+            const intervalTime = 30; // Обновление каждые 30мс
+            const steps = totalDuration / intervalTime;
+            const increment = 100 / steps;
+
+            // Обработка текстовых логов на экране
+            bootProcesses.forEach(proc => {
+                setTimeout(() => {
+                    const p = document.createElement('p');
+                    p.innerText = proc.text;
+                    logContainer.appendChild(p);
+                }, proc.time);
+            });
+
+            // Плавное заполнение полосы загрузки ровно 15 секунд
             const bootInterval = setInterval(() => {
-                progress += 1;
+                progress += increment;
+                if (progress > 100) progress = 100;
+                
                 document.getElementById('progress').style.width = progress + '%';
-                document.getElementById('percent-text').innerText = `Загрузка: ${progress}%`;
+                document.getElementById('percent-text').innerText = `Загрузка: ${Math.floor(progress)}%`;
+                
                 if (progress >= 100) {
                     clearInterval(bootInterval);
                     showDesktop();
                 }
-            }, 30); 
+            }, intervalTime);
         }
 
         function showDesktop() {
@@ -561,7 +590,7 @@
         function focusInput(id) { const el = document.getElementById(id); if (el) el.focus(); }
         function updateClock() { const n = new Date(); document.getElementById('clock').innerText = `${n.getHours().toString().padStart(2, '0')}:${n.getMinutes().toString().padStart(2, '0')}`; }
 
-        // --- РЕДАКТОР РЕЕСТРА (С ПАРОЛЕМ СЛЕДУЮЩЕЙ СТРОКОЙ) ---
+        // --- РЕДАКТОР РЕЕСТРА ---
         function toggleRegNode(element, event) {
             event.stopPropagation();
             element.classList.toggle('expanded');
@@ -579,7 +608,6 @@
 
         // --- ENTERNET EXPLORER ЛОГИКА И СЕКРЕТНЫЙ САЙТ ---
         function switchIeTab(tab) {
-            // Если мы уже на секретном сайте, обычные вкладки не сбросят глитч, пока адрес не поменяется
             const body = document.getElementById('ie-body');
             body.style.background = "#fff";
             body.style.color = "#000";
@@ -589,7 +617,6 @@
             document.getElementById('ie-page-rps').style.display = 'none';
             document.querySelectorAll('.ie-tab').forEach(t => t.classList.remove('active'));
             clearInterval(snakeTimer);
-
             document.getElementById(`ie-page-${tab}`).style.display = 'block';
             document.getElementById(`tab-btn-${tab}`).classList.add('active');
             document.getElementById('ie-url').value = `http://lk-server.net/${tab}`;
@@ -606,13 +633,11 @@
 
                     if(targetUrl === 'https://willdieoc.github.io/LK-earth-crush/fallen-end.html') {
                         clearInterval(snakeTimer);
-                        // Скрываем стандартные вкладки
                         document.getElementById('ie-page-news').style.display = 'none';
                         document.getElementById('ie-page-snake').style.display = 'none';
                         document.getElementById('ie-page-rps').style.display = 'none';
                         document.querySelectorAll('.ie-tab').forEach(t => t.classList.remove('active'));
 
-                        // Генерируем Секретный сайт
                         ieBody.innerHTML = `
                             <div class="secret-site">
                                 <div class="secret-glitch">▲ СИСТЕМА ОБНАРУЖИЛА ИСКАЖЕНИЕ ИЗМЕРЕНИЯ ▲</div><br>
@@ -623,7 +648,7 @@
                             </div>
                         `;
                     } else if (targetUrl.includes('news')) {
-                        location.reload(); // Быстрый сброс для возврата к нормальным страницам
+                        location.reload();
                     }
                 }
             });
@@ -660,7 +685,6 @@
                 else if(e.key === 'ArrowLeft' && dx === 0) { dx = -1; dy = 0; }
                 else if(e.key === 'ArrowRight' && dx === 0) { dx = 1; dy = 0; }
             };
-
             snakeTimer = setInterval(() => {
                 let head = {x: snake[0].x + dx, y: snake[0].y + dy};
                 if(head.x < 0 || head.x >= cells || head.y < 0 || head.y >= cells) return reset();
@@ -676,7 +700,6 @@
                 ctx.fillStyle = '#ff0000'; ctx.fillRect(food.x*size, food.y*size, size-1, size-1);
                 ctx.fillStyle = '#00ff00'; snake.forEach(s => ctx.fillRect(s.x*size, s.y*size, size-1, size-1));
             }, 120);
-
             function reset() { alert("Игра окончена! Счет: " + score); clearInterval(snakeTimer); startSnakeGame(); }
         }
 
@@ -755,7 +778,8 @@
 
         // --- СКРИПТ ПЕРЕТАСКИВАНИЯ ---
         function makeDraggable(element, handle) {
-            let isDragging = false; let offsetX, offsetY;
+            let isDragging = false;
+            let offsetX, offsetY;
             handle.addEventListener('mousedown', (e) => {
                 if(e.target.classList.contains('window-close') || e.target.closest('.ie-navbar') || e.target.closest('.ie-address-bar')) return;
                 isDragging = true;
