@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legion-King'sOS</title>
+    <style>
+        /* Сброс стилей и олдскульный шрифт */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            user-select: none;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #000;
+        }
+
+        /* --- ЭКРАН 1: ЛОГОТИП "LK" --- */
+        #boot-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            background: radial-gradient(circle, #1a1a1a 0%, #000 100%);
+            cursor: pointer;
+        }
+
+        .lk-logo {
+            font-size: 80px;
+            color: #ff0055;
+            text-shadow: 0 0 20px #ff0055, 0 0 40px #000;
+            border: 4px solid #ff0055;
+            padding: 20px 40px;
+            box-shadow: inset 0 0 15px #ff0055, 0 0 15px #ff0055;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.9; }
+            50% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.9; }
+        }
+
+        /* --- ЭКРАН 2: СТАРАЯ ЗАГРУЗКА WINDOWS (15 сек) --- */
+        #loading-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #0000aa; /* Синий экран загрузки */
+            color: #ffffff;
+            padding: 40px;
+            display: none;
+            z-index: 9998;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        .loader-bar-container {
+            width: 100%;
+            max-width: 500px;
+            height: 30px;
+            border: 3px solid #ffffff;
+            margin-top: 30px;
+            padding: 3px;
+            background: #000;
+        }
+
+        .loader-bar {
+            width: 0%;
+            height: 100%;
+            background-color: #00ff00;
+            transition: width 0.2s linear;
+        }
+
+        /* --- ЭКРАН 3: РАБОЧИЙ СТОЛ OS --- */
+        #desktop {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background-color: #008080; /* Классический бирюзовый цвет Windows 95 */
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* Иконки на рабочем столе */
+        .desktop-icons {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .icon {
+            width: 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            color: white;
+            font-size: 12px;
+            cursor: pointer;
+            text-shadow: 1px 1px 1px #000;
+        }
+
+        .icon-box {
+            width: 40px;
+            height: 40px;
+            background-color: #c0c0c0;
+            border: 2px solid #fff;
+            border-right-color: #808080;
+            border-bottom-color: #808080;
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #000;
+            font-size: 18px;
+        }
+
+        /* Панель задач (Taskbar) */
+        #taskbar {
+            width: 100%;
+            height: 40px;
+            background-color: #c0c0c0;
+            border-top: 2px solid #fff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 2px 10px;
+            z-index: 1000;
+        }
+
+        /* Кнопка Пуск */
+        .start-button {
+            height: 30px;
+            padding: 0 15px;
+            background-color: #c0c0c0;
+            border: 2px solid #fff;
+            border-right-color: #000;
+            border-bottom-color: #000;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .start-button:active {
+            border: 2px solid #000;
+            border-right-color: #fff;
+            border-bottom-color: #fff;
+            padding: 2px 13px 0 17px;
+        }
+
+        /* Меню Пуск */
+        #start-menu {
+            position: absolute;
+            bottom: 42px;
+            left: 5px;
+            width: 240px;
+            background-color: #c0c0c0;
+            border: 2px solid #fff;
+            border-right-color: #000;
+            border-bottom-color: #000;
+            display: none;
+            flex-direction: column;
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+        }
+
+        .start-menu-item {
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 13px;
+            color: #000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .start-menu-item:hover {
+            background-color: #0000aa;
+            color: white;
+        }
+
+        /* Часы в панели задач */
+        .system-tray {
+            border: 2px solid #808080;
+            border-right-color: #fff;
+            border-bottom-color: #fff;
+            padding: 2px 10px;
+            font-size: 13px;
+            background-color: #c0c0c0;
+        }
+
+        /* Окна приложений (для ARG-загадок) */
+        .window {
+            position: absolute;
+            top: 20%;
+            left: 30%;
+            width: 400px;
+            background-color: #c0c0c0;
+            border: 2px solid #fff;
+            border-right-color: #000;
+            border-bottom-color: #000;
+            display: none;
+            flex-direction: column;
+            box-shadow: 4px 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .window-header {
+            background: linear-gradient(90deg, #0000aa, #0080ff);
+            color: white;
+            padding: 5px 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+        }
+
+        .window-close {
+            width: 16px;
+            height: 16px;
+            background-color: #c0c0c0;
+            border: 1px solid #fff;
+            border-right-color: #000;
+            border-bottom-color: #000;
+            color: black;
+            text-align: center;
+            line-height: 12px;
+            cursor: pointer;
+            font-size: 10px;
+        }
+
+        .window-content {
+            padding: 15px;
+            background-color: #fff;
+            margin: 4px;
+            border: 2px solid #808080;
+            border-right-color: #fff;
+            border-bottom-color: #fff;
+            min-height: 150px;
+            font-size: 13px;
+            color: #000;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="boot-screen" onclick="startBootSequence()">
+        <div class="lk-logo">LK</div>
+    </div>
+
+    <div id="loading-screen">
+        <p>Legion-King's Information Systems v0.98</p>
+        <p>Copyright (C) 2026, LK Corp. All Rights Reserved.</p>
+        <p>--------------------------------------------------</p>
+        <div id="boot-logs">
+            <p>> Инициализация ядра системы...</p>
+        </div>
+        
+        <div class="loader-bar-container">
+            <div class="loader-bar" id="progress"></div>
+        </div>
+        <p style="margin-top: 10px;" id="percent-text">Загрузка: 0%</p>
+    </div>
+
+    <div id="desktop">
+        <div class="desktop-icons">
+            <div class="icon" onclick="openWindow('node-win')">
+                <div class="icon-box">📁</div>
+                <span>Архив_LK</span>
+            </div>
+            <div class="icon" onclick="openWindow('readme-win')">
+                <div class="icon-box">📝</div>
+                <span>README</span>
+            </div>
+        </div>
+
+        <div class="window" id="readme-win">
+            <div class="window-header">
+                <span>README.txt - Блокнот</span>
+                <div class="window-close" onclick="closeWindow('readme-win')">X</div>
+            </div>
+            <div class="window-content">
+                <p>Добро пожаловать в систему Legion-King'sOS.</p><br>
+                <p>ВНИМАНИЕ: База данных сервера Майнкрафт была повреждена ИИ по имени SERAPHIM. Для восстановления доступа ищите скрытые файлы в репозитории GitHub.</p>
+            </div>
+        </div>
+
+        <div class="window" id="node-win">
+            <div class="window-header">
+                <span>Секретные Логи</span>
+                <div class="window-close" onclick="closeWindow('node-win')">X</div>
+            </div>
+            <div class="window-content">
+                <p>Лог #01: "Объект скрылся на координатах X: 1405, Z: -320. Требуется проверка на сервере..."</p>
+            </div>
+        </div>
+
+        <div id="taskbar">
+            <div class="start-button" onclick="toggleStartMenu()">
+                <span style="background:#ff0055; color:white; padding: 0 4px; font-size:11px;">LK</span>
+                <span>Пуск</span>
+            </div>
+            
+            <div id="start-menu">
+                <div class="start-menu-item" onclick="alert('В разработке...')">⚙️ Настройки</div>
+                <div class="start-menu-item" onclick="openWindow('readme-win')">📝 Инструкция</div>
+                <hr style="border-color: #808080;">
+                <div class="start-menu-item" onclick="location.reload()">🔄 Перезагрузка</div>
+            </div>
+
+            <div class="system-tray" id="clock">12:00</div>
+        </div>
+    </div>
+
+    <script>
+        // Имитация логов загрузки старого ПК
+        const logMessages = [
+            "> Проверка оперативной памяти... OK",
+            "> Подключение к серверу Minecraft LK... Подключено",
+            "> Загрузка драйверов дисплея... OK",
+            "> Обнаружена сетевая аномалия в секторе Энда...",
+            "> Попытка обхода блокировки протокола ИИ...",
+            "> Монтирование дисков виртуальной реальности...",
+            "> Запуск интерфейса операционной системы..."
+        ];
+
+        function startBootSequence() {
+            // Скрываем логотип, показываем загрузку
+            document.getElementById('boot-screen').style.display = 'none';
+            document.getElementById('loading-screen').style.display = 'block';
+
+            let progress = 0;
+            const progressBar = document.getElementById('progress');
+            const percentText = document.getElementById('percent-text');
+            const logsContainer = document.getElementById('boot-logs');
+            
+            // Длительность ~15 секунд (15000мс / 100 шагов = 150мс на 1%)
+            const intervalTime = 150; 
+
+            const bootInterval = setInterval(() => {
+                progress += 1;
+                progressBar.style.width = progress + '%';
+                percentText.innerText = `Загрузка: ${progress}%`;
+
+                // Рандомно выводим логи старого ПК в процессе загрузки
+                if (progress % 15 === 0 && logMessages.length > 0) {
+                    let nextLog = logMessages.shift();
+                    let p = document.createElement('p');
+                    p.innerText = nextLog;
+                    logsContainer.appendChild(p);
+                }
+
+                if (progress >= 100) {
+                    clearInterval(bootInterval);
+                    showDesktop();
+                }
+            }, intervalTime);
+        }
+
+        function showDesktop() {
+            document.getElementById('loading-screen').style.display = 'none';
+            document.getElementById('desktop').style.display = 'flex';
+            updateClock();
+            setInterval(updateClock, 1000);
+        }
+
+        // Логика меню Пуск
+        function toggleStartMenu() {
+            const menu = document.getElementById('start-menu');
+            menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        // Закрыть меню пуск, если кликнули по рабочему столу
+        document.getElementById('desktop').addEventListener('click', function(e) {
+            if (!e.target.closest('.start-button') && !e.target.closest('#start-menu')) {
+                document.getElementById('start-menu').style.display = 'none';
+            }
+        });
+
+        // Управление окнами
+        function openWindow(id) {
+            document.getElementById(id).style.display = 'flex';
+        }
+
+        function closeWindow(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+
+        // Обновление часов в трее
+        function updateClock() {
+            const now = new Date();
+            let hours = now.getHours().toString().padStart(2, '0');
+            let minutes = now.getMinutes().toString().padStart(2, '0');
+            document.getElementById('clock').innerText = `${hours}:${minutes}`;
+        }
+    </script>
+</body>
+</html>
