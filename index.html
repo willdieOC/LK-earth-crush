@@ -365,8 +365,16 @@
                         <div class="news-text" style="color: #aa0000;">Сегодня случился праздник! Игрока vekss_lk забанили!</div>
                     </div>
                     <div class="news-card">
+                        <div class="news-meta">Источник: <b>leo__king</b></div>
+                        <div class="news-text">Сегодня на спавне появился таймер до финального события, что это, пока что, никто не знает. Но оно определенно что то значит. Телеграм канал: t.me/boloto_leo_king</div>
+                    </div>
+                    <div class="news-card">
+                        <div class="news-meta">Источник: <b>poping_LK</b> | Время: 17:44, 15.06.26</div>
+                        <div class="news-text">Сегодня с игроком Ilovelvl произошло нечто страшное. По достоверным источникам, он сегодня очень хорошо поел гречневую кашу. Следим за развитием событий</div>
+                    </div>
+                    <div class="news-card">
                         <div class="news-meta">Источник: <b>Система Безопасности LK</b></div>
-                        <div class="news-text">Обнаружена критическая ошибка в структуре игрового мира (The End). Измерение полностью недоступно. Последний стабильный лог указывает на повреждение файлов секторов. Техническая служба хостинга пытается развернуть резервную копию. Попытки игроков зайти на сервер вызывают ошибку загрузчика Fabric.</div>
+                        <div class="news-text">Обнаружена критическая ошибка в структуру игрового мира (The End). Измерение полностью недоступно. Последний стабильный лог указывает на повреждение файлов секторов. Техническая служба хостинга пытается развернуть резервную копию. Попытки игроков зайти на сервер вызывают ошибку загрузчика Fabric.</div>
                     </div>
                 </div>
                 <div id="ie-page-mines" style="display:none;">
@@ -718,7 +726,6 @@
             
             tpsTimer = setInterval(() => {
                 if (!isConsoleUnlocked) return;
-                // Небольшая имитация живой флуктуации TPS
                 let randomTps = (19.90 + Math.random() * 0.10).toFixed(2);
                 history.innerHTML += `\n[MONITOR] Current Server TPS: ${randomTps} | Memory Free: 74.2%`;
                 container.scrollTop = container.scrollHeight;
@@ -773,7 +780,7 @@
             });
         }
 
-        // --- БЕЗОПАСНЫЙ САПЕР (БЕЗ ПРОИГРЫША НА ПЕРВОМ ХОДУ + ОТКРЫТИЕ СРАЗУ ОБЛАСТИ) ---
+        // --- БЕЗОПАСНЫЙ САПЕР ---
         let mineGrid = []; const rows = 8, cols = 8, totalMines = 10; let gameOver = false; let isFirstClick = true;
         function initMinesweeper() {
             const gridContainer = document.getElementById('mines-grid'); document.getElementById('mines-status').innerText = ""; gridContainer.innerHTML = ""; mineGrid = []; gameOver = false; isFirstClick = true;
@@ -789,7 +796,6 @@
             while (mP < totalMines) {
                 let r = Math.floor(Math.random() * rows);
                 let c = Math.floor(Math.random() * cols);
-                // Исключаем саму клетку первого клика и все соседние вокруг неё, чтобы открывалась полноценная область
                 let isTooClose = Math.abs(r - firstR) <= 1 && Math.abs(c - firstC) <= 1;
                 if (!mineGrid[r][c].isMine && !isTooClose) {
                     mineGrid[r][c].isMine = true;
