@@ -279,17 +279,58 @@
             box-shadow: 5px 5px 20px rgba(0,0,0,0.5); display: none; flex-direction: column; z-index: 10000;
         }
 
+        /* --- НОВЫЙ ЭЛЕМЕНТ: НИЖНИЙ ЛОРНЫЙ ТАЙМЕР ОБРАТНОГО ОТСЧЕТА --- */
+        #arg-countdown-bar {
+            width: 100%;
+            background-color: #c0c0c0;
+            border-top: 2px solid #fff;
+            border-bottom: 1px solid #808080;
+            padding: 6px 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+            color: #444444; /* Темно-серый текст */
+            letter-spacing: 1px;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+        }
+        #countdown-timer-value {
+            color: #222222;
+            margin-left: 8px;
+            font-weight: bold;
+        }
+
         /* Панель задач */
         #taskbar { width: 100%; height: 40px; background-color: #c0c0c0; border-top: 2px solid #fff; display: flex; align-items: center; justify-content: space-between; padding: 2px 10px; z-index: 1000; }
         .start-button { height: 30px; padding: 0 15px; background-color: #c0c0c0; border: 2px solid #fff; border-right-color: #000; border-bottom-color: #000; display: flex; align-items: center; gap: 5px; cursor: pointer; font-size: 14px; }
-        #start-menu { position: absolute; bottom: 42px; left: 5px; width: 240px; background-color: #c0c0c0; border: 2px solid #fff; border-right-color: #000; border-bottom-color: #000; display: none; flex-direction: column; box-shadow: 2px 2px 10px rgba(0,0,0,0.5); }
+        #start-menu { position: absolute; bottom: 42px; left: 5px; width: 240px; background-color: #c0c0c0; border: 2px solid #fff; border-right-color: #000; border-bottom-color: #000; display: none; flex-direction: column; box-shadow: 2px 2px 10px rgba(0,0,0,0.5); z-index: 1100; }
         .start-menu-item { padding: 10px 15px; cursor: pointer; font-size: 13px; color: #000; display: flex; align-items: center; gap: 10px; position: relative; }
         .start-menu-item:hover { background-color: #0000aa; color: white; }
         .submenu { position: absolute; left: 236px; bottom: 0; width: 160px; background-color: #c0c0c0; border: 2px solid #fff; border-right-color: #000; border-bottom-color: #000; display: none; flex-direction: column; box-shadow: 2px 2px 10px rgba(0,0,0,0.5); }
         .start-menu-item:hover .submenu { display: flex; }
         .submenu-item { padding: 8px 12px; color: #000; font-size: 12px; }
         .submenu-item:hover { background-color: #0000aa; color: #fff; }
-        .system-tray { border: 2px solid #808080; border-right-color: #fff; border-bottom-color: #fff; padding: 2px 10px; font-size: 13px; background-color: #c0c0c0; }
+        
+        .system-tray { 
+            border: 2px solid #808080; border-right-color: #fff; border-bottom-color: #fff; 
+            padding: 2px 10px; font-size: 13px; background-color: #c0c0c0; 
+            display: flex; align-items: center; gap: 15px;
+        }
+
+        /* Стилизация ползунка громкости клика */
+        .volume-control {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 11px;
+            color: #000;
+        }
+        .volume-slider {
+            width: 70px;
+            height: 6px;
+            cursor: pointer;
+            accent-color: #0000aa;
+        }
     </style>
 </head>
 <body>
@@ -340,7 +381,7 @@
 
         <div class="sticker-note" id="lk-sticker">
             <div style="font-size: 9px; color: #888; margin-bottom: 5px; border-bottom: 1px dashed #ccc; text-align: right;">заметка.txt</div>
-            <p>Цель до 27 июня: сделать LK VIII</p>
+            <p>Цель до 27 июня: запустить LK VIII и сдержать Культ Края.</p>
         </div>
 
         <div class="window" id="ie-win" style="top: 5%; left: 15%; width: 700px;">
@@ -362,15 +403,15 @@
                 <div id="ie-page-news">
                     <div class="news-card">
                         <div class="news-meta">Источник: <b>leo__king</b> | Дата: 15.06.2026</div>
-                        <div class="news-text">Сегодня на сервере появился загадочный таймер «финального события». Пока никто не знает, что это такое, но, возможно, это имеет значение. Telegram-канал: <span class="news-link" onclick="window.open('https://t.me/boloto_leo_king','_blank')">t.me/boloto_leo_king</span></div>
+                        <div class="news-text">Внимание! На хостинге legion-kings.ru запущен обратный отсчет до 27 июня (17:00 МСК). Похоже, «легион сокрушен» — это не просто фраза, а масштабный сбой ядра. Если Энд не будет восстановлен, запуск новой сборки LK VIII сорвется. Telegram-канал: <span class="news-link" onclick="window.open('https://t.me/boloto_leo_king','_blank')">t.me/boloto_leo_king</span></div>
                     </div>
                     <div class="news-card">
                         <div class="news-meta">Источник: <b>poping_LK</b> | Время: 17:44, 15.06.26</div>
-                        <div class="news-text">Сегодня с игроком Ilovelvl произошло нечто страшное. По достоверным источникам, он сегодня очень хорошо поел гречневую кашу. Следим за развитием событий.</div>
+                        <div class="news-text">Срочно! Игрок Ilovelvl зашел в Энд незадолго до его исчезновения. Последнее, что он успел написать в чат перед вылетом Fabric-загрузчика: «Они переписывают файлы региона .mca...». После этого он пошел есть гречневую кашу, отказавшись от комментариев. Следим за развитием событий.</div>
                     </div>
                     <div class="news-card">
-                        <div class="news-meta">Источник: <b>_RundeR_</b> | Статус: СВАДЬБА</div>
-                        <div class="news-text">Сегодня willdie и _RundeR_ официально поженились! ГОРЬКООО!! 🎉🎉💍</div>
+                        <div class="news-meta">Источник: <b>_RundeR_</b> | Статус: В СЕТИ</div>
+                        <div class="news-text">Пока мир рушится, willdie и _RundeR_ официально поженились! Горько! Свадьба прямо на фоне падающего TPS. 🎉🎉💍</div>
                     </div>
                 </div>
                 <div id="ie-page-mines" style="display:none;">
@@ -386,7 +427,7 @@
                     <canvas id="snake-canvas" width="300" height="300"></canvas>
                 </div>
                 <div id="ie-page-rps" style="display:none; text-align:center; color:#000; padding-top:20px;">
-                    <h3>Мини-игра: Камень, Ножницы, Бумага</h3><br>
+                    <h3>Mini-Game: Rock Paper Scissors</h3><br>
                     <p>Победы: <span id="rps-wins">0</span> | Поражения: <span id="rps-losses">0</span></p><br>
                     <div>
                         <button class="rps-btn" onclick="playRPS('камень')">✊ Камень</button>
@@ -439,18 +480,18 @@
                 <span>todo.txt - Блокнот</span>
                 <div class="window-close" onclick="closeWindow('todo-win')">X</div>
             </div>
-            <div class="window-content" style="height: 280px; user-select: text; white-space: pre-wrap; line-height: 1.4;">-Протестировать моды
--Протестировать плагины
--Протестировать NPC
--Протестировать кейсы
--Протестировать хост
--Протестировать команды
--Позвать игоря на LK VIII (Обязательно!!)
--Сделать LK VIII по айпи legion-kings.ru
--Прогрузить обычный мир
--Прогрузить Ад
--Прогрузить [Данные потеряны]
--[ВАЖНО] Скачать и перенести измерение энда на LK командой "download broken end" в консоли (не забудь починить его!)</div>
+            <div class="window-content" style="height: 280px; user-select: text; white-space: pre-wrap; line-height: 1.4;">- Протестировать новые моды и плагины
+- Настроить кастомных NPC и кейсы
+- Проверить стабильность хоста (legion-kings.ru)
+- Позвать Игоря на открытие LK VIII (КРИТИЧЕСКИ)
+- Исправить краш Fabric лоадера при попытке загрузить Край
+
+[ИНФОРМАЦИЯ]: Структура Энда была украдена сущностями END_CULT. Пароль авторизации удаленного терминала скрыт в их дампах памяти в CMD.
+
+[ВАЖНО]: Чтобы вернуть измерение, восстановите доступ к Консоли LK и отправьте команду "download broken end".
+
+[ПРИМЕЧАНИЕ КУЛЬТА] (Шифр Цезаря +3):
+Гулбмфёя сормка соь -> доккиал бмхеоб рка</div>
         </div>
 
         <div class="window" id="cmd-win" style="top: 15%; left: 5%; width: 520px;">
@@ -462,7 +503,8 @@
                 <div id="cmd-history" class="cmd-output">Legion-King's OS [Version 0.98]
 (c) Корпорация LK, 2026.
 
-Введите 'help' для просмотра списка доступных команд.</div>
+Защищенная среда выполнения ядра.
+Введите 'help' для просмотра доступных директив.</div>
                 <div class="input-line">
                     <span class="prefix">LK:\Users\leo__king></span>
                     <input type="text" id="cmd-term-input" class="dark-input" autocomplete="off" spellcheck="false">
@@ -476,9 +518,9 @@
                 <div class="window-close" onclick="closeWindow('console-win')">X</div>
             </div>
             <div class="window-content-dark" onclick="focusInput('server-console-input')">
-                <div id="console-history" class="console-output">[INFO] Запуск мониторинга...
-[INFO] Статус хостинга: АКТИВЕН [legion-kings.ru]
-[INFO] Онлайн: 0/100 игроков.
+                <div id="console-history" class="console-output">[INFO] Запуск удаленного мониторинга узла...
+[WARN] Доступ к потоку выполнения ограничен. Требуется локальный токен активации.
+[INFO] Статус legion-kings.ru: ОЖИДАНИЕ АВТОРИЗАЦИИ АДМИНИСТРАТОРА.
 --------------------------------------------------</div>
                 <div class="input-line" id="console-input-row" style="display: none; border-top: 1px dashed #ffaa00; padding-top: 5px;">
                     <span class="prefix" style="color: #ffaa00;">CONSOLES@LK_SERVER></span>
@@ -493,34 +535,49 @@
                 <div class="window-close" onclick="document.getElementById('virus-alert').style.display='none'">X</div>
             </div>
             <div class="window-content" style="background:#fff; text-align:center; padding: 20px; color:#000;">
-                <p style="font-size:16px; color:#aa0000; margin-bottom:10px;">[СБОЙ ИЗМЕРЕНИЙ]</p>
-                <p>измерение end успешно заражено</p><br>
-                <button class="rps-btn" style="width:100px;" onclick="document.getElementById('virus-alert').style.display='none'">ОК</button>
+                <p style="font-size:16px; color:#aa0000; margin-bottom:10px;">[ИНЪЕКЦИЯ КОДА КРАЯ УСПЕШНА]</p>
+                <p>Измерение END успешно интегрировано в структуру. Защитные протоколы LK_Systems взломаны. Сжатие пространства запущено.</p><br>
+                <button class="rps-btn" style="width:100px;" onclick="document.getElementById('virus-alert').style.display='none'">ПРИНЯТЬ</button>
             </div>
         </div>
 
-        <div id="taskbar">
-            <div class="start-button" onclick="toggleStartMenu()">
-                <span style="background:#00d2ff; color:black; padding: 0 4px; font-size:11px; box-shadow: 0 0 5px #fff;">LK</span>
-                <span style="margin-left: 3px;">Пуск</span>
+        <div style="width: 100%; display: flex; flex-direction: column; z-index: 1000;">
+            
+            <div id="arg-countdown-bar">
+                <span>ДО ЗАПУСКА КРИТИЧЕСКОГО СЦЕНАРИЯ LK VIII ОСТАЛОСЬ:</span>
+                <span id="countdown-timer-value">00д. 00ч. 00м. 00с.</span>
             </div>
-            <div id="start-menu">
-                <div class="start-menu-item">🎨 Цвет экрана
-                    <div class="submenu">
-                        <div class="submenu-item" onclick="changeBg('#008080')">■ Бирюзовый</div>
-                        <div class="submenu-item" onclick="changeBg('#0d4212')">■ Темно-зеленый</div>
-                        <div class="submenu-item" onclick="changeBg('#0a1b40')">■ Темно-синий</div>
-                        <div class="submenu-item" onclick="changeBg('#4a0505')">■ Темно-красный</div>
-                    </div>
+
+            <div id="taskbar">
+                <div class="start-button" onclick="toggleStartMenu()">
+                    <span style="background:#00d2ff; color:black; padding: 0 4px; font-size:11px; box-shadow: 0 0 5px #fff;">LK</span>
+                    <span style="margin-left: 3px;">Пуск</span>
                 </div>
-                <div class="start-menu-item" onclick="openWindow('ie-win')">e Enternet Explorer</div>
-                <div class="start-menu-item" onclick="openWindow('reg-win')">▤ Registry Editor</div>
-                <div class="start-menu-item" onclick="openWindow('cmd-win')">_> Командная строка</div>
-                <div class="start-menu-item" onclick="openWindow('console-win')">⚡ Консоль LK</div>
-                <hr style="border-color: #808080;">
-                <div class="start-menu-item" onclick="location.reload()">🔄 Перезагрузка</div>
+                <div id="start-menu">
+                    <div class="start-menu-item">🎨 Цвет экрана
+                        <div class="submenu">
+                            <div class="submenu-item" onclick="changeBg('#008080')">■ Бирюзовый</div>
+                            <div class="submenu-item" onclick="changeBg('#0d4212')">■ Темно-зеленый</div>
+                            <div class="submenu-item" onclick="changeBg('#0a1b40')">■ Темно-синий</div>
+                            <div class="submenu-item" onclick="changeBg('#4a0505')">■ Темно-красный</div>
+                        </div>
+                    </div>
+                    <div class="start-menu-item" onclick="openWindow('ie-win')">e Enternet Explorer</div>
+                    <div class="start-menu-item" onclick="openWindow('reg-win')">▤ Registry Editor</div>
+                    <div class="start-menu-item" onclick="openWindow('cmd-win')">_> Командная строка</div>
+                    <div class="start-menu-item" onclick="openWindow('console-win')">⚡ Консоль LK</div>
+                    <hr style="border-color: #808080;">
+                    <div class="start-menu-item" onclick="location.reload()">🔄 Перезагрузка</div>
+                </div>
+                
+                <div class="system-tray">
+                    <div class="volume-control">
+                        <span>🔊 Звук:</span>
+                        <input type="range" class="volume-slider" id="click-volume" min="0" max="1" step="0.1" value="0.5" onchange="updateClickVolume(this.value)" oninput="updateClickVolume(this.value)">
+                    </div>
+                    <div id="clock">12:00</div>
+                </div>
             </div>
-            <div class="system-tray" id="clock">12:00</div>
         </div>
     </div>
 
@@ -528,38 +585,48 @@
         let isConsoleUnlocked = false;
         let isEndDownloaded = false; 
         let snakeTimer = null;
+        let clickVolume = 0.5; // Громкость клика мыши по умолчанию (50%)
 
-        // --- ДВИЖОК ЗВУКОВЫХ ЭФФЕКТОВ ---
-        // Глобальный слушатель левого клика мыши
-        document.addEventListener('click', function() {
+        // Функция изменения громкости по ползунку
+        function updateClickVolume(val) {
+            clickVolume = parseFloat(val);
+        }
+
+        // Воспроизведение звука при клике ЛКМ
+        document.addEventListener('click', function(e) {
+            // Исключаем вызов звука, если кликают по самому ползунку громкости, чтобы не забивать поток
+            if (e.target.id === 'click-volume') return;
+            
             const clickSound = document.getElementById('sound-click');
-            clickSound.currentTime = 0; // Сброс времени, чтобы воспроизводить при быстрых частых кликах
-            clickSound.play().catch(err => console.log("Аудио не проигралось из-за политик браузера. Требуется клик пользователя."));
+            if (clickSound) {
+                clickSound.volume = clickVolume;
+                clickSound.currentTime = 0;
+                clickSound.play().catch(err => console.log("Аудио контекст заблокирован браузером"));
+            }
         });
 
-        // Пул логируемых процессов (15 секунд загрузки)
         const bootProcesses = [
             { text: "> Поиск аппаратных компонентов LK_Systems...", time: 500 },
-            { text: "> Проверка CPU", time: 1200 },
-            { text: "> Выделение оперативной памяти: 16384MB OK.", time: 2000 },
-            { text: "> Загрузка модулей расширений", time: 3100 },
-            { text: "> Legion-king'sOS", time: 4000 },
-            { text: "> Подключение к локальным хранилищам данных...", time: 5200 },
-            { text: "> Проверка целостности секторов реестра...", time: 6500 },
-            { text: "> Чтение конфигурации HKEY_LOCAL_MACHINE\\SOFTWARE", time: 7300 },
-            { text: "> [СИСТЕМА]: Обнаружен заблокированный токен ConsoleAuth.", time: 8200 },
-            { text: "> Попытка авторизации в консоли сервера LK", time: 9400 },
-            { text: "> [console]: Код доступа частично поврежден. Пропуск...", time: 10800 },
-            { text: "> Инициализация графического интерфейса пользователя...", time: 12000 },
-            { text: "> Синхронизация с сервером автоматизации legion-kings.ru...", time: 13500 },
-            { text: "> Проверка сетевых интерфейсов... Соединение установлено.", time: 14400 },
-            { text: "> Запуск рабочего стола Legion-King'sOS...", time: 14900 }
+            { text: "> Проверка стабильности частоты процессора... OK", time: 1200 },
+            { text: "> Выделение памяти под ядро хостинга... 16384MB OK.", time: 2000 },
+            { text: "> Загрузка сетевых драйверов legion-kings.ru...", time: 3100 },
+            { text: "> [ВНИМАНИЕ]: Обнаружены аномальные пакеты данных из подсети END.", time: 4500 },
+            { text: "> Попытка изолировать поврежденный сектор памяти...", time: 5800 },
+            { text: "> Сбой изоляции. Чтение сигнатур уязвимостей Реестра...", time: 7000 },
+            { text: "> [СИСТЕМА]: Перехвачена лог-активность скрытой группы: END_CULT", time: 8500 },
+            { text: "> Защитный токен удаленного терминала перехвачен культистами.", time: 10000 },
+            { text: "> Попытка сборщика восстановить исходный интерфейс...", time: 11800 },
+            { text: "> Инициализация графической оболочки Legion-King'sOS...", time: 13200 },
+            { text: "> Подключение к главному терминалу завершено со сбоями.", time: 14500 },
+            { text: "> Добро пожаловать, администратор leo__king.", time: 14900 }
         ];
 
         function startBootSequence() {
-            // Воспроизведение звука запуска Windows 95
             const startupSound = document.getElementById('sound-startup');
-            startupSound.play().catch(err => console.log("Ошибка воспроизведения звука старта:", err));
+            if (startupSound) {
+                startupSound.volume = clickVolume;
+                startupSound.play().catch(err => console.log("Ошибка инициализации аудио"));
+            }
 
             document.getElementById('boot-screen').style.display = 'none';
             document.getElementById('loading-screen').style.display = 'block';
@@ -596,7 +663,10 @@
         function showDesktop() {
             document.getElementById('loading-screen').style.display = 'none';
             document.getElementById('desktop').style.display = 'flex';
+            
             setInterval(updateClock, 1000);
+            setInterval(updateCountdown, 1000); // Инициализация лорного таймера
+            updateCountdown(); 
             
             makeDraggable(document.getElementById('cmd-win'), document.querySelector('#cmd-win .window-header'));
             makeDraggable(document.getElementById('console-win'), document.querySelector('#console-win .window-header'));
@@ -611,6 +681,34 @@
             initIeNavigationLogic();
             startTpsMonitor();
             initMinesweeper(); 
+        }
+
+        // ФУНКЦИЯ ОБРАТНОГО ОТСЧЕТА ТАЙМЕРА ДО 27 ИЮНЯ 17:00
+        function updateCountdown() {
+            const targetDate = new Date('June 27, 2026 17:00:00').getTime();
+            const now = new Date().getTime();
+            const gap = targetDate - now;
+
+            if (gap <= 0) {
+                document.getElementById('countdown-timer-value').innerText = "00д. 00ч. 00м. 00с. [ЛЕГИОН СОКРУШЕН]";
+                return;
+            }
+
+            const second = 1000;
+            const minute = second * 60;
+            const hour = minute * 60;
+            const day = hour * 24;
+
+            const textDay = Math.floor(gap / day);
+            const textHour = Math.floor((gap % day) / hour);
+            const textMinute = Math.floor((gap % hour) / minute);
+            const textSecond = Math.floor((gap % minute) / second);
+
+            document.getElementById('countdown-timer-value').innerText = 
+                `${textDay.toString().padStart(2, '0')}д. ` +
+                `${textHour.toString().padStart(2, '0')}ч. ` +
+                `${textMinute.toString().padStart(2, '0')}м. ` +
+                `${textSecond.toString().padStart(2, '0')}с.`;
         }
 
         function openWindow(id) {
@@ -635,7 +733,7 @@
             if(key === 'consoleAuth') {
                 pane.innerHTML = `
                     <div class="reg-item"><b>Name:</b> TokenActivation<br><b>Type:</b> REG_SZ<br><b>Value:</b> unlock server consol [пароль]</div>
-                    <div class="reg-item"><b>Name:</b> CorePassword<br><b>Type:</b> REG_SZ<br><b>Value:</b> skibidi</div>
+                    <div class="reg-item"><b>Name:</b> Hint<br><b>Type:</b> REG_SZ<br><b>Value:</b> Ключ зашифрован сектантами в Hex. Переведите это: 45 4e 44 5f 43 55 4c 54 5f 50 41 53 53 5f 52 4f 54 34 37</div>
                 `;
             }
         }
@@ -677,10 +775,10 @@
 
                         ieBody.innerHTML = `
                             <div class="secret-site">
-                                <div class="secret-glitch">▲ СИСТЕМА ОБНАРУЖИЛА ИСКАЖЕНИЕ ИЗМЕРЕНИЯ ▲</div><br>
-                                <p style="color: #ffaa00;">[STATUS]: СВЯЗЬ С СЕРВЕРОМ СОРВАНА.</p>
-                                <p>Код ошибки: END_FALLEN_OS_2026</p><br><br>
-                                <p>> Лог Серафима: "На сервере появилось неизвестное существо. Если вы ничего не вносили - не запускайте сервер"</p><br>
+                                <div class="secret-glitch">▲ ОБНАРУЖЕНО ИСКАЖЕНИЕ ПРОСТРАНСТВА C-2026 ▲</div><br>
+                                <p style="color: #ffaa00;">[STATUS]: ИЗМЕРЕНИЕ КРАЯ ОТРЕЗАНО ОТ ОСНОВНОГО СЕРВЕРА.</p>
+                                <p>Код фатальной ошибки: END_FALLEN_OS_2026</p><br><br>
+                                <p>> Перехваченное сообщение секты: "Пароль h0st1ng подошел. Слияние миров почти завершено. Не дайте leo__king скачать резервную копию региона."</p><br>
                                 <p style="color: #00ff00;">Прогресс сжатия мира: [████████████░░░] 78%</p>
                             </div>
                         `;
@@ -877,8 +975,8 @@
         // --- МОНИТОРИНГ TPS ---
         function startTpsMonitor() {
             setInterval(() => {
-                const randomTps = (Math.random() * (19.99 - 19.80) + 19.80).toFixed(2);
-                document.getElementById('console-history').innerHTML += `\n[${new Date().toLocaleTimeString()}] [Server thread/INFO]: Current TPS = ${randomTps}.`;
+                const randomTps = (Math.random() * (19.95 - 19.10) + 19.10).toFixed(2);
+                document.getElementById('console-history').innerHTML += `\n[${new Date().toLocaleTimeString()}] [Server thread/INFO]: Current TPS = ${randomTps}. Мониторинг стабильности ядра.`;
                 if(!isConsoleUnlocked) {
                     const c = document.querySelector('#console-win .window-content-dark'); c.scrollTop = c.scrollHeight;
                 }
@@ -895,26 +993,28 @@
                     history.innerHTML += `\n\nLK:\\Users\\leo__king>${fullInput}`;
                     let lowerCmd = fullInput.toLowerCase().replace(/\s+/g, ' ');
                     
-                    if (lowerCmd === 'unlock server consol skibidi') {
+                    if (lowerCmd === 'unlock server consol h0st1ng') {
                         isConsoleUnlocked = true;
-                        history.innerHTML += `\n[УСПЕХ]: Консоль LK разблокирована.`;
+                        history.innerHTML += `\n[УСПЕХ]: Сессия авторизована. Консоль LK удаленного сервера разблокирована для ввода.`;
                         document.getElementById('console-input-row').style.display = 'flex';
                     } else if (lowerCmd.startsWith('unlock server consol')) {
-                        history.innerHTML += `\n[ОШИБКА]: Неверный авторизационный токен.`;
+                        history.innerHTML += `\n[ОШИБКА]: Неверный ключ авторизации. Доступ к legion-kings.ru заблокирован системой безопасности.`;
                     } else if (lowerCmd.startsWith('read node')) {
                         const nodeName = lowerCmd.substring(10).trim();
                         if (nodeName === 'todo') {
-                            history.innerHTML += `\n\n=== Содержимое узла TODO ===\n-Протестировать моды\n-Протестировать плагины\n-Сделать LK VIII по айпи legion-kings.ru\n-Исправить ошибки энда командой "download broken end" в консоли.`;
+                            history.innerHTML += `\n\n=== Содержимое узла TODO ===\n- Перенести структуру мира LK VIII на рабочий хостинг.\n- Исправить критические ошибки сжатия секторов.\n- Намек от Культа: Переведите Hex из папки Реестра ConsoleAuth. Пропустите перехваченную строку через ROT-47.`;
+                        } else if (nodeName === 'cult') {
+                            history.innerHTML += `\n\n=== ПЕРЕХВАЧЕННЫЕ СИСТЕМНЫЕ ЛОГИ: END_CULT ===\n[СБОР ДАННЫХ]: Скрипт культа активен.\nВнутренний токен доступа к консоли хостинга (ROT-47):\n=> XCJ4L9S`;
                         } else if (nodeName === 'end') {
                             if (isEndDownloaded) {
-                                history.innerHTML += `\n\n=== Узел END успешно дешифрован ===\n[LINK]: https://willdieoc.github.io/LK-earth-crush/fallen-end.html`;
+                                history.innerHTML += `\n\n=== Узел END успешно дешифрован ===\n[LINK]: https://willdieoc.github.io/LK-earth-crush/fallen-end.html\n\nПерейдите по ссылке в браузере Enternet Explorer для оценки повреждений.`;
                             } else {
-                                history.innerHTML += `\n\n[КРИТИЧЕСКАЯ ОШИБКА]: Сбой доступа. Узел поврежден или не синхронизирован с сервером.\nВведите "download broken end" в Консоль LK для восстановления структуры данных.`;
+                                history.innerHTML += `\n\n[КРИТИЧЕСКАЯ ОШИБКА]: Доступ запрещен. Измерение стерто или заблокировано сектантами.\nИспользуйте Консоль LK сервера с командой "download broken end" для инъекции бэкапа.`;
                             }
                         } else if (nodeName === "") {
-                            history.innerHTML += `\nИспользование: read node [название_файла] (Доступные узлы: todo, end)`;
+                            history.innerHTML += `\nИспользование: read node [название_узла] (Доступные узлы: todo, cult, end)`;
                         } else {
-                            history.innerHTML += `\nОшибка: Узел "${nodeName}" не найден в системе.`;
+                            history.innerHTML += `\nОшибка: Узел "${nodeName}" не существует в реестре файловой системы.`;
                         }
                     } else if (lowerCmd === 'help') {
                         history.innerHTML += `\nДоступные команды:\n  help                          - Показать список команд\n  read node [название файла]     - Прочитать зашифрованный узел данных\n  clear                         - Очистить экран терминала\n  unlock server consol [пароль] - Авторизация консоли сервера`;
@@ -941,26 +1041,26 @@
                     history.innerHTML += `\n\nCONSOLES@LK_SERVER>${val}`;
                     
                     if(val.toLowerCase() === 'download broken end') {
-                        history.innerHTML += `\n[CONNECT]: Установка соединения к удаленному репозиторию энда...`;
+                        history.innerHTML += `\n[CONNECT]: Установка защищенного SSH-соединения с резервным хранилищем...`;
                         let p = 0;
                         input.disabled = true;
                         let dlInterval = setInterval(() => {
                             p += 25;
-                            history.innerHTML += `\n[DOWNLOAD]: Скачивание пакета 'broken_end_dimension.dat'... ${p}%`;
+                            history.innerHTML += `\n[DOWNLOAD]: Скачивание архива секторов 'broken_end_dimension.dat'... ${p}%`;
                             container.scrollTop = container.scrollHeight;
                             
                             if(p >= 100) {
                                 clearInterval(dlInterval);
                                 isEndDownloaded = true; 
-                                history.innerHTML += `\n[SUCCESS]: Инъекция кода завершена. Узел реестра 'end' синхронизирован.`;
-                                history.innerHTML += `\n[LK-end]: Измерение получило новые изменения. Для ознакомления используйте 'read node end' в командной строке вашей ОС.`;
+                                history.innerHTML += `\n[SUCCESS]: Загрузка завершена. Файлы региона принудительно инжектированы в корень сервера.`;
+                                history.innerHTML += `\n[LK-SYSTEM]: Структура Энда обновлена. Используйте 'read node end' в Командной строке для проверки стабильности линка.`;
                                 input.disabled = false;
                                 input.value = '';
                                 document.getElementById('virus-alert').style.display = 'flex';
                             }
                         }, 600);
                     } else if(val !== '') {
-                        history.innerHTML += `\n[ERROR]: Unknown command inside server thread.`;
+                        history.innerHTML += `\n[ERROR]: Ошибка выполнения потока. Команда не распознана системным планировщиком хостинга.`;
                     }
                     input.value = '';
                     container.scrollTop = container.scrollHeight;
@@ -973,7 +1073,7 @@
             let isDragging = false;
             let offsetX, offsetY;
             handle.addEventListener('mousedown', (e) => {
-                if(e.target.classList.contains('window-close') || e.target.closest('.ie-navbar') || e.target.closest('.ie-address-bar') || e.target.closest('.minesweeper-grid')) return;
+                if(e.target.classList.contains('window-close') || e.target.closest('.ie-navbar') || e.target.closest('.ie-address-bar') || e.target.closest('.minesweeper-grid') || e.target.id === 'click-volume') return;
                 isDragging = true;
                 document.querySelectorAll('.window, .sticker-note').forEach(el => el.style.zIndex = "5");
                 element.style.zIndex = "100";
