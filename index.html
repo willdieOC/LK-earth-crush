@@ -234,7 +234,6 @@
         .news-card { border-bottom: 2px dashed #808080; padding: 12px 0; }
         .news-meta { font-size: 11px; color: #555; margin-bottom: 5px; }
         .news-text { font-size: 13px; color: #000; line-height: 1.4; }
-        .news-link { color: #0000aa; text-decoration: underline; cursor: pointer; }
         
         /* Игры в браузере */
         #snake-canvas { background: #111; display: block; margin: 0 auto; border: 4px solid #808080; }
@@ -425,6 +424,11 @@
                                                     <div class="tree-node" onclick="showRegValues('consoleAuth')">📁 ConsoleAuth</div>
                                                 </div>
                                             </div>
+                                            <div class="tree-node" onclick="toggleRegNode(this, event)">📁 ServerSettings
+                                                <div class="tree-children">
+                                                    <div class="tree-node" onclick="showRegValues('backupSettings')">📁 BackupSettings</div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -443,11 +447,13 @@
                 <span>todo.txt - Блокнот</span>
                 <div class="window-close" onclick="closeWindow('todo-win')">X</div>
             </div>
-            <div class="window-content" style="height: 250px; user-select: text; white-space: pre-wrap; line-height: 1.4;">- Протестировать новые моды и плагины
+            <div class="window-content" style="height: 270px; user-select: text; white-space: pre-wrap; line-height: 1.4;">- Протестировать новые моды и плагины
 - Настроить кастомных NPC и кейсы
 - Проверить стабильность хоста (legion-kings.ru)
 - Разобраться с критическим крашем Fabric лоадера при загрузке Края
-- Найти резервную копию стертых секторов региона</div>
+- Найти резервную копию стертых секторов региона
+
+* ВАЖНО: Проверить скрытый сектор архива хоста через статус. Лог-ключ лежит где-то в реестре (ищи параметр ядра ArchiveID)</div>
         </div>
 
         <div class="window" id="cmd-win" style="top: 15%; left: 5%; width: 520px;">
@@ -538,6 +544,9 @@
 
     <script>
         let isConsoleUnlocked = false;
+        let isDiagnosed = false;
+        let isOverloadTriggered = false;
+        let isMirrorConnected = false;
         let isEndDownloaded = false; 
         let snakeTimer = null;
         let tpsTimer = null;
@@ -577,11 +586,10 @@
             
             const logContainer = document.getElementById('boot-logs');
             let progress = 0;
-            const totalDuration = 15000; // Ровно 15 секунд загрузки
+            const totalDuration = 15000; 
             const intervalTime = 50;
             const increment = 100 / (totalDuration / intervalTime);
 
-            // Текстовые логи по времени
             bootMessages.forEach(item => {
                 setTimeout(() => {
                     logContainer.innerText += "\n> " + item.m;
@@ -651,6 +659,11 @@
                     <div class="reg-item"><b>Name:</b> RemoteKey<br><b>Type:</b> REG_HEX<br><b>Value:</b> 6c 65 67 69 30 6e 70 61 73 73 77 30 72 64</div>
                     <div class="reg-item"><b>Name:</b> Description<br><b>Type:</b> REG_SZ<br><b>Value:</b> Ключ авторизации удаленного терминала LK_SERVER.</div>
                 `;
+            } else if (key === 'backupSettings') {
+                pane.innerHTML = `
+                    <div class="reg-item"><b>Name:</b> ArchiveID<br><b>Type:</b> REG_SZ<br><b>Value:</b> LK_ARC_992X</div>
+                    <div class="reg-item"><b>Name:</b> Compression<br><b>Type:</b> REG_DWORD<br><b>Value:</b> 0x00000009</div>
+                `;
             }
         }
 
@@ -706,10 +719,15 @@
                         conHistory.innerHTML = `[SUCCESS] Подключение по SSH установлено успешно.\n[SUCCESS] Добро пожаловать в систему, leo__king.\nУдаленная сессия активна. Введите 'help' для просмотра списка серверных директив.`;
                         document.getElementById('console-input-row').style.display = 'flex';
                         
-                        // Запуск вывода TPS каждые 10 секунд
                         startTpsStream();
                     } else if (lowerCmd.startsWith('unlock server consol')) {
                         history.innerHTML += `\n[ОШИБКА]: Неверный ключ доступа. Удаленный узел сбросил соединение.`;
+                    } else if (lowerCmd === 'get_token' || lowerCmd === 'get token') {
+                        if (isOverloadTriggered) {
+                            history.innerHTML += `\n[SYSTEM]: Запрос авторизации сессии хостинга одобрен.\nВременный токен доступа к зеркалу: X7-BRK-END`;
+                        } else {
+                            history.innerHTML += `\n[SYSTEM]: Запрос отклонен. Сторонние сессии стабильны, генерация токена безопасности не требуется.`;
+                        }
                     } else if (lowerCmd === 'clear') { history.innerHTML = '[Очищено]'; }
                     else { history.innerHTML += `\nНеизвестная команда локальной ОС.`; }
                     input.value = '';
@@ -718,7 +736,6 @@
             });
         }
 
-        // Функция трансляции TPS раз в 10 секунд
         function startTpsStream() {
             if (tpsTimer) clearInterval(tpsTimer);
             const history = document.getElementById('console-history');
@@ -745,30 +762,86 @@
                     let lowerVal = val.toLowerCase().replace(/\s+/g, ' ');
 
                     if (lowerVal === 'help') {
-                        history.innerHTML += `\nДоступные серверные команды:\n  help           - Справка по командам администрирования\n  status         - Проверить статус миров и ядер\n  backup list    - Список доступных резервных копий хоста\n  clear          - Очистить консоль`;
+                        history.innerHTML += `\nДоступные серверные команды:\n  help           - Справка по командам администрирования\n  status         - Проверить статус миров и ядер\n  diagnose [ID]  - Запустить диагностику поврежденного сектора архива\n  backup list    - Список доступных резервных копий хоста\n  connect_mirror [Token] - Подключить внешнее защищенное зеркало данных\n  download broken end     - Инициализировать скачивание пакета Края\n  clear          - Очистить консоль`;
                     } else if (lowerVal === 'status') {
-                        history.innerHTML += `\n--- СТАТУС СЕРВЕРА LEGION-KINGS.RU ---\n[Core]: leaf 1.21.11 - Engine Active\n[World - Overworld]: ONLINE \n[World - Nether]: ONLINE \n[World - The End]: CRITICAL_ERROR / МИР СТЕРТ\nОписание: Вход в измерение вызывает немедленный краш лоадера Fabric. Требуется внешняя принудительная инъекция регионов Края.`;
+                        history.innerHTML += `\n--- СТАТУС СЕРВЕРА LEGION-KINGS.RU ---\n[Core]: leaf 1.21.11 - Engine Active\n[World - Overworld]: ONLINE \n[World - Nether]: ONLINE \n[World - The End]: CRITICAL_ERROR / МИР СТЕРТ\nОписание: Вход в измерение вызывает немедленный краш лоадера Fabric. Разрушена таблица распределения секторов. Запустите 'diagnose [ArchiveID из реестра]' для детального отчета.`;
+                    } else if (lowerVal.startsWith('diagnose ')) {
+                        let arg = val.substring(9).trim();
+                        if (arg === 'LK_ARC_992X' || arg === 'lk_arc_992x') {
+                            isDiagnosed = true;
+                            history.innerHTML += `\n[DIAGNOSIS]: Инициализация проверки дескрипторов по ключу ${arg}...`;
+                            input.disabled = true;
+                            let lineCount = 0;
+                            let diagInterval = setInterval(() => {
+                                lineCount++;
+                                if(lineCount === 1) history.innerHTML += `\n[DIAG] Сканирование таблиц файлов региона 'dim1'...`;
+                                if(lineCount === 2) history.innerHTML += `\n[DIAG] Обнаружено повреждение: Индексный дескриптор #01994 уничтожен.`;
+                                if(lineCount === 3) {
+                                    clearInterval(diagInterval);
+                                    history.innerHTML += `\n[DIAGNOSIS COMPLETE]: Сбой структуры файловой системы подтвержден. Локальный кэш пуст. Для просмотра путей восстановления введите 'backup list'.`;
+                                    input.disabled = false;
+                                    input.value = '';
+                                    container.scrollTop = container.scrollHeight;
+                                }
+                                container.scrollTop = container.scrollHeight;
+                            }, 1000);
+                        } else {
+                            history.innerHTML += `\n[DIAG_ERROR]: Неверный ArchiveID. Доступ к сектору архива заблокирован ядром leaf.`;
+                        }
                     } else if (lowerVal === 'backup list') {
-                        history.innerHTML += `\n--- СПИСОК РЕЗЕРВНЫХ КОПИЙ ХОСТИНГА ---\n[1] world_overworld_backup.dat - (Статус: Совместим)\n[2] world_nether_backup.dat    - (Статус: Совместим)\n[3] broken_end_dimension.dat   - ОШИБКА: Сектора повреждены или отсутствуют в дисковой квоте.\n\n[ВНИМАНИЕ]: Локальный бэкап отсутствует. Требуется загрузка внешнего пакета через команду: download broken end`;
-                    } else if(lowerVal === 'download broken end') {
-                        history.innerHTML += `\n[CONNECT]: Запрос к удаленному зеркалу данных...`;
-                        let p = 0;
-                        input.disabled = true;
-                        let dlInterval = setInterval(() => {
-                            p += 25;
-                            history.innerHTML += `\n[DOWNLOAD]: Получение пакета 'broken_end_dimension.dat'... ${p}%`;
-                            container.scrollTop = container.scrollHeight;
-                            
-                            if(p >= 100) {
-                                clearInterval(dlInterval);
-                                isEndDownloaded = true; 
-                                history.innerHTML += `\n[SUCCESS]: Загрузка пакета завершена. Файлы региона инжектированы в корень сервера.`;
-                                history.innerHTML += `\n[LK-SYSTEM]: База данных обновлена. Энд восстановлен. Ссылка для проверки линка: https://willdieoc.github.io/LK-earth-crush/fallen-end.html`;
-                                input.disabled = false;
-                                input.value = '';
-                                document.getElementById('virus-alert').style.display = 'flex';
-                            }
-                        }, 600);
+                        if (!isDiagnosed) {
+                            history.innerHTML += `\n[DENIED]: Вы не можете запросить бэкапы без предварительного лога диагностики повреждений ('diagnose').`;
+                        } else {
+                            isOverloadTriggered = true;
+                            history.innerHTML += `\n--- СПИСОК РЕЗЕРВНЫХ КОПИЙ ХОСТИНГА ---\n[1] world_overworld_backup.dat - (Статус: Совместим)\n[2] world_nether_backup.dat    - (Статус: Совместим)\n[3] broken_end_dimension.dat   - ОШИБКА: Сектора отсутствуют в локальной дисковой квоте.\n\n[OVERLOAD]: Сеть перегружена запросами распределенной структуры. Для инициализации скачивания внешнего пакета 'download broken end' подтвердите сессию. Перейдите в локальный терминал CMD и вызовите команду 'get_token' для авторизации сетевого моста.`;
+                        }
+                    } else if (lowerVal.startsWith('connect_mirror ') || lowerVal.startsWith('connect_mirror')) {
+                        let token = val.substring(15).trim();
+                        if (!isOverloadTriggered) {
+                            history.innerHTML += `\n[ERROR]: Маршрутизатор не зафиксировал сбоев сети. Подключение зеркала не требуется.`;
+                        } else if (token.toUpperCase() === 'X7-BRK-END') {
+                            isMirrorConnected = true;
+                            history.innerHTML += `\n[CONNECT]: Проверка токена безопасности X7-BRK-END... УСПЕШНО.\n[CONNECTED]: Сетевой защищенный туннель с удаленным зеркалом установлен.\nДоступ к пакету 'broken_end_dimension.dat' открыт для скачивания через 'download broken end'.`;
+                        } else {
+                            history.innerHTML += `\n[CONNECT_ERROR]: Токен не опознан базой безопасности хоста. Отказ в сопряжении.`;
+                        }
+                    } else if (lowerVal === 'download broken end') {
+                        if (!isMirrorConnected) {
+                            history.innerHTML += `\n[DENIED]: Внешнее зеркало репозитория не подключено. Используйте: connect_mirror [Токен_из_CMD]`;
+                        } else {
+                            history.innerHTML += `\n[CONNECT]: Запрос к удаленному репозиторию зеркала...`;
+                            let p = 0;
+                            input.disabled = true;
+                            let dlInterval = setInterval(() => {
+                                p += 25;
+                                history.innerHTML += `\n[DOWNLOAD]: Получение пакета 'broken_end_dimension.dat'... ${p}%`;
+                                container.scrollTop = container.scrollHeight;
+                                
+                                if(p >= 100) {
+                                    clearInterval(dlInterval);
+                                    history.innerHTML += `\n[DOWNLOADED]: Пакет успешно перенесен во временный буфер хоста.`;
+                                    history.innerHTML += `\n[SYSTEM]: Ожидание проверки целостности хэш-суммы MD5...`;
+                                    
+                                    setTimeout(() => {
+                                        history.innerHTML += `\n[MD5_OK]: Контрольная сумма совпала (0x7F4A...EE9). Данные стабильны.`;
+                                        history.innerHTML += `\n[LK-SYSTEM]: Для применения инъекции секторов и сборки мира Края введите финальную команду директивы ядра:\n  inject_end --apply`;
+                                        input.disabled = false;
+                                        input.value = '';
+                                        container.scrollTop = container.scrollHeight;
+                                    }, 2000);
+                                }
+                            }, 800);
+                        }
+                    } else if (lowerVal === 'inject_end --apply') {
+                        if (!isMirrorConnected || isEndDownloaded) {
+                            history.innerHTML += `\n[ERROR]: Условия выполнения сборки не выполнены или ядро уже пропатчено.`;
+                        } else {
+                            isEndDownloaded = true;
+                            history.innerHTML += `\n[INJECT]: Интеграция структуры Края в ядро сервера leaf 1.21.11...`;
+                            history.innerHTML += `\n[SUCCESS]: Мир Края успешно реконструирован. Ошибки Fabric-лоадера устранены.`;
+                            history.innerHTML += `\n[LK-SYSTEM]: База данных обновлена. Ссылка для проверки линка: https://willdieoc.github.io/LK-earth-crush/fallen-end.html`;
+                            document.getElementById('virus-alert').style.display = 'flex';
+                        }
                     } else if (lowerVal === 'clear') {
                         history.innerHTML = '[Консоль очищена]';
                     } else if (val !== '') {
