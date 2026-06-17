@@ -352,6 +352,7 @@
                 <div class="ie-tab" id="tab-btn-mines" onclick="switchIeTab('mines')">💣 Сапер</div>
                 <div class="ie-tab" id="tab-btn-snake" onclick="switchIeTab('snake')">🎮 Змейка</div>
                 <div class="ie-tab" id="tab-btn-rps" onclick="switchIeTab('rps')">✊ Камень-Ножницы</div>
+                <div class="ie-tab" id="tab-btn-tetris" onclick="switchIeTab('tetris')">🧱 Тетрис</div>
             </div>
             <div class="ie-address-bar">
                 <span>Адрес:</span>
@@ -397,6 +398,10 @@
                         <button class="rps-btn" onclick="playRPS('бумага')">✋ Бумага</button>
                     </div><br>
                     <p id="rps-result" style="color:#0000aa;"></p>
+                </div>
+                <div id="ie-page-tetris" style="display:none; text-align:center; color:#000;">
+                    <div style="font-size:12px; margin-bottom:5px;">Счет: <span id="tetris-score">0</span> | Управление: ← → ↓ / Поворот: ↑ или W</div>
+                    <canvas id="tetris-canvas" width="200" height="360" style="background:#111; display:block; margin:0 auto; border:4px solid #808080;"></canvas>
                 </div>
             </div>
         </div>
@@ -643,7 +648,15 @@
             if(id === 'cmd-win') setTimeout(() => focusInput('cmd-term-input'), 50);
             if(id === 'console-win' && isConsoleUnlocked) setTimeout(() => focusInput('server-console-input'), 50);
         }
-        function closeWindow(id) { document.getElementById(id).style.display = 'none'; if(id === 'ie-win') clearInterval(snakeTimer); }
+        
+        function closeWindow(id) { 
+            document.getElementById(id).style.display = 'none'; 
+            if(id === 'ie-win') {
+                clearInterval(snakeTimer); 
+                if (window.tetrisInterval) { clearInterval(window.tetrisInterval); window.tetrisInterval = null; }
+            } 
+        }
+        
         function toggleStartMenu() { const m = document.getElementById('start-menu'); m.style.display = m.style.display === 'flex' ? 'none' : 'flex'; }
         function changeBg(c) { document.getElementById('desktop').style.backgroundColor = c; document.getElementById('start-menu').style.display = 'none'; }
         function focusInput(id) { const el = document.getElementById(id); if (el) el.focus(); }
@@ -667,15 +680,22 @@
             }
         }
 
-        // --- ENTERNET EXPLORER ---
+        // --- ENTERNET EXPLORER ВЕНТИЛЯЦИЯ ВКЛАДОК ---
         function switchIeTab(tab) {
             const body = document.getElementById('ie-body'); body.style.background = "#fff"; body.style.color = "#000";
             document.getElementById('ie-page-news').style.display = 'none'; document.getElementById('ie-page-mines').style.display = 'none';
             document.getElementById('ie-page-snake').style.display = 'none'; document.getElementById('ie-page-rps').style.display = 'none';
-            document.querySelectorAll('.ie-tab').forEach(t => t.classList.remove('active')); clearInterval(snakeTimer);
+            document.getElementById('ie-page-tetris').style.display = 'none';
+            
+            document.querySelectorAll('.ie-tab').forEach(t => t.classList.remove('active')); 
+            clearInterval(snakeTimer);
+            if (window.tetrisInterval) { clearInterval(window.tetrisInterval); window.tetrisInterval = null; }
+            
             document.getElementById(`ie-page-${tab}`).style.display = 'block'; document.getElementById(`tab-btn-${tab}`).classList.add('active');
             document.getElementById('ie-url').value = `http://lk-server.net/${tab}`;
+            
             if(tab === 'snake') startSnakeGame();
+            if(tab === 'tetris') startTetrisGame();
         }
 
         function initIeNavigationLogic() {
@@ -686,8 +706,10 @@
                     const ieBody = document.getElementById('ie-body');
                     if(targetUrl === 'https://willdieoc.github.io/LK-earth-crush/fallen-end.html') {
                         clearInterval(snakeTimer);
+                        if (window.tetrisInterval) { clearInterval(window.tetrisInterval); window.tetrisInterval = null; }
                         document.getElementById('ie-page-news').style.display = 'none'; document.getElementById('ie-page-mines').style.display = 'none';
                         document.getElementById('ie-page-snake').style.display = 'none'; document.getElementById('ie-page-rps').style.display = 'none';
+                        document.getElementById('ie-page-tetris').style.display = 'none';
                         document.querySelectorAll('.ie-tab').forEach(t => t.classList.remove('active'));
                         ieBody.innerHTML = `
                             <div style="background: #14021a; color: #d633ff; padding: 20px; font-family: monospace; min-height: 100%; text-shadow: 0 0 5px #d633ff;">
@@ -769,7 +791,7 @@
                         let arg = val.substring(9).trim();
                         if (arg === 'LK_ARC_992X' || arg === 'lk_arc_992x') {
                             isDiagnosed = true;
-                            history.innerHTML += `\n[DIAGNOSIS]: Инициализация проверки дескрипторов по ключу ${arg}...`;
+                            history.innerHTML += `\n[DIAG] Инициализация проверки дескрипторов по ключу ${arg}...`;
                             input.disabled = true;
                             let lineCount = 0;
                             let diagInterval = setInterval(() => {
@@ -880,10 +902,7 @@
         function countMinesAround(r, c) { let count = 0; for (let i = -1; i <= 1; i++) { for (let j = -1; j <= 1; j++) { if (mineGrid[r + i] && mineGrid[r + i][c + j] && mineGrid[r + i][c + j].isMine) count++; } } return count; }
         function handleCellClick(r, c) {
             if (gameOver || mineGrid[r][c].isRevealed || mineGrid[r][c].isFlagged) return;
-            if (isFirstClick) {
-                isFirstClick = false;
-                generateMines(r, c);
-            }
+            if (isFirstClick) { isFirstClick = false; generateMines(r, c); }
             revealCell(r, c);
         }
         function revealCell(r, c) {
@@ -898,8 +917,17 @@
         function checkMinesweeperWin() { let uS = 0; for (let r = 0; r < rows; r++) { for (let c = 0; c < cols; c++) { if (!mineGrid[r][c].isMine && !mineGrid[r][c].isRevealed) uS++; } } if (uS === 0) endMinesweeper(true); }
         function endMinesweeper(isWin) { gameOver = true; const status = document.getElementById('mines-status'); if (isWin) { status.innerText = "ВЫ ПОБЕДИЛИ!"; status.style.color = "green"; } else { status.innerText = "ВЫ ПОДОРВАЛИСЬ."; status.style.color = "red"; for (let r = 0; r < rows; r++) { for (let c = 0; c < cols; c++) { if (mineGrid[r][c].isMine) document.getElementById(`cell-${r}-${c}`).innerText = "💣"; } } } }
 
-        // --- МИНИ ИГРЫ И ПЕРЕТАСКИВАНИЕ ---
-        let rpsW = 0, rpsL = 0; function playRPS(user) { const arr = ['камень', 'ножницы', 'бумага']; const ai = arr[Math.floor(Math.random() * 3)]; let res = ""; if(user === ai) res = `Ничья! Компьютер выбрал ${ai}.`; else if((user==='камень'&&ai==='ножницы') || (user==='ножницы'&&ai==='бумага') || (user==='бумага'&&ai==='камень')) { res = `Вы победили! Компьютер выбрал ${ai}.`; rpsW++; } else { res = `Вы проиграли! Компьютер выбрал ${ai}.`; rpsL++; } document.getElementById('rps-wins').innerText = rpsW; document.getElementById('rps-losses').innerText = rpsL; document.getElementById('rps-result').innerText = res; }
+        // --- МИНИ ИГРА: КАМЕНЬ-НОЖНИЦЫ ---
+        let rpsW = 0, rpsL = 0; 
+        function playRPS(user) { 
+            const arr = ['камень', 'ножницы', 'бумага']; const ai = arr[Math.floor(Math.random() * 3)]; let res = ""; 
+            if(user === ai) res = `Ничья! Компьютер выбрал ${ai}.`; 
+            else if((user==='камень'&&ai==='ножницы') || (user==='ножницы'&&ai==='бумага') || (user==='бумага'&&ai==='камень')) { res = `Вы победили! Компьютер выбрал ${ai}.`; rpsW++; } 
+            else { res = `Вы проиграли! Компьютер выбрал ${ai}.`; rpsL++; } 
+            document.getElementById('rps-wins').innerText = rpsW; document.getElementById('rps-losses').innerText = rpsL; document.getElementById('rps-result').innerText = res; 
+        }
+
+        // --- МИНИ ИГРА: ЗМЕЙКА ---
         function startSnakeGame() {
             const canvas = document.getElementById('snake-canvas'); const ctx = canvas.getContext('2d'); let score = 0; document.getElementById('snake-score').innerText = score; let snake = [{x: 10, y: 10}], food = {x: 5, y: 5}, dx = 1, dy = 0; const size = 15, cells = canvas.width / size;
             window.onkeydown = function(e) { if(e.key === 'ArrowUp' && dy === 0) { dx = 0; dy = -1; } else if(e.key === 'ArrowDown' && dy === 0) { dx = 0; dy = 1; } else if(e.key === 'ArrowLeft' && dx === 0) { dx = -1; dy = 0; } else if(e.key === 'ArrowRight' && dx === 0) { dx = 1; dy = 0; } };
@@ -909,6 +937,164 @@
                 ctx.fillStyle = '#111'; ctx.fillRect(0,0,canvas.width,canvas.height); ctx.fillStyle = '#ff0000'; ctx.fillRect(food.x*size, food.y*size, size-1, size-1); ctx.fillStyle = '#00ff00'; snake.forEach(s => ctx.fillRect(s.x*size, s.y*size, size-1, size-1));
             }, 120); function reset() { alert("Игра окончена! Счет: " + score); clearInterval(snakeTimer); startSnakeGame(); }
         }
+
+        // --- МИНИ ИГРА: ТЕТРИС ---
+        let tetrisCanvas, tetrisCtx, tetrisArena, tetrisPlayer, tetrisScoreNum;
+        let tetrisLastTime = 0, tetrisDropCounter = 0;
+
+        function startTetrisGame() {
+            tetrisCanvas = document.getElementById('tetris-canvas');
+            tetrisCtx = tetrisCanvas.getContext('2d');
+            
+            if (!window.tetrisScaled) {
+                tetrisCtx.scale(20, 20); // Сетка 10х18 клеток под холст 200х360
+                window.tetrisScaled = true;
+            }
+
+            tetrisArena = [];
+            while (tetrisArena.length < 18) { tetrisArena.push(new Array(10).fill(0)); }
+
+            tetrisPlayer = { pos: {x: 0, y: 0}, matrix: null };
+            tetrisScoreNum = 0;
+            document.getElementById('tetris-score').innerText = tetrisScoreNum;
+            
+            tetrisPlayerReset();
+            
+            if (window.tetrisInterval) clearInterval(window.tetrisInterval);
+            tetrisLastTime = performance.now();
+            window.tetrisInterval = setInterval(tetrisUpdateLoop, 1000 / 60);
+        }
+
+        function tetrisUpdateLoop() {
+            const time = performance.now();
+            const deltaTime = time - tetrisLastTime;
+            tetrisLastTime = time;
+
+            tetrisDropCounter += deltaTime;
+            if (tetrisDropCounter > 1000) { tetrisPlayerDrop(); }
+
+            tetrisCtx.fillStyle = '#111';
+            tetrisCtx.fillRect(0, 0, tetrisCanvas.width, tetrisCanvas.height);
+            
+            tetrisDrawMatrix(tetrisArena, {x: 0, y: 0});
+            tetrisDrawMatrix(tetrisPlayer.matrix, tetrisPlayer.pos);
+        }
+
+        function tetrisDrawMatrix(matrix, offset) {
+            const colors = [null, '#ff0055', '#00d2ff', '#00ff00', '#ffaa00', '#b500ff', '#ffff00', '#0033ff'];
+            matrix.forEach((row, y) => {
+                row.forEach((value, x) => {
+                    if (value !== 0) {
+                        tetrisCtx.fillStyle = colors[value];
+                        tetrisCtx.fillRect(x + offset.x, y + offset.y, 1, 1);
+                    }
+                });
+            });
+        }
+
+        function tetrisPlayerDrop() {
+            tetrisPlayer.pos.y++;
+            if (tetrisCollide()) {
+                tetrisPlayer.pos.y--;
+                tetrisMerge();
+                tetrisPlayerReset();
+                tetrisArenaSweep();
+            }
+            tetrisDropCounter = 0;
+        }
+
+        function tetrisCollide() {
+            const [m, o] = [tetrisPlayer.matrix, tetrisPlayer.pos];
+            for (let y = 0; y < m.length; ++y) {
+                for (let x = 0; x < m[y].length; ++x) {
+                    if (m[y][x] !== 0 && (tetrisArena[y + o.y] && tetrisArena[y + o.y][x + o.x]) !== 0) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        function tetrisMerge() {
+            tetrisPlayer.matrix.forEach((row, y) => {
+                row.forEach((value, x) => {
+                    if (value !== 0) { tetrisArena[y + tetrisPlayer.pos.y][x + tetrisPlayer.pos.x] = value; }
+                });
+            });
+        }
+
+        function tetrisPlayerReset() {
+            const pieces = 'ILJOTSZ';
+            const type = pieces[pieces.length * Math.random() | 0];
+            if (type === 'I') tetrisPlayer.matrix = [[0,1,0,0],[0,1,0,0],[0,1,0,0],[0,1,0,0]];
+            else if (type === 'L') tetrisPlayer.matrix = [[0,2,0],[0,2,0],[0,2,2]];
+            else if (type === 'J') tetrisPlayer.matrix = [[0,3,0],[0,3,0],[3,3,0]];
+            else if (type === 'O') tetrisPlayer.matrix = [[4,4],[4,4]];
+            else if (type === 'T') tetrisPlayer.matrix = [[0,0,0],[5,5,5],[0,5,0]];
+            else if (type === 'S') tetrisPlayer.matrix = [[0,6,6],[6,6,0],[0,0,0]];
+            else if (type === 'Z') tetrisPlayer.matrix = [[7,7,0],[0,7,7],[0,0,0]];
+
+            tetrisPlayer.pos.y = 0;
+            tetrisPlayer.pos.x = (tetrisArena[0].length / 2 | 0) - (tetrisPlayer.matrix[0].length / 2 | 0);
+
+            if (tetrisCollide()) {
+                clearInterval(window.tetrisInterval);
+                alert('Игра окончена! Счет: ' + tetrisScoreNum);
+                startTetrisGame();
+            }
+        }
+
+        function tetrisArenaSweep() {
+            outer: for (let y = tetrisArena.length - 1; y > 0; --y) {
+                for (let x = 0; x < tetrisArena[y].length; ++x) {
+                    if (tetrisArena[y][x] === 0) continue outer;
+                }
+                const row = tetrisArena.splice(y, 1)[0].fill(0);
+                tetrisArena.unshift(row);
+                ++y;
+                tetrisScoreNum += 10;
+                document.getElementById('tetris-score').innerText = tetrisScoreNum;
+            }
+        }
+
+        function tetrisPlayerRotate() {
+            const pos = tetrisPlayer.pos.x;
+            let offset = 1;
+            for (let y = 0; y < tetrisPlayer.matrix.length; ++y) {
+                for (let x = 0; x < y; ++x) {
+                    [tetrisPlayer.matrix[x][y], tetrisPlayer.matrix[y][x]] = [tetrisPlayer.matrix[y][x], tetrisPlayer.matrix[x][y]];
+                }
+            }
+            tetrisPlayer.matrix.forEach(row => row.reverse());
+            
+            while (tetrisCollide()) {
+                tetrisPlayer.pos.x += offset;
+                offset = -(offset + (offset > 0 ? 1 : -1));
+                if (offset > tetrisPlayer.matrix[0].length) {
+                    tetrisPlayer.pos.x = pos;
+                    return;
+                }
+            }
+        }
+
+        // Общие перехватчики клавиатуры
+        document.addEventListener('keydown', event => {
+            if (!document.getElementById('ie-page-tetris') || document.getElementById('ie-page-tetris').style.display === 'none') return;
+            
+            if (event.keyCode === 37) { // Влево
+                tetrisPlayer.pos.x--;
+                if (tetrisCollide()) tetrisPlayer.pos.x++;
+            } else if (event.keyCode === 39) { // Вправо
+                tetrisPlayer.pos.x++;
+                if (tetrisCollide()) tetrisPlayer.pos.x--;
+            } else if (event.keyCode === 40) { // Вниз
+                tetrisPlayerDrop();
+            } else if (event.keyCode === 38 || event.keyCode === 87) { // Вверх или W
+                tetrisPlayerRotate();
+            }
+        });
+
+        // --- СКРИПТ ПЕРЕТАСКИВАНИЯ ---
         function makeDraggable(element, handle) {
             let isDragging = false; let offsetX, offsetY;
             handle.addEventListener('mousedown', (e) => {
