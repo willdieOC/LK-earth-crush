@@ -272,6 +272,7 @@
         }
         .anon-msg { margin-bottom: 12px; }
         .anon-author-system { color: #ff3333; }
+        .anon-author-file { color: #00d2ff; font-weight: bold; }
         .anon-author-unknown { color: #d633ff; text-shadow: 0 0 3px #d633ff; }
         
         /* Игры в браузере */
@@ -405,7 +406,7 @@
                     </div>
                     <div class="news-card">
                         <div class="news-meta">Источник: <b>Система Безопасности LK</b></div>
-                        <div class="news-text">Обнаружена критическая ошибка в структуре игрового мира (The End). Измерение полностью недоступно. Последний стабильный лог указывает на повреждение файлов секторов. Попытки зайти вызывают ошибку загрузчика Fabric.</div>
+                        <div class="news-text">Обнаружена критическая ошибка в структуру игрового мира (The End). Измерение полностью недоступно. Последний стабильный лог указывает на повреждение файлов секторов. Попытки зайти вызывают ошибку загрузчика Fabric.</div>
                     </div>
                 </div>
 
@@ -725,22 +726,22 @@
             const chat = document.getElementById('anon-chat-messages');
             
             setTimeout(() => {
-                chat.innerHTML += `<div class="anon-msg"><span class="anon-author-unknown">Неизвестный:</span> Я видел, что ты пытаешься привязать теневое зеркало к серверу. Ты ищешь бэкап Края (dim1)?</div>`;
+                chat.innerHTML += `<div class="anon-msg"><span class="anon-author-unknown">Неизвестный:</span> Я видел, что ты пытаешься привязать теневое зеркало к серверу. Ты ищешь бэкап Края (dim1)? Локальные файлы стёрты Легионом. Но я знаю, как решить проблему.</div>`;
                 chat.scrollTop = chat.scrollHeight;
             }, 1000);
 
             setTimeout(() => {
-                chat.innerHTML += `<div class="anon-msg"><span class="anon-author-unknown">Неизвестный:</span> Локальные файлы стёрты Легионом. Но я знаю, как решить эту проблему. У меня есть чистый, стабильный слепок Края.</div>`;
+                chat.innerHTML += `<div class="anon-msg"><span class="anon-author-file">[ОТПРАВКА ФАЙЛА]:</span> <span style="text-decoration: underline; color:#00ff00;">broken_end_dimension.dat</span> (14.2 MB)<br><span class="anon-author-system">[СИСТЕМА]: Пакет данных успешно передан и находится в буфере сетевого туннеля хоста.</span></div>`;
                 chat.scrollTop = chat.scrollHeight;
             }, 3500);
 
             setTimeout(() => {
-                chat.innerHTML += `<div class="anon-msg"><span class="anon-author-unknown">Неизвестный:</span> Токен, который ты запросил (X7-BRK-END), теперь ведёт на мой защищенный архив Края. Возвращайся в консоль сервера, инициализируй скачивание бэкапа и проведи инъекцию. Это исправит все ошибки Fabric лоадера раз и навсегда. Доверься мне.</div>`;
+                chat.innerHTML += `<div class="anon-msg"><span class="anon-author-unknown">Неизвестный:</span> Токен, который ты запросил (X7-BRK-END), открыл шлюз. Мой файл стабилен. <br>Чтобы выгрузить его непосредственно на сервер, сейчас зайди в консоль сервера и пропиши команду <span style="color:#ffff00; text-shadow: 0 0 3px #ffff00;">download broken end</span>. Это исправит все ошибки лоадера раз и навсегда. Доверься мне.</div>`;
                 chat.scrollTop = chat.scrollHeight;
             }, 6500);
         }
 
-        // --- ЛОГИКА ИСПРАВЛЕННОГО САПЕРА ---
+        // --- ЛОГИКА САПЕРА (С ИСПРАВЛЕНИЕМ ОТКРЫТИЯ ПОЛЕЙ) ---
         let mineGrid = []; const rows = 8, cols = 8;
         function initMinesweeper() {
             const gridContainer = document.getElementById('mines-grid'); gridContainer.innerHTML = "";
@@ -757,7 +758,7 @@
                     gridContainer.appendChild(cellEl);
                 } 
             }
-            // Подсчет мин вокруг каждого секатора
+            // Подсчет мин вокруг секторов
             for(let r=0; r<rows; r++) {
                 for(let c=0; c<cols; c++) {
                     if(!mineGrid[r][c].isMine) {
@@ -774,7 +775,9 @@
         }
 
         function revealMineCell(r, c) {
-            if (!mineGrid[r] || !mineGrid[r][c] || mineGrid[r][c].revealed) return;
+            // Защита границ массива и проверка, открыта ли клетка
+            if (r < 0 || r >= rows || c < 0 || c >= cols || mineGrid[r][c].revealed) return;
+            
             const cellEl = document.getElementById(`cell-${r}-${c}`);
             mineGrid[r][c].revealed = true;
             cellEl.classList.add('revealed');
@@ -787,22 +790,23 @@
             } else {
                 if (mineGrid[r][c].count > 0) {
                     cellEl.innerText = mineGrid[r][c].count;
-                    // Кастомный цвет текста для цифр
                     if(mineGrid[r][c].count === 1) cellEl.style.color = 'blue';
                     else if(mineGrid[r][c].count === 2) cellEl.style.color = 'green';
                     else cellEl.style.color = 'red';
                 } else {
-                    // Рекурсивное открытие пустых клеток
-                    for(let i=-1; i<=1; i++) {
-                        for(let j=-1; j<=1; j++) {
-                            revealMineCell(r+i, c+j);
+                    // ЕСЛИ КЛЕТКА ПУСТАЯ (0 мин вокруг) — раскрываем лавиной соседние клетки
+                    for(let i = -1; i <= 1; i++) {
+                        for(let j = -1; j <= 1; j++) {
+                            if(i !== 0 || j !== 0) {
+                                revealMineCell(r + i, c + j);
+                            }
                         }
                     }
                 }
             }
         }
 
-        // --- ЛОГИКА ИСПРАВЛЕННОЙ ЗМЕЙКИ ---
+        // --- ЛОГИКА ЗМЕЙКИ ---
         function initSnake() {
             const canvas = document.getElementById('snake-canvas');
             snakeCtx = canvas.getContext('2d');
@@ -825,7 +829,6 @@
         function updateSnake() {
             let head = {x: snake[0].x + snakeDir.x, y: snake[0].y + snakeDir.y};
             
-            // Проверка на столкновение со стенами или хвостом
             if (head.x < 0 || head.x >= 20 || head.y < 0 || head.y >= 20 || snake.some(seg => seg.x === head.x && seg.y === head.y)) {
                 clearInterval(snakeTimer);
                 alert("Змейка разбилась! Игра перезапущена.");
@@ -843,7 +846,6 @@
                 snake.pop();
             }
 
-            // Рендеринг сцены
             snakeCtx.fillStyle = '#111';
             snakeCtx.fillRect(0, 0, 240, 240);
 
@@ -854,7 +856,7 @@
             snake.forEach(seg => snakeCtx.fillRect(seg.x * snakeBoxSize, seg.y * snakeBoxSize, snakeBoxSize, snakeBoxSize));
         }
 
-        // --- ЛОГИКА ВОЗВРАЩЕННОГО ТЕТРИСА ---
+        // --- ЛОГИКА ТЕТРИСА ---
         function initTetris() {
             const canvas = document.getElementById('tetris-canvas');
             tetrisCtx = canvas.getContext('2d');
@@ -948,33 +950,6 @@
 
         function updateTetris() {
             tetrisDrop();
-            // Отрисовка
-            tetrisCtx.fillStyle = '#111';
-            tetrisCtx.fillRect(0, 0, 160, 320);
-
-            // Отрисовка упавших блоков
-            tetrisMatrix.forEach((row, y) => {
-                row.forEach((value, x) => {
-                    if (value !== 0) {
-                        tetrisCtx.fillStyle = '#00a2ff';
-                        tetrisCtx.fillRect(x * 16, y * 16, 15, 15);
-                    }
-                });
-            });
-
-            // Отрисовка летящей фигуры
-            tetrisPlayer.matrix.forEach((row, y) => {
-                row.forEach((value, x) => {
-                    if (value !== 0) {
-                        tetrisCtx.fillStyle = '#ffaa00';
-                        tetrisCtx.fillRect((x + tetrisPlayer.pos.x) * 16, (y + tetrisPlayer.pos.y) * 16, 15, 15);
-                    }
-                });
-            });
-        }
-
-        function updateTetris() {
-            tetrisDrop();
             drawTetrisScene();
         }
 
@@ -1005,14 +980,12 @@
 
         function setupGameKeyboards() {
             document.addEventListener('keydown', function(e) {
-                // Управление Змейкой
                 if(document.getElementById('ie-page-snake').style.display === 'block') {
                     if (e.key === 'ArrowUp' && snakeDir.y === 0) { snakeDir = {x: 0, y: -1}; e.preventDefault(); }
                     else if (e.key === 'ArrowDown' && snakeDir.y === 0) { snakeDir = {x: 0, y: 1}; e.preventDefault(); }
                     else if (e.key === 'ArrowLeft' && snakeDir.x === 0) { snakeDir = {x: -1, y: 0}; e.preventDefault(); }
                     else if (e.key === 'ArrowRight' && snakeDir.x === 0) { snakeDir = {x: 1, y: 0}; e.preventDefault(); }
                 }
-                // Управление Тетрисом
                 if(document.getElementById('ie-page-tetris').style.display === 'block') {
                     if (e.key === 'ArrowLeft' || e.key.toLowerCase() === 'a') { tetrisPlayer.pos.x--; if (tetrisCollide()) tetrisPlayer.pos.x++; drawTetrisScene(); }
                     else if (e.key === 'ArrowRight' || e.key.toLowerCase() === 'd') { tetrisPlayer.pos.x++; if (tetrisCollide()) tetrisPlayer.pos.x--; drawTetrisScene(); }
@@ -1050,7 +1023,7 @@
             });
         }
 
-        // --- ЛОГИКА КОНСОЛИ СЕРВЕРА ---
+        // --- ЛОГИКА КОНСОЛИ СЕРВЕРА (ОБНОВЛЕННАЯ СЕКРЕТНАЯ КОМАНДА) ---
         function initConsoleLogic() {
             const input = document.getElementById('server-console-input');
             const history = document.getElementById('console-history');
@@ -1062,8 +1035,9 @@
                     history.innerHTML += `\n\nCONSOLES@LK_SERVER>${val}`;
                     let lowerVal = val.toLowerCase().replace(/\s+/g, ' ');
 
+                    // Команда download broken end СТЕРТА ИЗ HELP! Игрок узнает её только из чата с анонимом
                     if (lowerVal === 'help') {
-                        history.innerHTML += `\nДоступные команды:\n  status         - Проверить статус миров\n  diagnose [ID]  - Запустить диагностику архива\n  backup list    - Список резервных копий\n  connect_mirror [Token] - Подключить зеркало данных\n  download broken end     - Скачать пакет Края`;
+                        history.innerHTML += `\nДоступные команды:\n  status         - Проверить статус миров\n  diagnose [ID]  - Запустить диагностику архива\n  backup list    - Список резервных копий\n  connect_mirror [Token] - Подключить зеркало данных`;
                     } else if (lowerVal === 'status') {
                         if(isRatActivated) {
                             history.innerHTML += `\n[CRITICAL] СУЩЕСТВО ИМЕЕТ ПОЛНЫЙ ДОСТУП К КОРНЮ ЯДРА.\n[World - Overworld]: ЛАГИ ГЕНЕРАЦИИ / НЕИЗВЕСТНЫЕ СУЩЕСТВА\n[World - The End]: ЗАРАЖЕНО РАТНИКОМ / ПОСТОЯННОЕ УДАЛЕНИЕ ЧАНКОВ`;
@@ -1086,21 +1060,21 @@
                         let token = val.substring(15).trim();
                         if (token.toUpperCase() === 'X7-BRK-END') {
                             isMirrorConnected = true;
-                            history.innerHTML += `\n[CONNECT]: ...УСПЕШНО.\n[CONNECTED]: Установлен шифрованный туннель связи.\nПакет данных Края открыт для скачивания ('download broken end').`;
+                            history.innerHTML += `\n[CONNECT]: ...УСПЕШНО.\n[CONNECTED]: Установлен шифрованный туннель связи.\nОжидание дальнейших сетевых инструкций...`;
                             triggerUnknownMessage();
                         } else { history.innerHTML += `\n[CONNECT_ERROR]: Токен отклонен.`; }
                     } else if (lowerVal === 'download broken end') {
-                        if (!isMirrorConnected) { history.innerHTML += `\n[DENIED]: Соединение с зеркалом не установлено.`; }
+                        if (!isMirrorConnected) { history.innerHTML += `\n[DENIED]: Соединение с зеркалом не установлено или пакет не буферизирован в сети.`; }
                         else {
                             input.disabled = true;
                             let p = 0;
                             let dlInterval = setInterval(() => {
                                 p += 50;
-                                history.innerHTML += `\n[DOWNLOAD] Скачивание 'broken_end_dimension.dat'... ${p}%`;
+                                history.innerHTML += `\n[DOWNLOAD] Скачивание пакета 'broken_end_dimension.dat'... ${p}%`;
                                 container.scrollTop = container.scrollHeight;
                                 if(p >= 100) {
                                     clearInterval(dlInterval);
-                                    history.innerHTML += `\n[DOWNLOADED] Пакет загружен. Введите команду для инъекции:\n  inject_end --apply`;
+                                    history.innerHTML += `\n[DOWNLOADED] Пакет загружен из буфера сети. Введите команду для инъекции:\n  inject_end --apply`;
                                     input.disabled = false; input.value = '';
                                     container.scrollTop = container.scrollHeight;
                                 }
@@ -1112,7 +1086,7 @@
                             isEndDownloaded = true;
                             document.getElementById('virus-alert').style.display = 'flex';
                         }
-                    } else { history.innerHTML += `\n[ERROR]: Неизвестная директива.`; }
+                    } else { history.innerHTML += `\n[ERROR]: Неизвестная директива или синтаксическая ошибка.`; }
                     input.value = '';
                     container.scrollTop = container.scrollHeight;
                 }
