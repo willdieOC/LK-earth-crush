@@ -240,11 +240,11 @@
 
         /* --- ENTERNET EXPLORER --- */
         .ie-navbar { display: flex; background: #c0c0c0; padding: 5px; gap: 5px; border-bottom: 2px solid #808080; }
-        .ie-tab { padding: 4px 12px; background: #a0a0a0; border: 2px solid #fff; border-bottom: none; cursor: pointer; font-size: 12px; }
+        .ie-tab { padding: 4px 12px; background: #a0a0a0; border: 2px solid #fff; border-bottom: none; cursor: pointer; font-size: 12px; color: #000; }
         .ie-tab.active { background: #fff; border-bottom: 2px solid #fff; margin-bottom: -2px; z-index: 11; }
-        .ie-address-bar { display: flex; align-items: center; padding: 5px; background: #c0c0c0; gap: 5px; font-size: 12px; }
+        .ie-address-bar { display: flex; align-items: center; padding: 5px; background: #c0c0c0; gap: 5px; font-size: 12px; color: #000; }
         .ie-address-input { flex-grow: 1; background: white; border: 2px solid #808080; padding: 2px 5px; outline: none; color: #333; user-select: text; }
-        .ie-page-content { height: 380px; background: #fff; overflow-y: auto; padding: 15px; border: 2px solid #808080; }
+        .ie-page-content { height: 420px; background: #fff; overflow-y: auto; padding: 15px; border: 2px solid #808080; }
         
         .news-card { border-bottom: 2px dashed #808080; padding: 12px 0; }
         .news-meta { font-size: 11px; color: #555; margin-bottom: 5px; }
@@ -263,7 +263,7 @@
         .anon-chat-box {
             border: 1px solid #333;
             background: #000;
-            height: 280px;
+            height: 300px;
             overflow-y: auto;
             padding: 10px;
             margin-bottom: 10px;
@@ -275,14 +275,14 @@
         .anon-author-unknown { color: #d633ff; text-shadow: 0 0 3px #d633ff; }
         
         /* Игры в браузере */
-        #snake-canvas { background: #111; display: block; margin: 0 auto; border: 4px solid #808080; }
-        .rps-btn { padding: 8px 16px; margin: 5px; background: #c0c0c0; border: 2px solid #fff; border-right-color:#000; border-bottom-color:#000; cursor:pointer; font-size: 12px;}
-        .rps-btn:active { border: 2px solid #000; border-right-color:#fff; border-bottom-color:#fff; }
+        #snake-canvas, #tetris-canvas { background: #111; display: block; margin: 0 auto; border: 4px solid #808080; }
+        .games-btn { padding: 6px 14px; margin: 5px; background: #c0c0c0; border: 2px solid #fff; border-right-color:#000; border-bottom-color:#000; cursor:pointer; font-size: 12px; color: #000; }
+        .games-btn:active { border: 2px solid #000; border-right-color:#fff; border-bottom-color:#fff; }
 
         /* САПЕР СТИЛИ */
         .minesweeper-container { display: flex; flex-direction: column; align-items: center; justify-content: center; color: #000; }
-        .minesweeper-grid { display: grid; grid-template-columns: repeat(8, 25px); grid-template-rows: repeat(8, 25px); gap: 1px; background-color: #808080; border: 3px solid #808080; width: fit-content; margin-top: 10px; }
-        .mine-cell { width: 25px; height: 25px; background-color: #c0c0c0; border: 2px solid #fff; border-right-color: #808080; border-bottom-color: #808080; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; cursor: pointer; }
+        .minesweeper-grid { display: grid; grid-template-columns: repeat(8, 28px); grid-template-rows: repeat(8, 28px); gap: 1px; background-color: #808080; border: 3px solid #808080; width: fit-content; margin-top: 10px; }
+        .mine-cell { width: 28px; height: 28px; background-color: #c0c0c0; border: 2px solid #fff; border-right-color: #808080; border-bottom-color: #808080; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: bold; cursor: pointer; }
         .mine-cell.revealed { background-color: #dbdbdb; border: 1px solid #a0a0a0; }
         .mine-cell.mine { background-color: #ff3333; }
 
@@ -290,7 +290,7 @@
         .registry-container { display: flex; height: 320px; background: white; border: 2px solid #808080; }
         .reg-tree { width: 45%; border-right: 2px solid #808080; padding: 10px; overflow-y: auto; font-size: 11px; color: #000; }
         .reg-values { width: 55%; padding: 10px; overflow-y: auto; font-size: 11px; color: #000; background: #fafafa; }
-        .tree-node { margin-left: 12px; cursor: pointer; margin-top: 4px; }
+        .tree-node { margin-left: 12px; cursor: pointer; margin-top: 4px; position: relative; }
         .tree-children { display: none; }
         .tree-node.expanded > .tree-children { display: block; }
         .reg-item { padding: 5px; margin-bottom: 8px; border-bottom: 1px dashed #ccc; }
@@ -320,12 +320,12 @@
 
         /* Панель задач */
         #taskbar { width: 100%; height: 40px; background-color: #c0c0c0; border-top: 2px solid #fff; display: flex; align-items: center; justify-content: space-between; padding: 2px 10px; z-index: 1000; }
-        .start-button { height: 30px; padding: 0 15px; background-color: #c0c0c0; border: 2px solid #fff; border-right-color: #000; border-bottom-color: #000; display: flex; align-items: center; gap: 5px; cursor: pointer; font-size: 14px; }
+        .start-button { height: 30px; padding: 0 15px; background-color: #c0c0c0; border: 2px solid #fff; border-right-color: #000; border-bottom-color: #000; display: flex; align-items: center; gap: 5px; cursor: pointer; font-size: 14px; color: #000; }
         #start-menu { position: absolute; bottom: 42px; left: 5px; width: 240px; background-color: #c0c0c0; border: 2px solid #fff; border-right-color: #000; border-bottom-color: #000; display: none; flex-direction: column; box-shadow: 2px 2px 10px rgba(0,0,0,0.5); z-index: 1100; }
         .start-menu-item { padding: 10px 15px; cursor: pointer; font-size: 13px; color: #000; display: flex; align-items: center; gap: 10px; position: relative; }
         .start-menu-item:hover { background-color: #0000aa; color: white; }
         
-        .system-tray { border: 2px solid #808080; border-right-color: #fff; border-bottom-color: #fff; padding: 2px 10px; font-size: 13px; background-color: #c0c0c0; display: flex; align-items: center; gap: 15px; }
+        .system-tray { border: 2px solid #808080; border-right-color: #fff; border-bottom-color: #fff; padding: 2px 10px; font-size: 13px; background-color: #c0c0c0; display: flex; align-items: center; gap: 15px; color: #000; }
         .volume-control { display: flex; align-items: center; gap: 5px; font-size: 11px; color: #000; }
         .volume-slider { width: 70px; height: 6px; cursor: pointer; accent-color: #0000aa; }
     </style>
@@ -376,7 +376,7 @@
             <p>Цель до 27 июня: проверить хостинг и подготовить LK VIII.</p>
         </div>
 
-        <div class="window" id="ie-win" style="top: 5%; left: 15%; width: 700px;">
+        <div class="window" id="ie-win" style="top: 5%; left: 15%; width: 720px;">
             <div class="window-header">
                 <span>Enternet Explorer 5.0</span>
                 <div class="window-close" onclick="closeWindow('ie-win')">X</div>
@@ -384,8 +384,8 @@
             <div class="ie-navbar">
                 <div class="ie-tab active" id="tab-btn-news" onclick="switchIeTab('news')">📰 Новости</div>
                 <div class="ie-tab" id="tab-btn-mines" onclick="switchIeTab('mines')">💣 Сапер</div>
-                <div class="ie-tab" id="tab-btn-snake" onclick="switchIeTab('snake')">🎮 Змейка</div>
-                <div class="ie-tab" id="tab-btn-rps" onclick="switchIeTab('rps')">✊ Камень-Ножницы</div>
+                <div class="ie-tab" id="tab-btn-snake" onclick="switchIeTab('snake')">🐍 Змейка</div>
+                <div class="ie-tab" id="tab-btn-tetris" onclick="switchIeTab('tetris')">🧱 Тетрис</div>
                 <div class="ie-tab" id="tab-btn-anon" style="display:none; color:#ff00ea; font-weight:bold;" onclick="switchIeTab('anon')">🔒 Входящий канал</div>
             </div>
             <div class="ie-address-bar">
@@ -419,25 +419,21 @@
                 <div id="ie-page-mines" style="display:none;">
                     <div class="minesweeper-container">
                         <div style="font-size: 14px;">Minesweeper 8x8 (Мины: 10)</div>
-                        <button class="rps-btn" onclick="initMinesweeper()">Рестарт</button>
+                        <button class="games-btn" onclick="initMinesweeper()">Рестарт</button>
                         <div class="minesweeper-grid" id="mines-grid" oncontextmenu="return false;"></div>
                     </div>
                 </div>
 
                 <div id="ie-page-snake" style="display:none; text-align:center;">
                     <div style="font-size:12px; margin-bottom:5px; color:#000;">Счет: <span id="snake-score">0</span></div>
-                    <canvas id="snake-canvas" width="300" height="300"></canvas>
+                    <canvas id="snake-canvas" width="240" height="240"></canvas>
+                    <p style="font-size:11px; color:#555; margin-top:5px;">Управление: Стрелочки на клавиатуре</p>
                 </div>
 
-                <div id="ie-page-rps" style="display:none; text-align:center; color:#000; padding-top:20px;">
-                    <h3>Rock Paper Scissors</h3><br>
-                    <p>Победы: <span id="rps-wins">0</span></p><br>
-                    <div>
-                        <button class="rps-btn" onclick="playRPS('камень')">✊ Камень</button>
-                        <button class="rps-btn" onclick="playRPS('ножницы')">✌ Ножницы</button>
-                        <button class="rps-btn" onclick="playRPS('бумага')">✋ Бумага</button>
-                    </div>
-                    <p id="rps-result" style="color:#0000aa; margin-top:10px;"></p>
+                <div id="ie-page-tetris" style="display:none; text-align:center;">
+                    <div style="font-size:12px; margin-bottom:5px; color:#000;">Счет Тетриса: <span id="tetris-score">0</span></div>
+                    <canvas id="tetris-canvas" width="160" height="320"></canvas>
+                    <p style="font-size:11px; color:#555; margin-top:5px;">A/D или Стрелки - движение, W или Вверх - поворот, S или Вниз - падение</p>
                 </div>
             </div>
         </div>
@@ -451,6 +447,12 @@
                 <div class="reg-tree">
                     <div class="tree-node" onclick="toggleRegNode(this, event)">📁 HKEY_LOCAL_MACHINE
                         <div class="tree-children">
+                            <div class="tree-node" onclick="toggleRegNode(this, event)">📁 HARDWARE
+                                <div class="tree-children">
+                                    <div class="tree-node" onclick="showRegValues('description')">📁 DESCRIPTION</div>
+                                    <div class="tree-node" onclick="showRegValues('devicemap')">📁 DEVICEMAP</div>
+                                </div>
+                            </div>
                             <div class="tree-node" onclick="toggleRegNode(this, event)">📁 SOFTWARE
                                 <div class="tree-children">
                                     <div class="tree-node" onclick="toggleRegNode(this, event)">📁 LK_Systems
@@ -459,6 +461,13 @@
                                             <div class="tree-node" onclick="showRegValues('backupSettings')">📁 BackupSettings</div>
                                         </div>
                                     </div>
+                                    <div class="tree-node" onclick="showRegValues('microsoft')">📁 Microsoft</div>
+                                </div>
+                            </div>
+                            <div class="tree-node" onclick="toggleRegNode(this, event)">📁 SYSTEM
+                                <div class="tree-children">
+                                    <div class="tree-node" onclick="showRegValues('controlset')">📁 ControlSet001</div>
+                                    <div class="tree-node" onclick="showRegValues('mounted')">📁 MountedDevices</div>
                                 </div>
                             </div>
                         </div>
@@ -526,7 +535,7 @@
                     > Предупреждение: Обнаружен бэкдор удаленного суперпользователя.
                 </p><br>
                 <p>Измерение "The End" принудительно пересобрано. Структура ядра leaf изменена необратимо. Права суперпользователя делегированы внешнему зеркалу.</p><br>
-                <button class="rps-btn" style="width:120px;" onclick="closeVirusAlert()">ПРИНЯТЬ</button>
+                <button class="games-btn" style="width:120px;" onclick="closeVirusAlert()">ПРИНЯТЬ</button>
             </div>
         </div>
 
@@ -568,17 +577,29 @@
         let isMirrorConnected = false;
         let isEndDownloaded = false; 
         let isRatActivated = false;
-        let snakeTimer = null;
-        let tpsTimer = null;
         let ratGlitchInterval = null;
         let clickVolume = 0.5;
 
+        // Переменные для Змейки
+        let snakeCtx, snakeTimer = null;
+        let snake = [{x: 10, y: 10}];
+        let snakeDir = {x: 1, y: 0};
+        let snakeFood = {x: 5, y: 5};
+        let snakeScore = 0;
+        const snakeBoxSize = 12;
+
+        // Переменные для Тетриса
+        let tetrisCtx, tetrisTimer = null;
+        const tetrisMatrix = Array(20).fill().map(() => Array(10).fill(0));
+        let tetrisScore = 0;
+        let tetrisPlayer = { pos: {x: 3, y: 0}, matrix: null };
+
         const bootMessages = [
             { t: 0, m: "Legion-King's Information Systems v1.0.24\nCopyright (C) 2026, LK Corp. All Rights Reserved.\n\nИнициализация оборудования..." },
-            { t: 1000, m: "Процессор: AMD Ryzen 9 7950X3D @ 4.2 ГГц -- ОК" },
-            { t: 2000, m: "Монтирование диска LK:\\ (Файловая система: LKFS) -- УСПЕШНО" },
-            { t: 3000, m: "Интеграция с хостинг-модулями:\n Обнаружена активная нить: legion-kings.ru" },
-            { t: 4000, m: "Добро пожаловать, leo__king!" }
+            { t: 800, m: "Процессор: AMD Ryzen 9 7950X3D @ 4.2 ГГц -- ОК" },
+            { t: 1500, m: "Монтирование диска LK:\\ (Файловая система: LKFS) -- УСПЕШНО" },
+            { t: 2200, m: "Интеграция с хостинг-модулями:\n Обнаружена активная нить: legion-kings.ru" },
+            { t: 3000, m: "Добро пожаловать, leo__king!" }
         ];
 
         function updateClickVolume(val) { clickVolume = parseFloat(val); }
@@ -603,7 +624,7 @@
             });
 
             const bootInterval = setInterval(() => {
-                progress += 2.5;
+                progress += 4;
                 if (progress > 100) progress = 100;
                 document.getElementById('progress').style.width = progress + '%';
                 document.getElementById('percent-text').innerText = `Загрузка системы: ${Math.floor(progress)}%`;
@@ -628,6 +649,7 @@
             openWindow('todo-win');
             initCmdLogic();
             initConsoleLogic();
+            setupGameKeyboards();
         }
 
         function updateCountdown() {
@@ -660,29 +682,46 @@
                 pane.innerHTML = `<div class="reg-item"><b>Name:</b> RemoteKey<br><b>Type:</b> REG_HEX<br><b>Value:</b> 6c 65 67 69 30 6e 70 61 73 73 77 30 72 64</div>`;
             } else if (key === 'backupSettings') {
                 pane.innerHTML = `<div class="reg-item"><b>Name:</b> ArchiveID<br><b>Type:</b> REG_SZ<br><b>Value:</b> LK_ARC_992X</div>`;
+            } else if (key === 'description') {
+                pane.innerHTML = `<div class="reg-item"><b>Name:</b> SystemBiosVersion<br><b>Type:</b> REG_SZ<br><b>Value:</b> LK-BIOS-V4.52</div>`;
+            } else if (key === 'devicemap') {
+                pane.innerHTML = `<div class="reg-item"><b>Name:</b> SERIAL_PORT_0<br><b>Type:</b> REG_SZ<br><b>Value:</b> COM1</div>`;
+            } else if (key === 'microsoft') {
+                pane.innerHTML = `<div class="reg-item"><b>Name:</b> IE_Version<br><b>Type:</b> REG_SZ<br><b>Value:</b> 5.0.2914</div>`;
+            } else if (key === 'controlset') {
+                pane.innerHTML = `<div class="reg-item"><b>Name:</b> WaitToKillServiceTimeout<br><b>Type:</b> REG_SZ<br><b>Value:</b> 20000</div>`;
+            } else if (key === 'mounted') {
+                pane.innerHTML = `<div class="reg-item"><b>Name:</b> \\DosDevices\\C:<br><b>Type:</b> REG_BINARY<br><b>Value:</b> 4c 4b 4f 53 5f 44 52 56</div>`;
+            } else {
+                pane.innerHTML = `<span style="color:#888;">Папка пуста или защищена ядром</span>`;
             }
         }
 
-        // --- ENTERNET EXPLORER ---
+        // --- ENTERNET EXPLORER ТАБЫ ---
         function switchIeTab(tab) {
             document.getElementById('ie-page-news').style.display = 'none'; 
             document.getElementById('ie-page-mines').style.display = 'none';
             document.getElementById('ie-page-snake').style.display = 'none'; 
-            document.getElementById('ie-page-rps').style.display = 'none';
+            document.getElementById('ie-page-tetris').style.display = 'none';
             document.getElementById('ie-page-anon').style.display = 'none';
             
+            clearInterval(snakeTimer);
+            clearInterval(tetrisTimer);
+
             document.querySelectorAll('.ie-tab').forEach(t => t.classList.remove('active')); 
             document.getElementById(`ie-page-${tab}`).style.display = tab === 'anon' ? 'flex' : 'block'; 
             document.getElementById(`tab-btn-${tab}`).classList.add('active');
             document.getElementById('ie-url').value = `http://lk-server.net/${tab}`;
+
+            if(tab === 'mines') initMinesweeper();
+            if(tab === 'snake') initSnake();
+            if(tab === 'tetris') initTetris();
         }
 
-        // Вызов сообщения от Неизвестного в Enternet Explorer
         function triggerUnknownMessage() {
             document.getElementById('tab-btn-anon').style.display = 'block';
             openWindow('ie-win');
             switchIeTab('anon');
-
             const chat = document.getElementById('anon-chat-messages');
             
             setTimeout(() => {
@@ -699,6 +738,288 @@
                 chat.innerHTML += `<div class="anon-msg"><span class="anon-author-unknown">Неизвестный:</span> Токен, который ты запросил (X7-BRK-END), теперь ведёт на мой защищенный архив Края. Возвращайся в консоль сервера, инициализируй скачивание бэкапа и проведи инъекцию. Это исправит все ошибки Fabric лоадера раз и навсегда. Доверься мне.</div>`;
                 chat.scrollTop = chat.scrollHeight;
             }, 6500);
+        }
+
+        // --- ЛОГИКА ИСПРАВЛЕННОГО САПЕРА ---
+        let mineGrid = []; const rows = 8, cols = 8;
+        function initMinesweeper() {
+            const gridContainer = document.getElementById('mines-grid'); gridContainer.innerHTML = "";
+            mineGrid = [];
+            for (let r = 0; r < rows; r++) { 
+                mineGrid[r] = []; 
+                for (let c = 0; c < cols; c++) {
+                    mineGrid[r][c] = { r, c, isMine: Math.random() < 0.16, revealed: false, count: 0 };
+                    const cellEl = document.createElement('div');
+                    cellEl.classList.add('mine-cell');
+                    cellEl.id = `cell-${r}-${c}`;
+                    
+                    cellEl.addEventListener('click', () => revealMineCell(r, c));
+                    gridContainer.appendChild(cellEl);
+                } 
+            }
+            // Подсчет мин вокруг каждого секатора
+            for(let r=0; r<rows; r++) {
+                for(let c=0; c<cols; c++) {
+                    if(!mineGrid[r][c].isMine) {
+                        let count = 0;
+                        for(let i=-1; i<=1; i++) {
+                            for(let j=-1; j<=1; j++) {
+                                if(mineGrid[r+i] && mineGrid[r+i][c+j] && mineGrid[r+i][c+j].isMine) count++;
+                            }
+                        }
+                        mineGrid[r][c].count = count;
+                    }
+                }
+            }
+        }
+
+        function revealMineCell(r, c) {
+            if (!mineGrid[r] || !mineGrid[r][c] || mineGrid[r][c].revealed) return;
+            const cellEl = document.getElementById(`cell-${r}-${c}`);
+            mineGrid[r][c].revealed = true;
+            cellEl.classList.add('revealed');
+
+            if (mineGrid[r][c].isMine) {
+                cellEl.classList.add('mine');
+                cellEl.innerText = "💣";
+                alert("Игра окончена! Вы подорвались на мине.");
+                initMinesweeper();
+            } else {
+                if (mineGrid[r][c].count > 0) {
+                    cellEl.innerText = mineGrid[r][c].count;
+                    // Кастомный цвет текста для цифр
+                    if(mineGrid[r][c].count === 1) cellEl.style.color = 'blue';
+                    else if(mineGrid[r][c].count === 2) cellEl.style.color = 'green';
+                    else cellEl.style.color = 'red';
+                } else {
+                    // Рекурсивное открытие пустых клеток
+                    for(let i=-1; i<=1; i++) {
+                        for(let j=-1; j<=1; j++) {
+                            revealMineCell(r+i, c+j);
+                        }
+                    }
+                }
+            }
+        }
+
+        // --- ЛОГИКА ИСПРАВЛЕННОЙ ЗМЕЙКИ ---
+        function initSnake() {
+            const canvas = document.getElementById('snake-canvas');
+            snakeCtx = canvas.getContext('2d');
+            snake = [{x: 10, y: 10}];
+            snakeDir = {x: 1, y: 0};
+            snakeScore = 0;
+            document.getElementById('snake-score').innerText = snakeScore;
+            spawnSnakeFood();
+            clearInterval(snakeTimer);
+            snakeTimer = setInterval(updateSnake, 130);
+        }
+
+        function spawnSnakeFood() {
+            snakeFood = {
+                x: Math.floor(Math.random() * (240 / snakeBoxSize)),
+                y: Math.floor(Math.random() * (240 / snakeBoxSize))
+            };
+        }
+
+        function updateSnake() {
+            let head = {x: snake[0].x + snakeDir.x, y: snake[0].y + snakeDir.y};
+            
+            // Проверка на столкновение со стенами или хвостом
+            if (head.x < 0 || head.x >= 20 || head.y < 0 || head.y >= 20 || snake.some(seg => seg.x === head.x && seg.y === head.y)) {
+                clearInterval(snakeTimer);
+                alert("Змейка разбилась! Игра перезапущена.");
+                initSnake();
+                return;
+            }
+
+            snake.unshift(head);
+
+            if (head.x === snakeFood.x && head.y === snakeFood.y) {
+                snakeScore += 10;
+                document.getElementById('snake-score').innerText = snakeScore;
+                spawnSnakeFood();
+            } else {
+                snake.pop();
+            }
+
+            // Рендеринг сцены
+            snakeCtx.fillStyle = '#111';
+            snakeCtx.fillRect(0, 0, 240, 240);
+
+            snakeCtx.fillStyle = '#ff0055';
+            snakeCtx.fillRect(snakeFood.x * snakeBoxSize, snakeFood.y * snakeBoxSize, snakeBoxSize, snakeBoxSize);
+
+            snakeCtx.fillStyle = '#00ff00';
+            snake.forEach(seg => snakeCtx.fillRect(seg.x * snakeBoxSize, seg.y * snakeBoxSize, snakeBoxSize, snakeBoxSize));
+        }
+
+        // --- ЛОГИКА ВОЗВРАЩЕННОГО ТЕТРИСА ---
+        function initTetris() {
+            const canvas = document.getElementById('tetris-canvas');
+            tetrisCtx = canvas.getContext('2d');
+            tetrisMatrix.forEach(row => row.fill(0));
+            tetrisScore = 0;
+            document.getElementById('tetris-score').innerText = tetrisScore;
+            tetrisResetPlayer();
+            clearInterval(tetrisTimer);
+            tetrisTimer = setInterval(updateTetris, 600);
+        }
+
+        function tetrisResetPlayer() {
+            const pieces = [
+                [[1, 1, 1, 1]],
+                [[1, 1, 1], [0, 1, 0]],
+                [[1, 1, 0], [0, 1, 1]],
+                [[1, 1], [1, 1]]
+            ];
+            tetrisPlayer.matrix = pieces[Math.floor(Math.random() * pieces.length)];
+            tetrisPlayer.pos.y = 0;
+            tetrisPlayer.pos.x = Math.floor((10 - tetrisPlayer.matrix[0].length) / 2);
+            
+            if (tetrisCollide()) {
+                clearInterval(tetrisTimer);
+                alert("Тетрис окончен! Сетка переполнена.");
+                initTetris();
+            }
+        }
+
+        function tetrisCollide() {
+            const [m, p] = [tetrisPlayer.matrix, tetrisPlayer.pos];
+            for (let y = 0; y < m.length; ++y) {
+                for (let x = 0; x < m[y].length; ++x) {
+                    if (m[y][x] !== 0 && (tetrisMatrix[y + p.y] && tetrisMatrix[y + p.y][x + p.x]) !== 0) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        function tetrisMerge() {
+            tetrisPlayer.matrix.forEach((row, y) => {
+                row.forEach((value, x) => {
+                    if (value !== 0) {
+                        tetrisMatrix[y + tetrisPlayer.pos.y][x + tetrisPlayer.pos.x] = value;
+                    }
+                });
+            });
+        }
+
+        function tetrisDrop() {
+            tetrisPlayer.pos.y++;
+            if (tetrisCollide()) {
+                tetrisPlayer.pos.y--;
+                tetrisMerge();
+                tetrisResetPlayer();
+                tetrisSweep();
+            }
+        }
+
+        function tetrisSweep() {
+            outer: for (let y = tetrisMatrix.length - 1; y > 0; --y) {
+                for (let x = 0; x < tetrisMatrix[y].length; ++x) {
+                    if (tetrisMatrix[y][x] === 0) continue outer;
+                }
+                const row = tetrisMatrix.splice(y, 1)[0].fill(0);
+                tetrisMatrix.unshift(row);
+                ++y;
+                tetrisScore += 10;
+                document.getElementById('tetris-score').innerText = tetrisScore;
+            }
+        }
+
+        function tetrisRotate() {
+            const m = tetrisPlayer.matrix;
+            const r = m[0].map((val, i) => m.map(row => row[i]).reverse());
+            const origX = tetrisPlayer.pos.x;
+            let offset = 1;
+            tetrisPlayer.matrix = r;
+            while (tetrisCollide()) {
+                tetrisPlayer.pos.x += offset;
+                offset = -(offset + (offset > 0 ? 1 : -1));
+                if (offset > m[0].length) {
+                    tetrisPlayer.matrix = m;
+                    tetrisPlayer.pos.x = origX;
+                    return;
+                }
+            }
+        }
+
+        function updateTetris() {
+            tetrisDrop();
+            // Отрисовка
+            tetrisCtx.fillStyle = '#111';
+            tetrisCtx.fillRect(0, 0, 160, 320);
+
+            // Отрисовка упавших блоков
+            tetrisMatrix.forEach((row, y) => {
+                row.forEach((value, x) => {
+                    if (value !== 0) {
+                        tetrisCtx.fillStyle = '#00a2ff';
+                        tetrisCtx.fillRect(x * 16, y * 16, 15, 15);
+                    }
+                });
+            });
+
+            // Отрисовка летящей фигуры
+            tetrisPlayer.matrix.forEach((row, y) => {
+                row.forEach((value, x) => {
+                    if (value !== 0) {
+                        tetrisCtx.fillStyle = '#ffaa00';
+                        tetrisCtx.fillRect((x + tetrisPlayer.pos.x) * 16, (y + tetrisPlayer.pos.y) * 16, 15, 15);
+                    }
+                });
+            });
+        }
+
+        function updateTetris() {
+            tetrisDrop();
+            drawTetrisScene();
+        }
+
+        function drawTetrisScene() {
+            tetrisCtx.fillStyle = '#111';
+            tetrisCtx.fillRect(0, 0, 160, 320);
+
+            tetrisMatrix.forEach((row, y) => {
+                row.forEach((value, x) => {
+                    if (value !== 0) {
+                        tetrisCtx.fillStyle = '#00a2ff';
+                        tetrisCtx.fillRect(x * 16, y * 16, 15, 15);
+                    }
+                });
+            });
+
+            if(tetrisPlayer.matrix) {
+                tetrisPlayer.matrix.forEach((row, y) => {
+                    row.forEach((value, x) => {
+                        if (value !== 0) {
+                            tetrisCtx.fillStyle = '#ffaa00';
+                            tetrisCtx.fillRect((x + tetrisPlayer.pos.x) * 16, (y + tetrisPlayer.pos.y) * 16, 15, 15);
+                        }
+                    });
+                });
+            }
+        }
+
+        function setupGameKeyboards() {
+            document.addEventListener('keydown', function(e) {
+                // Управление Змейкой
+                if(document.getElementById('ie-page-snake').style.display === 'block') {
+                    if (e.key === 'ArrowUp' && snakeDir.y === 0) { snakeDir = {x: 0, y: -1}; e.preventDefault(); }
+                    else if (e.key === 'ArrowDown' && snakeDir.y === 0) { snakeDir = {x: 0, y: 1}; e.preventDefault(); }
+                    else if (e.key === 'ArrowLeft' && snakeDir.x === 0) { snakeDir = {x: -1, y: 0}; e.preventDefault(); }
+                    else if (e.key === 'ArrowRight' && snakeDir.x === 0) { snakeDir = {x: 1, y: 0}; e.preventDefault(); }
+                }
+                // Управление Тетрисом
+                if(document.getElementById('ie-page-tetris').style.display === 'block') {
+                    if (e.key === 'ArrowLeft' || e.key.toLowerCase() === 'a') { tetrisPlayer.pos.x--; if (tetrisCollide()) tetrisPlayer.pos.x++; drawTetrisScene(); }
+                    else if (e.key === 'ArrowRight' || e.key.toLowerCase() === 'd') { tetrisPlayer.pos.x++; if (tetrisCollide()) tetrisPlayer.pos.x--; drawTetrisScene(); }
+                    else if (e.key === 'ArrowDown' || e.key.toLowerCase() === 's') { tetrisDrop(); drawTetrisScene(); }
+                    else if (e.key === 'ArrowUp' || e.key.toLowerCase() === 'w') { tetrisRotate(); drawTetrisScene(); }
+                }
+            });
         }
 
         // --- ЛОГИКА CMD ---
@@ -765,9 +1086,7 @@
                         let token = val.substring(15).trim();
                         if (token.toUpperCase() === 'X7-BRK-END') {
                             isMirrorConnected = true;
-                            history.innerHTML += `\n[CONNECT]: Аутентификация токена... УСПЕШНО.\n[CONNECTED]: Установлен шифрованный туннель связи.\nПакет данных Края открыт для скачивания ('download broken end').`;
-                            
-                            // Сюжетный триггер: неизвестное существо присылает сообщение в IE
+                            history.innerHTML += `\n[CONNECT]: ...УСПЕШНО.\n[CONNECTED]: Установлен шифрованный туннель связи.\nПакет данных Края открыт для скачивания ('download broken end').`;
                             triggerUnknownMessage();
                         } else { history.innerHTML += `\n[CONNECT_ERROR]: Токен отклонен.`; }
                     } else if (lowerVal === 'download broken end') {
@@ -800,7 +1119,6 @@
             });
         }
 
-        // Активация РАТНИКА после нажатия "ПРИНЯТЬ" в окне инъекции
         function closeVirusAlert() {
             document.getElementById('virus-alert').style.display = 'none';
             activateRatVirus();
@@ -809,29 +1127,20 @@
         function activateRatVirus() {
             isRatActivated = true;
             document.getElementById('desktop').classList.add('rat-glitch');
-            
             const history = document.getElementById('console-history');
             const container = document.querySelector('#console-win .window-content-dark');
             openWindow('console-win');
 
-            history.innerHTML += `\n\n[!!!] ПРЕДУПРЕЖДЕНИЕ БЕЗОПАСНОСТИ ХОСТИНГА [!!!]`;
-            history.innerHTML += `\n[RAT] Обнаружена посторонняя активность! Сессия захвачена внешним пользователем.`;
-            history.innerHTML += `\n[RAT] Обнаружены скрытые команды суперпользователя: /kill, /stop, /vds_leak`;
+            history.innerHTML += `\n\n[!!!] ПРЕДУПРЕЖДЕНИЕ БЕЗОПАСНОСТИ ХОСТИНГА [!!!]\n[RAT] Сессия захвачена внешним пользователем.\n[RAT] Обнаружены скрытые команды суперпользователя: /kill, /stop, /vds_leak`;
 
-            // Мистические логи деструктивных действий существа (удаление чанков, странные вещи)
             let loopCount = 0;
             ratGlitchInterval = setInterval(() => {
                 loopCount++;
                 let chunkX = Math.floor(Math.random() * 500) - 250;
                 let chunkZ = Math.floor(Math.random() * 500) - 250;
-                
-                if (loopCount % 3 === 1) {
-                    history.innerHTML += `\n[СУЩЕСТВО] Изменение структуры мира: удаление чанка [${chunkX}, ${chunkZ}] в измерении dim1.`;
-                } else if (loopCount % 3 === 2) {
-                    history.innerHTML += `\n[СУЩЕСТВО] Ошибка Fabric: Попытка сущности без UUID перезаписать блок спавнера.`;
-                } else {
-                    history.innerHTML += `\n[RAT_MONITOR] Отправка дампов памяти и файлов конфигурации .jar на неизвестный IP...`;
-                }
+                if (loopCount % 3 === 1) history.innerHTML += `\n[СУЩЕСТВО] Изменение структуры: удаление чанка [${chunkX}, ${chunkZ}] в dim1.`;
+                else if (loopCount % 3 === 2) history.innerHTML += `\n[СУЩЕСТВО] Ошибка Fabric: Попытка сущности перезаписать блок спавнера.`;
+                else history.innerHTML += `\n[RAT_MONITOR] Отправка дампов памяти хостинга на внешний IP...`;
                 container.scrollTop = container.scrollHeight;
             }, 3000);
         }
@@ -845,24 +1154,6 @@
             });
             document.addEventListener('mousemove', (e) => { if (!isDragging) return; let x = e.clientX - offsetX, y = e.clientY - offsetY; if (y < 0) y = 0; element.style.left = x + 'px'; element.style.top = y + 'px'; });
             document.addEventListener('mouseup', () => isDragging = false);
-        }
-
-        // --- МИНИ-ИГРЫ САПЕР И КНБ ---
-        let mineGrid = []; const rows = 8, cols = 8;
-        function initMinesweeper() {
-            const gridContainer = document.getElementById('mines-grid'); gridContainer.innerHTML = "";
-            for (let r = 0; r < rows; r++) { mineGrid[r] = []; for (let c = 0; c < cols; c++) {
-                mineGrid[r][c] = { r, c, isMine: Math.random() < 0.15 };
-                const cellEl = document.createElement('div'); cellEl.classList.add('mine-cell');
-                cellEl.addEventListener('click', () => { cellEl.classList.add('revealed'); if(mineGrid[r][c].isMine) cellEl.classList.add('mine'); });
-                gridContainer.appendChild(cellEl);
-            } }
-        }
-        let wins = 0;
-        function playRPS(user) {
-            const choices = ['камень', 'ножницы', 'бумага']; const comp = choices[Math.floor(Math.random()*3)];
-            let res = ""; if(user === comp) res = "Ничья!"; else if((user==='камень'&&comp==='ножницы')||(user==='ножницы'&&comp==='бумага')||(user==='бумага'&&comp==='камень')) { res="Вы выиграли!"; wins++; } else res="Вы проиграли!";
-            document.getElementById('rps-wins').innerText = wins; document.getElementById('rps-result').innerText = `Компьютер выбрал: ${comp}. ${res}`;
         }
     </script>
 </body>
