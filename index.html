@@ -741,7 +741,7 @@
             }, 6500);
         }
 
-        // --- ЛОГИКА САПЕРА (С ИСПРАВЛЕНИЕМ ОТКРЫТИЯ ПОЛЕЙ) ---
+        // --- ЛОГИКА САПЕРА (ИСПРАВЛЕНО: КАСКАДНОЕ ОТКРЫТИЕ ПОЛЕЙ) ---
         let mineGrid = []; const rows = 8, cols = 8;
         function initMinesweeper() {
             const gridContainer = document.getElementById('mines-grid'); gridContainer.innerHTML = "";
@@ -749,7 +749,7 @@
             for (let r = 0; r < rows; r++) { 
                 mineGrid[r] = []; 
                 for (let c = 0; c < cols; c++) {
-                    mineGrid[r][c] = { r, c, isMine: Math.random() < 0.16, revealed: false, count: 0 };
+                    mineGrid[r][c] = { r, c, isMine: Math.random() < 0.15, revealed: false, count: 0 };
                     const cellEl = document.createElement('div');
                     cellEl.classList.add('mine-cell');
                     cellEl.id = `cell-${r}-${c}`;
@@ -775,8 +775,10 @@
         }
 
         function revealMineCell(r, c) {
-            // Защита границ массива и проверка, открыта ли клетка
-            if (r < 0 || r >= rows || c < 0 || c >= cols || mineGrid[r][c].revealed) return;
+            // Граничные проверки
+            if (r < 0 || r >= rows || c < 0 || c >= cols) return;
+            // Если уже открыта — пропускаем
+            if (mineGrid[r][c].revealed) return;
             
             const cellEl = document.getElementById(`cell-${r}-${c}`);
             mineGrid[r][c].revealed = true;
@@ -787,19 +789,20 @@
                 cellEl.innerText = "💣";
                 alert("Игра окончена! Вы подорвались на мине.");
                 initMinesweeper();
+                return;
+            } 
+
+            if (mineGrid[r][c].count > 0) {
+                cellEl.innerText = mineGrid[r][c].count;
+                if(mineGrid[r][c].count === 1) cellEl.style.color = 'blue';
+                else if(mineGrid[r][c].count === 2) cellEl.style.color = 'green';
+                else cellEl.style.color = 'red';
             } else {
-                if (mineGrid[r][c].count > 0) {
-                    cellEl.innerText = mineGrid[r][c].count;
-                    if(mineGrid[r][c].count === 1) cellEl.style.color = 'blue';
-                    else if(mineGrid[r][c].count === 2) cellEl.style.color = 'green';
-                    else cellEl.style.color = 'red';
-                } else {
-                    // ЕСЛИ КЛЕТКА ПУСТАЯ (0 мин вокруг) — раскрываем лавиной соседние клетки
-                    for(let i = -1; i <= 1; i++) {
-                        for(let j = -1; j <= 1; j++) {
-                            if(i !== 0 || j !== 0) {
-                                revealMineCell(r + i, c + j);
-                            }
+                // Если клетка нулевая, запускаем рекурсивный обход по всем направлениям (лавина)
+                for(let i = -1; i <= 1; i++) {
+                    for(let j = -1; j <= 1; j++) {
+                        if(i !== 0 || j !== 0) {
+                            revealMineCell(r + i, c + j);
                         }
                     }
                 }
@@ -1023,7 +1026,7 @@
             });
         }
 
-        // --- ЛОГИКА КОНСОЛИ СЕРВЕРА (ОБНОВЛЕННАЯ СЕКРЕТНАЯ КОМАНДА) ---
+        // --- ЛОГИКА КОНСОЛИ СЕРВЕРА ---
         function initConsoleLogic() {
             const input = document.getElementById('server-console-input');
             const history = document.getElementById('console-history');
@@ -1035,12 +1038,11 @@
                     history.innerHTML += `\n\nCONSOLES@LK_SERVER>${val}`;
                     let lowerVal = val.toLowerCase().replace(/\s+/g, ' ');
 
-                    // Команда download broken end СТЕРТА ИЗ HELP! Игрок узнает её только из чата с анонимом
                     if (lowerVal === 'help') {
                         history.innerHTML += `\nДоступные команды:\n  status         - Проверить статус миров\n  diagnose [ID]  - Запустить диагностику архива\n  backup list    - Список резервных копий\n  connect_mirror [Token] - Подключить зеркало данных`;
                     } else if (lowerVal === 'status') {
                         if(isRatActivated) {
-                            history.innerHTML += `\n[CRITICAL] СУЩЕСТВО ИМЕЕТ ПОЛНЫЙ ДОСТУП К КОРНЮ ЯДРА.\n[World - Overworld]: ЛАГИ ГЕНЕРАЦИИ / НЕИЗВЕСТНЫЕ СУЩЕСТВА\n[World - The End]: ЗАРАЖЕНО РАТНИКОМ / ПОСТОЯННОЕ УДАЛЕНИЕ ЧАНКОВ`;
+                            history.innerHTML += `\n[CRITICAL] СУЩЕСТВО ИМЕЕТ ПОЛНЫЙ ДОСТУП К КОРНЮ ЯДРА.\n[World - Overworld]: ЛАГИ ГЕНЕРАЦИИ\n[World - The End]: ЗАРАЖЕНО РАТНИКОМ / УДАЛЕНИЕ ЧАНКОВ`;
                         } else {
                             history.innerHTML += `\n[World - Overworld]: ONLINE \n[World - The End]: CRITICAL_ERROR / МИР СТЕРТ\nЗапустите 'diagnose [ArchiveID из реестра]' для отчета.`;
                         }
