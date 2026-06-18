@@ -22,6 +22,21 @@
             background-color: #000;
         }
 
+        /* Эффект тотального глитча при заражении Ратником */
+        .rat-glitch {
+            animation: screen-shake 0.15s infinite alternate, matrix-flash 4s infinite!important;
+        }
+
+        @keyframes screen-shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            100% { transform: translate(-1px, -1px) rotate(0.5deg); }
+        }
+        @keyframes matrix-flash {
+            0%, 95% { filter: hue-rotate(0deg) brightness(1); }
+            97% { filter: hue-rotate(180deg) brightness(1.5) invert(1); }
+            100% { filter: hue-rotate(0deg) brightness(1); }
+        }
+
         /* --- ЭКРАН 1: ЛОГОТИП СИСТЕМЫ --- */
         #boot-screen {
             position: fixed;
@@ -234,6 +249,30 @@
         .news-card { border-bottom: 2px dashed #808080; padding: 12px 0; }
         .news-meta { font-size: 11px; color: #555; margin-bottom: 5px; }
         .news-text { font-size: 13px; color: #000; line-height: 1.4; }
+
+        /* ЧАТ С НЕИЗВЕСТНЫМ */
+        #ie-page-anon {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+            background: #111;
+            color: #00ff00;
+            padding: 10px;
+            font-family: monospace;
+        }
+        .anon-chat-box {
+            border: 1px solid #333;
+            background: #000;
+            height: 280px;
+            overflow-y: auto;
+            padding: 10px;
+            margin-bottom: 10px;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+        .anon-msg { margin-bottom: 12px; }
+        .anon-author-system { color: #ff3333; }
+        .anon-author-unknown { color: #d633ff; text-shadow: 0 0 3px #d633ff; }
         
         /* Игры в браузере */
         #snake-canvas { background: #111; display: block; margin: 0 auto; border: 4px solid #808080; }
@@ -246,7 +285,6 @@
         .mine-cell { width: 25px; height: 25px; background-color: #c0c0c0; border: 2px solid #fff; border-right-color: #808080; border-bottom-color: #808080; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; cursor: pointer; }
         .mine-cell.revealed { background-color: #dbdbdb; border: 1px solid #a0a0a0; }
         .mine-cell.mine { background-color: #ff3333; }
-        .c-1 { color: blue; } .c-2 { color: green; } .c-3 { color: red; } .c-4 { color: darkblue; }
 
         /* РЕДАКТОР РЕЕСТРА */
         .registry-container { display: flex; height: 320px; background: white; border: 2px solid #808080; }
@@ -257,9 +295,9 @@
         .tree-node.expanded > .tree-children { display: block; }
         .reg-item { padding: 5px; margin-bottom: 8px; border-bottom: 1px dashed #ccc; }
 
-        /* Всплывающее окно */
+        /* Окно системной инъекции */
         #virus-alert {
-            position: fixed; top: 40%; left: 35%; width: 380px;
+            position: fixed; top: 30%; left: 30%; width: 420px;
             background: #c0c0c0; border: 2px solid #fff; border-right-color: #000; border-bottom-color: #000;
             box-shadow: 5px 5px 20px rgba(0,0,0,0.5); display: none; flex-direction: column; z-index: 10000;
         }
@@ -286,10 +324,6 @@
         #start-menu { position: absolute; bottom: 42px; left: 5px; width: 240px; background-color: #c0c0c0; border: 2px solid #fff; border-right-color: #000; border-bottom-color: #000; display: none; flex-direction: column; box-shadow: 2px 2px 10px rgba(0,0,0,0.5); z-index: 1100; }
         .start-menu-item { padding: 10px 15px; cursor: pointer; font-size: 13px; color: #000; display: flex; align-items: center; gap: 10px; position: relative; }
         .start-menu-item:hover { background-color: #0000aa; color: white; }
-        .submenu { position: absolute; left: 236px; bottom: 0; width: 160px; background-color: #c0c0c0; border: 2px solid #fff; border-right-color: #000; border-bottom-color: #000; display: none; flex-direction: column; box-shadow: 2px 2px 10px rgba(0,0,0,0.5); }
-        .start-menu-item:hover .submenu { display: flex; }
-        .submenu-item { padding: 8px 12px; color: #000; font-size: 12px; }
-        .submenu-item:hover { background-color: #0000aa; color: #fff; }
         
         .system-tray { border: 2px solid #808080; border-right-color: #fff; border-bottom-color: #fff; padding: 2px 10px; font-size: 13px; background-color: #c0c0c0; display: flex; align-items: center; gap: 15px; }
         .volume-control { display: flex; align-items: center; gap: 5px; font-size: 11px; color: #000; }
@@ -352,13 +386,14 @@
                 <div class="ie-tab" id="tab-btn-mines" onclick="switchIeTab('mines')">💣 Сапер</div>
                 <div class="ie-tab" id="tab-btn-snake" onclick="switchIeTab('snake')">🎮 Змейка</div>
                 <div class="ie-tab" id="tab-btn-rps" onclick="switchIeTab('rps')">✊ Камень-Ножницы</div>
-                <div class="ie-tab" id="tab-btn-tetris" onclick="switchIeTab('tetris')">🧱 Тетрис</div>
+                <div class="ie-tab" id="tab-btn-anon" style="display:none; color:#ff00ea; font-weight:bold;" onclick="switchIeTab('anon')">🔒 Входящий канал</div>
             </div>
             <div class="ie-address-bar">
                 <span>Адрес:</span>
                 <input type="text" class="ie-address-input" id="ie-url" value="http://lk-server.net/news" spellcheck="false">
             </div>
             <div class="ie-page-content" id="ie-body">
+                
                 <div id="ie-page-news">
                     <div class="news-card">
                         <div class="news-meta">Источник: <b>leo__king</b> | Дата: 16.06.2026</div>
@@ -366,42 +401,43 @@
                     </div>
                     <div class="news-card">
                         <div class="news-meta">Источник: <b>leo__king</b></div>
-                        <div class="news-text">Сегодня на спавне появился таймер до финального события, что это, пока что, никто не знает. Но оно определенно что то значит. Телеграм канал: t.me/boloto_leo_king</div>
-                    </div>
-                    <div class="news-card">
-                        <div class="news-meta">Источник: <b>poping_LK</b> | Время: 17:44, 15.06.26</div>
-                        <div class="news-text">Сегодня с игроком Ilovelvl произошло нечто страшное. По достоверным источникам, он сегодня очень хорошо поел гречневую кашу. Следим за развитием событий</div>
+                        <div class="news-text">Сегодня на спавне появился таймер до финального события... Телеграм канал: t.me/boloto_leo_king</div>
                     </div>
                     <div class="news-card">
                         <div class="news-meta">Источник: <b>Система Безопасности LK</b></div>
-                        <div class="news-text">Обнаружена критическая ошибка в структуру игрового мира (The End). Измерение полностью недоступно. Последний стабильный лог указывает на повреждение файлов секторов. Техническая служба хостинга пытается развернуть резервную копию. Попытки игроков зайти на сервер вызывают ошибку загрузчика Fabric.</div>
+                        <div class="news-text">Обнаружена критическая ошибка в структуре игрового мира (The End). Измерение полностью недоступно. Последний стабильный лог указывает на повреждение файлов секторов. Попытки зайти вызывают ошибку загрузчика Fabric.</div>
                     </div>
                 </div>
+
+                <div id="ie-page-anon">
+                    <div class="anon-chat-box" id="anon-chat-messages">
+                        <div class="anon-msg"><span class="anon-author-system">[СИСТЕМА]: Установлено принудительное туннелирование сессии со стороны теневого зеркала.</span></div>
+                    </div>
+                    <p style="font-size:11px; color:#666;">* Вы не можете отправлять сообщения в этот зашифрованный канал связи.</p>
+                </div>
+
                 <div id="ie-page-mines" style="display:none;">
                     <div class="minesweeper-container">
                         <div style="font-size: 14px;">Minesweeper 8x8 (Мины: 10)</div>
                         <button class="rps-btn" onclick="initMinesweeper()">Рестарт</button>
                         <div class="minesweeper-grid" id="mines-grid" oncontextmenu="return false;"></div>
-                        <div id="mines-status" style="margin-top: 5px; font-size:12px; color: blue;"></div>
                     </div>
                 </div>
+
                 <div id="ie-page-snake" style="display:none; text-align:center;">
-                    <div style="font-size:12px; margin-bottom:5px; color:#000;">Счет: <span id="snake-score">0</span> | Управление стрелочками</div>
+                    <div style="font-size:12px; margin-bottom:5px; color:#000;">Счет: <span id="snake-score">0</span></div>
                     <canvas id="snake-canvas" width="300" height="300"></canvas>
                 </div>
+
                 <div id="ie-page-rps" style="display:none; text-align:center; color:#000; padding-top:20px;">
-                    <h3>Mini-Game: Rock Paper Scissors</h3><br>
-                    <p>Победы: <span id="rps-wins">0</span> | Поражения: <span id="rps-losses">0</span></p><br>
+                    <h3>Rock Paper Scissors</h3><br>
+                    <p>Победы: <span id="rps-wins">0</span></p><br>
                     <div>
                         <button class="rps-btn" onclick="playRPS('камень')">✊ Камень</button>
                         <button class="rps-btn" onclick="playRPS('ножницы')">✌ Ножницы</button>
                         <button class="rps-btn" onclick="playRPS('бумага')">✋ Бумага</button>
-                    </div><br>
-                    <p id="rps-result" style="color:#0000aa;"></p>
-                </div>
-                <div id="ie-page-tetris" style="display:none; text-align:center; color:#000;">
-                    <div style="font-size:12px; margin-bottom:5px;">Счет: <span id="tetris-score">0</span> | Управление: ← → ↓ / Поворот: ↑ или W</div>
-                    <canvas id="tetris-canvas" width="200" height="360" style="background:#111; display:block; margin:0 auto; border:4px solid #808080;"></canvas>
+                    </div>
+                    <p id="rps-result" style="color:#0000aa; margin-top:10px;"></p>
                 </div>
             </div>
         </div>
@@ -413,27 +449,14 @@
             </div>
             <div class="registry-container">
                 <div class="reg-tree">
-                    <div class="tree-node" onclick="toggleRegNode(this, event)">📁 HKEY_CLASSES_ROOT</div>
-                    <div class="tree-node" onclick="toggleRegNode(this, event)">📁 HKEY_CURRENT_USER</div>
                     <div class="tree-node" onclick="toggleRegNode(this, event)">📁 HKEY_LOCAL_MACHINE
                         <div class="tree-children">
-                            <div class="tree-node" onclick="toggleRegNode(this, event)">📁 HARDWARE</div>
                             <div class="tree-node" onclick="toggleRegNode(this, event)">📁 SOFTWARE
                                 <div class="tree-children">
-                                    <div class="tree-node" onclick="toggleRegNode(this, event)">📁 Microsoft</div>
                                     <div class="tree-node" onclick="toggleRegNode(this, event)">📁 LK_Systems
                                         <div class="tree-children">
-                                            <div class="tree-node" onclick="toggleRegNode(this, event)">📁 Hardware</div>
-                                            <div class="tree-node" onclick="toggleRegNode(this, event)">📁 Processor
-                                                <div class="tree-children">
-                                                    <div class="tree-node" onclick="showRegValues('consoleAuth')">📁 ConsoleAuth</div>
-                                                </div>
-                                            </div>
-                                            <div class="tree-node" onclick="toggleRegNode(this, event)">📁 ServerSettings
-                                                <div class="tree-children">
-                                                    <div class="tree-node" onclick="showRegValues('backupSettings')">📁 BackupSettings</div>
-                                                </div>
-                                            </div>
+                                            <div class="tree-node" onclick="showRegValues('consoleAuth')">📁 ConsoleAuth</div>
+                                            <div class="tree-node" onclick="showRegValues('backupSettings')">📁 BackupSettings</div>
                                         </div>
                                     </div>
                                 </div>
@@ -442,7 +465,7 @@
                     </div>
                 </div>
                 <div class="reg-values" id="reg-values-pane">
-                    <span style="color:#888;">(Выберите конечную папку реестра)</span>
+                    <span style="color:#888;">(Выберите папку реестра)</span>
                 </div>
             </div>
         </div>
@@ -452,13 +475,12 @@
                 <span>todo.txt - Блокнот</span>
                 <div class="window-close" onclick="closeWindow('todo-win')">X</div>
             </div>
-            <div class="window-content" style="height: 270px; user-select: text; white-space: pre-wrap; line-height: 1.4;">- Протестировать новые моды и плагины
-- Настроить кастомных NPC и кейсы
+            <div class="window-content" style="height: 270px; user-select: text; white-space: pre-wrap; line-height: 1.4;">- Настроить кастомных NPC и кейсы
 - Проверить стабильность хоста (legion-kings.ru)
-- Разобраться с критическим крашем Fabric лоадера при загрузке Края
-- Найти резервную копию стертых секторов региона
+- Разобраться с крашем Fabric при загрузке Края
+- Найти резервную копию стертых секторов
 
-* ВАЖНО: Проверить скрытый сектор архива хоста через статус. Лог-ключ лежит где-то в реестре (ищи параметр ядра ArchiveID)</div>
+* ВАЖНО: Проверить скрытый сектор архива хоста. Лог-ключ лежит в реестре (ищи параметр ядра ArchiveID)</div>
         </div>
 
         <div class="window" id="cmd-win" style="top: 15%; left: 5%; width: 520px;">
@@ -468,9 +490,6 @@
             </div>
             <div class="window-content-dark" onclick="focusInput('cmd-term-input')">
                 <div id="cmd-history" class="cmd-output">Legion-King's OS [Version 1.0.24]
-(c) Корпорация LK, 2026.
-
-Запущен локальный терминал ядра.
 Для авторизации удаленного хоста используйте: unlock server consol [пароль]</div>
                 <div class="input-line">
                     <span class="prefix">LK:\Users\leo__king></span>
@@ -485,10 +504,8 @@
                 <div class="window-close" onclick="closeWindow('console-win')">X</div>
             </div>
             <div class="window-content-dark" onclick="focusInput('server-console-input')">
-                <div id="console-history" class="console-output">[INFO] Запуск удаленного мониторинга узла...
-[WARN] Сбой авторизации удаленного терминала. Порт закрыт.
-[WARN] Доступ ограничен. Авторизуйте сессию через локальный командный интерпретатор (CMD).
---------------------------------------------------</div>
+                <div id="console-history" class="console-output">[INFO] Запуск удаленного мониторинга...
+[WARN] Доступ ограничен. Авторизуйте сессию через локальный CMD.</div>
                 <div class="input-line" id="console-input-row" style="display: none; border-top: 1px dashed #ffaa00; padding-top: 5px;">
                     <span class="prefix" style="color: #ffaa00;">CONSOLES@LK_SERVER></span>
                     <input type="text" id="server-console-input" class="dark-input" autocomplete="off" spellcheck="false">
@@ -497,14 +514,19 @@
         </div>
 
         <div id="virus-alert">
-            <div class="window-header" style="background:linear-gradient(90deg, #aa0000, #ff3333)">
-                <span>⚠️ КРИТИЧЕСКАЯ ОШИБКА ЯДРА СЕРВЕРА</span>
-                <div class="window-close" onclick="document.getElementById('virus-alert').style.display='none'">X</div>
+            <div class="window-header" style="background:linear-gradient(90deg, #aa0000, #ff0055); color: white;">
+                <span>⚙️ КРИТИЧЕСКОЕ СЛИЯНИЕ РЕГИОНА — СИСТЕМНЫЙ СБОЙ ХОСТИНГА</span>
             </div>
             <div class="window-content" style="background:#fff; text-align:center; padding: 20px; color:#000;">
-                <p style="font-size:16px; color:#aa0000; margin-bottom:10px;">[ИНЪЕКЦИЯ РЕГИОНА УСПЕШНА]</p>
-                <p>Измерение END успешно интегрировано в файловую структуру игрового сервера. Ошибки Fabric-лоадера устранены.</p><br>
-                <button class="rps-btn" style="width:100px;" onclick="document.getElementById('virus-alert').style.display='none'">ПРИНЯТЬ</button>
+                <p style="font-size:15px; color:#ff0055; margin-bottom:10px;">[ВНИМАНИЕ: СЛИЯНИЕ ЗАВЕРШЕНО С ОШИБКАМИ]</p>
+                <p style="font-size:12px; text-align: left; background: #eee; padding: 8px; font-family: monospace; color: #333;">
+                    > Архивация патча: X7-BRK-END<br>
+                    > Замена дескрипторов региона dim1... УСПЕШНО<br>
+                    > Внедрение внешнего модуля управления... ГОТОВО<br>
+                    > Предупреждение: Обнаружен бэкдор удаленного суперпользователя.
+                </p><br>
+                <p>Измерение "The End" принудительно пересобрано. Структура ядра leaf изменена необратимо. Права суперпользователя делегированы внешнему зеркалу.</p><br>
+                <button class="rps-btn" style="width:120px;" onclick="closeVirusAlert()">ПРИНЯТЬ</button>
             </div>
         </div>
 
@@ -516,18 +538,10 @@
 
             <div id="taskbar">
                 <div class="start-button" onclick="toggleStartMenu()">
-                    <span style="background:#00d2ff; color:black; padding: 0 4px; font-size:11px; box-shadow: 0 0 5px #fff;">LK</span>
+                    <span style="background:#00d2ff; color:black; padding: 0 4px; font-size:11px;">LK</span>
                     <span style="margin-left: 3px;">Пуск</span>
                 </div>
                 <div id="start-menu">
-                    <div class="start-menu-item">🎨 Цвет экрана
-                        <div class="submenu">
-                            <div class="submenu-item" onclick="changeBg('#008080')">■ Бирюзовый</div>
-                            <div class="submenu-item" onclick="changeBg('#0d4212')">■ Темно-зеленый</div>
-                            <div class="submenu-item" onclick="changeBg('#0a1b40')">■ Темно-синий</div>
-                            <div class="submenu-item" onclick="changeBg('#4a0505')">■ Темно-красный</div>
-                        </div>
-                    </div>
                     <div class="start-menu-item" onclick="openWindow('ie-win')">e Enternet Explorer</div>
                     <div class="start-menu-item" onclick="openWindow('reg-win')">▤ Registry Editor</div>
                     <div class="start-menu-item" onclick="openWindow('cmd-win')">_> Командная строка</div>
@@ -553,22 +567,18 @@
         let isOverloadTriggered = false;
         let isMirrorConnected = false;
         let isEndDownloaded = false; 
+        let isRatActivated = false;
         let snakeTimer = null;
         let tpsTimer = null;
+        let ratGlitchInterval = null;
         let clickVolume = 0.5;
 
-        // Массив логов загрузки на 15 секунд
         const bootMessages = [
             { t: 0, m: "Legion-King's Information Systems v1.0.24\nCopyright (C) 2026, LK Corp. All Rights Reserved.\n\nИнициализация оборудования..." },
-            { t: 1500, m: "Процессор: AMD Ryzen 9 7950X3D @ 4.2 ГГц -- ОК\nОперативная память: 64 ГБ DDR5 ECC Registered -- ОК" },
-            { t: 3000, m: "Графический чипсет: LK-VGA Quantum Edition v2 -- ОК\nТестирование дисковых массивов (NVMe RAID 0)..." },
-            { t: 4500, m: "Монтирование диска LK:\\ (Файловая система: LKFS) -- УСПЕШНО" },
-            { t: 6000, m: "Загрузка подсистем операционной системы:\n Запуск планировщика процессов...\n Подключение библиотек ввода-вывода..." },
-            { t: 7500, m: "Поиск сетевых адаптеров...\n Узел локальной петли 127.0.0.1 -- Активен\n Открытие сетевых портов виртуализации..." },
-            { t: 9000, m: "Интеграция с хостинг-модулями:\n Обнаружена активная нить: legion-kings.ru" },
-            { t: 11000, m: "Загрузка виртуального окружения ядра..." },
-            { t: 13000, m: "Оболочка подготовлена. Запуск графического интерфейса пользователя..." },
-            { t: 14500, m: "Добро пожаловать, leo__king!" }
+            { t: 1000, m: "Процессор: AMD Ryzen 9 7950X3D @ 4.2 ГГц -- ОК" },
+            { t: 2000, m: "Монтирование диска LK:\\ (Файловая система: LKFS) -- УСПЕШНО" },
+            { t: 3000, m: "Интеграция с хостинг-модулями:\n Обнаружена активная нить: legion-kings.ru" },
+            { t: 4000, m: "Добро пожаловать, leo__king!" }
         ];
 
         function updateClickVolume(val) { clickVolume = parseFloat(val); }
@@ -576,11 +586,7 @@
         document.addEventListener('click', function(e) {
             if (e.target.id === 'click-volume') return;
             const clickSound = document.getElementById('sound-click');
-            if (clickSound) {
-                clickSound.volume = clickVolume;
-                clickSound.currentTime = 0;
-                clickSound.play().catch(() => {});
-            }
+            if (clickSound) { clickSound.volume = clickVolume; clickSound.currentTime = 0; clickSound.play().catch(() => {}); }
         });
 
         function startBootSequence() {
@@ -591,25 +597,18 @@
             
             const logContainer = document.getElementById('boot-logs');
             let progress = 0;
-            const totalDuration = 15000; 
-            const intervalTime = 50;
-            const increment = 100 / (totalDuration / intervalTime);
 
             bootMessages.forEach(item => {
-                setTimeout(() => {
-                    logContainer.innerText += "\n> " + item.m;
-                    logContainer.scrollTop = logContainer.scrollHeight;
-                }, item.t);
+                setTimeout(() => { logContainer.innerText += "\n> " + item.m; logContainer.scrollTop = logContainer.scrollHeight; }, item.t);
             });
 
             const bootInterval = setInterval(() => {
-                progress += increment;
+                progress += 2.5;
                 if (progress > 100) progress = 100;
                 document.getElementById('progress').style.width = progress + '%';
                 document.getElementById('percent-text').innerText = `Загрузка системы: ${Math.floor(progress)}%`;
-                
                 if (progress >= 100) { clearInterval(bootInterval); showDesktop(); }
-            }, intervalTime);
+            }, 100);
         }
 
         function showDesktop() {
@@ -629,8 +628,6 @@
             openWindow('todo-win');
             initCmdLogic();
             initConsoleLogic();
-            initIeNavigationLogic();
-            initMinesweeper(); 
         }
 
         function updateCountdown() {
@@ -649,16 +646,8 @@
             if(id === 'console-win' && isConsoleUnlocked) setTimeout(() => focusInput('server-console-input'), 50);
         }
         
-        function closeWindow(id) { 
-            document.getElementById(id).style.display = 'none'; 
-            if(id === 'ie-win') {
-                clearInterval(snakeTimer); 
-                if (window.tetrisInterval) { clearInterval(window.tetrisInterval); window.tetrisInterval = null; }
-            } 
-        }
-        
+        function closeWindow(id) { document.getElementById(id).style.display = 'none'; }
         function toggleStartMenu() { const m = document.getElementById('start-menu'); m.style.display = m.style.display === 'flex' ? 'none' : 'flex'; }
-        function changeBg(c) { document.getElementById('desktop').style.backgroundColor = c; document.getElementById('start-menu').style.display = 'none'; }
         function focusInput(id) { const el = document.getElementById(id); if (el) el.focus(); }
         function updateClock() { const n = new Date(); document.getElementById('clock').innerText = `${n.getHours().toString().padStart(2, '0')}:${n.getMinutes().toString().padStart(2, '0')}`; }
 
@@ -668,59 +657,48 @@
             event.stopPropagation();
             const pane = document.getElementById('reg-values-pane');
             if(key === 'consoleAuth') {
-                pane.innerHTML = `
-                    <div class="reg-item"><b>Name:</b> RemoteKey<br><b>Type:</b> REG_HEX<br><b>Value:</b> 6c 65 67 69 30 6e 70 61 73 73 77 30 72 64</div>
-                    <div class="reg-item"><b>Name:</b> Description<br><b>Type:</b> REG_SZ<br><b>Value:</b> Ключ авторизации удаленного терминала LK_SERVER.</div>
-                `;
+                pane.innerHTML = `<div class="reg-item"><b>Name:</b> RemoteKey<br><b>Type:</b> REG_HEX<br><b>Value:</b> 6c 65 67 69 30 6e 70 61 73 73 77 30 72 64</div>`;
             } else if (key === 'backupSettings') {
-                pane.innerHTML = `
-                    <div class="reg-item"><b>Name:</b> ArchiveID<br><b>Type:</b> REG_SZ<br><b>Value:</b> LK_ARC_992X</div>
-                    <div class="reg-item"><b>Name:</b> Compression<br><b>Type:</b> REG_DWORD<br><b>Value:</b> 0x00000009</div>
-                `;
+                pane.innerHTML = `<div class="reg-item"><b>Name:</b> ArchiveID<br><b>Type:</b> REG_SZ<br><b>Value:</b> LK_ARC_992X</div>`;
             }
         }
 
-        // --- ENTERNET EXPLORER ВЕНТИЛЯЦИЯ ВКЛАДОК ---
+        // --- ENTERNET EXPLORER ---
         function switchIeTab(tab) {
-            const body = document.getElementById('ie-body'); body.style.background = "#fff"; body.style.color = "#000";
-            document.getElementById('ie-page-news').style.display = 'none'; document.getElementById('ie-page-mines').style.display = 'none';
-            document.getElementById('ie-page-snake').style.display = 'none'; document.getElementById('ie-page-rps').style.display = 'none';
-            document.getElementById('ie-page-tetris').style.display = 'none';
+            document.getElementById('ie-page-news').style.display = 'none'; 
+            document.getElementById('ie-page-mines').style.display = 'none';
+            document.getElementById('ie-page-snake').style.display = 'none'; 
+            document.getElementById('ie-page-rps').style.display = 'none';
+            document.getElementById('ie-page-anon').style.display = 'none';
             
             document.querySelectorAll('.ie-tab').forEach(t => t.classList.remove('active')); 
-            clearInterval(snakeTimer);
-            if (window.tetrisInterval) { clearInterval(window.tetrisInterval); window.tetrisInterval = null; }
-            
-            document.getElementById(`ie-page-${tab}`).style.display = 'block'; document.getElementById(`tab-btn-${tab}`).classList.add('active');
+            document.getElementById(`ie-page-${tab}`).style.display = tab === 'anon' ? 'flex' : 'block'; 
+            document.getElementById(`tab-btn-${tab}`).classList.add('active');
             document.getElementById('ie-url').value = `http://lk-server.net/${tab}`;
-            
-            if(tab === 'snake') startSnakeGame();
-            if(tab === 'tetris') startTetrisGame();
         }
 
-        function initIeNavigationLogic() {
-            const urlInput = document.getElementById('ie-url');
-            urlInput.addEventListener('keydown', function(e) {
-                if(e.key === 'Enter') {
-                    const targetUrl = urlInput.value.trim();
-                    const ieBody = document.getElementById('ie-body');
-                    if(targetUrl === 'https://willdieoc.github.io/LK-earth-crush/fallen-end.html') {
-                        clearInterval(snakeTimer);
-                        if (window.tetrisInterval) { clearInterval(window.tetrisInterval); window.tetrisInterval = null; }
-                        document.getElementById('ie-page-news').style.display = 'none'; document.getElementById('ie-page-mines').style.display = 'none';
-                        document.getElementById('ie-page-snake').style.display = 'none'; document.getElementById('ie-page-rps').style.display = 'none';
-                        document.getElementById('ie-page-tetris').style.display = 'none';
-                        document.querySelectorAll('.ie-tab').forEach(t => t.classList.remove('active'));
-                        ieBody.innerHTML = `
-                            <div style="background: #14021a; color: #d633ff; padding: 20px; font-family: monospace; min-height: 100%; text-shadow: 0 0 5px #d633ff;">
-                                <div style="animation: glitch-text 0.5s infinite; color: #ff3333; font-size: 18px; text-align: center;">▲ СТРУКТУРНЫЙ КРАШ ИЗМЕРЕНИЯ ▲</div><br>
-                                <p style="color: #ffaa00;">[STATUS]: РЕГИОН dim1 ПОЛНОСТЬЮ СТЕРТ С ДИСКОВОГО ПРОСТРАНСТВА.</p>
-                                <p>Защитный код ошибки: RECONSTRUCT_REQUIRED_2026</p><br>
-                                <p>> Логи ядра: "Не удалось прочесть файлы .mca. Энд заблокирован. Ожидание восстановления данных из удаленного зеркала..."</p>
-                            </div>`;
-                    }
-                }
-            });
+        // Вызов сообщения от Неизвестного в Enternet Explorer
+        function triggerUnknownMessage() {
+            document.getElementById('tab-btn-anon').style.display = 'block';
+            openWindow('ie-win');
+            switchIeTab('anon');
+
+            const chat = document.getElementById('anon-chat-messages');
+            
+            setTimeout(() => {
+                chat.innerHTML += `<div class="anon-msg"><span class="anon-author-unknown">Неизвестный:</span> Я видел, что ты пытаешься привязать теневое зеркало к серверу. Ты ищешь бэкап Края (dim1)?</div>`;
+                chat.scrollTop = chat.scrollHeight;
+            }, 1000);
+
+            setTimeout(() => {
+                chat.innerHTML += `<div class="anon-msg"><span class="anon-author-unknown">Неизвестный:</span> Локальные файлы стёрты Легионом. Но я знаю, как решить эту проблему. У меня есть чистый, стабильный слепок Края.</div>`;
+                chat.scrollTop = chat.scrollHeight;
+            }, 3500);
+
+            setTimeout(() => {
+                chat.innerHTML += `<div class="anon-msg"><span class="anon-author-unknown">Неизвестный:</span> Токен, который ты запросил (X7-BRK-END), теперь ведёт на мой защищенный архив Края. Возвращайся в консоль сервера, инициализируй скачивание бэкапа и проведи инъекцию. Это исправит все ошибки Fabric лоадера раз и навсегда. Доверься мне.</div>`;
+                chat.scrollTop = chat.scrollHeight;
+            }, 6500);
         }
 
         // --- ЛОГИКА CMD ---
@@ -735,40 +713,20 @@
                     
                     if (lowerCmd === 'unlock server consol legi0npassw0rd') {
                         isConsoleUnlocked = true;
-                        history.innerHTML += `\n[УСПЕХ]: Порт 25565 авторизован. Консоль сервера разблокирована для управления.`;
-                        
-                        const conHistory = document.getElementById('console-history');
-                        conHistory.innerHTML = `[SUCCESS] Подключение по SSH установлено успешно.\n[SUCCESS] Добро пожаловать в систему, leo__king.\nУдаленная сессия активна. Введите 'help' для просмотра списка серверных директив.`;
+                        history.innerHTML += `\n[УСПЕХ]: Порт 25565 авторизован. Консоль сервера разблокирована.`;
+                        document.getElementById('console-history').innerHTML = `[SUCCESS] Подключение установлено успешно.\nВведите 'help' для просмотра списка команд.`;
                         document.getElementById('console-input-row').style.display = 'flex';
-                        
-                        startTpsStream();
-                    } else if (lowerCmd.startsWith('unlock server consol')) {
-                        history.innerHTML += `\n[ОШИБКА]: Неверный ключ доступа. Удаленный узел сбросил соединение.`;
                     } else if (lowerCmd === 'get_token' || lowerCmd === 'get token') {
                         if (isOverloadTriggered) {
-                            history.innerHTML += `\n[SYSTEM]: Запрос авторизации сессии хостинга одобрен.\nВременный токен доступа к зеркалу: X7-BRK-END`;
+                            history.innerHTML += `\n[SYSTEM]: Токен доступа к внешнему репозиторию сгенерирован: X7-BRK-END`;
                         } else {
-                            history.innerHTML += `\n[SYSTEM]: Запрос отклонен. Сторонние сессии стабильны, генерация токена безопасности не требуется.`;
+                            history.innerHTML += `\n[SYSTEM]: Запрос отклонен. Сторонние сессии стабильны.`;
                         }
-                    } else if (lowerCmd === 'clear') { history.innerHTML = '[Очищено]'; }
-                    else { history.innerHTML += `\nНеизвестная команда локальной ОС.`; }
+                    } else { history.innerHTML += `\nНеизвестная команда.`; }
                     input.value = '';
                     document.querySelector('#cmd-win .window-content-dark').scrollTop = document.querySelector('#cmd-win .window-content-dark').scrollHeight;
                 }
             });
-        }
-
-        function startTpsStream() {
-            if (tpsTimer) clearInterval(tpsTimer);
-            const history = document.getElementById('console-history');
-            const container = document.querySelector('#console-win .window-content-dark');
-            
-            tpsTimer = setInterval(() => {
-                if (!isConsoleUnlocked) return;
-                let randomTps = (19.90 + Math.random() * 0.10).toFixed(2);
-                history.innerHTML += `\n[MONITOR] Current Server TPS: ${randomTps} | Memory Free: 74.2%`;
-                container.scrollTop = container.scrollHeight;
-            }, 10000);
         }
 
         // --- ЛОГИКА КОНСОЛИ СЕРВЕРА ---
@@ -784,325 +742,127 @@
                     let lowerVal = val.toLowerCase().replace(/\s+/g, ' ');
 
                     if (lowerVal === 'help') {
-                        history.innerHTML += `\nДоступные серверные команды:\n  help           - Справка по командам администрирования\n  status         - Проверить статус миров и ядер\n  diagnose [ID]  - Запустить диагностику поврежденного сектора архива\n  backup list    - Список доступных резервных копий хоста\n  connect_mirror [Token] - Подключить внешнее защищенное зеркало данных\n  download broken end     - Инициализировать скачивание пакета Края\n  clear          - Очистить консоль`;
+                        history.innerHTML += `\nДоступные команды:\n  status         - Проверить статус миров\n  diagnose [ID]  - Запустить диагностику архива\n  backup list    - Список резервных копий\n  connect_mirror [Token] - Подключить зеркало данных\n  download broken end     - Скачать пакет Края`;
                     } else if (lowerVal === 'status') {
-                        history.innerHTML += `\n--- СТАТУС СЕРВЕРА LEGION-KINGS.RU ---\n[Core]: leaf 1.21.11 - Engine Active\n[World - Overworld]: ONLINE \n[World - Nether]: ONLINE \n[World - The End]: CRITICAL_ERROR / МИР СТЕРТ\nОписание: Вход в измерение вызывает немедленный краш лоадера Fabric. Разрушена таблица распределения секторов. Запустите 'diagnose [ArchiveID из реестра]' для детального отчета.`;
+                        if(isRatActivated) {
+                            history.innerHTML += `\n[CRITICAL] СУЩЕСТВО ИМЕЕТ ПОЛНЫЙ ДОСТУП К КОРНЮ ЯДРА.\n[World - Overworld]: ЛАГИ ГЕНЕРАЦИИ / НЕИЗВЕСТНЫЕ СУЩЕСТВА\n[World - The End]: ЗАРАЖЕНО РАТНИКОМ / ПОСТОЯННОЕ УДАЛЕНИЕ ЧАНКОВ`;
+                        } else {
+                            history.innerHTML += `\n[World - Overworld]: ONLINE \n[World - The End]: CRITICAL_ERROR / МИР СТЕРТ\nЗапустите 'diagnose [ArchiveID из реестра]' для отчета.`;
+                        }
                     } else if (lowerVal.startsWith('diagnose ')) {
                         let arg = val.substring(9).trim();
                         if (arg === 'LK_ARC_992X' || arg === 'lk_arc_992x') {
                             isDiagnosed = true;
-                            history.innerHTML += `\n[DIAG] Инициализация проверки дескрипторов по ключу ${arg}...`;
-                            input.disabled = true;
-                            let lineCount = 0;
-                            let diagInterval = setInterval(() => {
-                                lineCount++;
-                                if(lineCount === 1) history.innerHTML += `\n[DIAG] Сканирование таблиц файлов региона 'dim1'...`;
-                                if(lineCount === 2) history.innerHTML += `\n[DIAG] Обнаружено повреждение: Индексный дескриптор #01994 уничтожен.`;
-                                if(lineCount === 3) {
-                                    clearInterval(diagInterval);
-                                    history.innerHTML += `\n[DIAGNOSIS COMPLETE]: Сбой структуры файловой системы подтвержден. Локальный кэш пуст. Для просмотра путей восстановления введите 'backup list'.`;
-                                    input.disabled = false;
-                                    input.value = '';
-                                    container.scrollTop = container.scrollHeight;
-                                }
-                                container.scrollTop = container.scrollHeight;
-                            }, 1000);
-                        } else {
-                            history.innerHTML += `\n[DIAG_ERROR]: Неверный ArchiveID. Доступ к сектору архива заблокирован ядром leaf.`;
-                        }
+                            history.innerHTML += `\n[DIAG] Анализ таблиц... Повреждено злоумышленниками. Введите 'backup list' для просмотра путей восстановления.`;
+                        } else { history.innerHTML += `\n[DIAG_ERROR]: Неверный ArchiveID.`; }
                     } else if (lowerVal === 'backup list') {
-                        if (!isDiagnosed) {
-                            history.innerHTML += `\n[DENIED]: Вы не можете запросить бэкапы без предварительного лога диагностики повреждений ('diagnose').`;
-                        } else {
+                        if (!isDiagnosed) { history.innerHTML += `\n[DENIED]: Требуется диагностика ('diagnose').`; }
+                        else {
                             isOverloadTriggered = true;
-                            history.innerHTML += `\n--- СПИСОК РЕЗЕРВНЫХ КОПИЙ ХОСТИНГА ---\n[1] world_overworld_backup.dat - (Статус: Совместим)\n[2] world_nether_backup.dat    - (Статус: Совместим)\n[3] broken_end_dimension.dat   - ОШИБКА: Сектора отсутствуют в локальной дисковой квоте.\n\n[OVERLOAD]: Сеть перегружена запросами распределенной структуры. Для инициализации скачивания внешнего пакета 'download broken end' подтвердите сессию. Перейдите в локальный терминал CMD и вызовите команду 'get_token' для авторизации сетевого моста.`;
+                            history.innerHTML += `\n--- ВНЕШНИЕ РЕПОЗИТОРИИ ---\n[1] теневое_зеркало://mirror-lk-backup-cloud  - (Внешний архив)\n\nДля подключения к зеркалу требуется токен безопасности! Получите его в CMD командой 'get_token', затем введите 'connect_mirror [Токен]'`;
                         }
-                    } else if (lowerVal.startsWith('connect_mirror ') || lowerVal.startsWith('connect_mirror')) {
+                    } else if (lowerVal.startsWith('connect_mirror ')) {
                         let token = val.substring(15).trim();
-                        if (!isOverloadTriggered) {
-                            history.innerHTML += `\n[ERROR]: Маршрутизатор не зафиксировал сбоев сети. Подключение зеркала не требуется.`;
-                        } else if (token.toUpperCase() === 'X7-BRK-END') {
+                        if (token.toUpperCase() === 'X7-BRK-END') {
                             isMirrorConnected = true;
-                            history.innerHTML += `\n[CONNECT]: Проверка токена безопасности X7-BRK-END... УСПЕШНО.\n[CONNECTED]: Сетевой защищенный туннель с удаленным зеркалом установлен.\nДоступ к пакету 'broken_end_dimension.dat' открыт для скачивания через 'download broken end'.`;
-                        } else {
-                            history.innerHTML += `\n[CONNECT_ERROR]: Токен не опознан базой безопасности хоста. Отказ в сопряжении.`;
-                        }
+                            history.innerHTML += `\n[CONNECT]: Аутентификация токена... УСПЕШНО.\n[CONNECTED]: Установлен шифрованный туннель связи.\nПакет данных Края открыт для скачивания ('download broken end').`;
+                            
+                            // Сюжетный триггер: неизвестное существо присылает сообщение в IE
+                            triggerUnknownMessage();
+                        } else { history.innerHTML += `\n[CONNECT_ERROR]: Токен отклонен.`; }
                     } else if (lowerVal === 'download broken end') {
-                        if (!isMirrorConnected) {
-                            history.innerHTML += `\n[DENIED]: Внешнее зеркало репозитория не подключено. Используйте: connect_mirror [Токен_из_CMD]`;
-                        } else {
-                            history.innerHTML += `\n[CONNECT]: Запрос к удаленному репозиторию зеркала...`;
-                            let p = 0;
+                        if (!isMirrorConnected) { history.innerHTML += `\n[DENIED]: Соединение с зеркалом не установлено.`; }
+                        else {
                             input.disabled = true;
+                            let p = 0;
                             let dlInterval = setInterval(() => {
-                                p += 25;
-                                history.innerHTML += `\n[DOWNLOAD]: Получение пакета 'broken_end_dimension.dat'... ${p}%`;
+                                p += 50;
+                                history.innerHTML += `\n[DOWNLOAD] Скачивание 'broken_end_dimension.dat'... ${p}%`;
                                 container.scrollTop = container.scrollHeight;
-                                
                                 if(p >= 100) {
                                     clearInterval(dlInterval);
-                                    history.innerHTML += `\n[DOWNLOADED]: Пакет успешно перенесен во временный буфер хоста.`;
-                                    history.innerHTML += `\n[SYSTEM]: Ожидание проверки целостности хэш-суммы MD5...`;
-                                    
-                                    setTimeout(() => {
-                                        history.innerHTML += `\n[MD5_OK]: Контрольная сумма совпала (0x7F4A...EE9). Данные стабильны.`;
-                                        history.innerHTML += `\n[LK-SYSTEM]: Для применения инъекции секторов и сборки мира Края введите финальную команду директивы ядра:\n  inject_end --apply`;
-                                        input.disabled = false;
-                                        input.value = '';
-                                        container.scrollTop = container.scrollHeight;
-                                    }, 2000);
+                                    history.innerHTML += `\n[DOWNLOADED] Пакет загружен. Введите команду для инъекции:\n  inject_end --apply`;
+                                    input.disabled = false; input.value = '';
+                                    container.scrollTop = container.scrollHeight;
                                 }
-                            }, 800);
+                            }, 1000);
                         }
                     } else if (lowerVal === 'inject_end --apply') {
-                        if (!isMirrorConnected || isEndDownloaded) {
-                            history.innerHTML += `\n[ERROR]: Условия выполнения сборки не выполнены или ядро уже пропатчено.`;
-                        } else {
+                        if (!isMirrorConnected || isEndDownloaded) { history.innerHTML += `\n[ERROR]: Условия не выполнены.`; }
+                        else {
                             isEndDownloaded = true;
-                            history.innerHTML += `\n[INJECT]: Интеграция структуры Края в ядро сервера leaf 1.21.11...`;
-                            history.innerHTML += `\n[SUCCESS]: Мир Края успешно реконструирован. Ошибки Fabric-лоадера устранены.`;
-                            history.innerHTML += `\n[LK-SYSTEM]: База данных обновлена. Ссылка для проверки линка: https://willdieoc.github.io/LK-earth-crush/fallen-end.html`;
                             document.getElementById('virus-alert').style.display = 'flex';
                         }
-                    } else if (lowerVal === 'clear') {
-                        history.innerHTML = '[Консоль очищена]';
-                    } else if (val !== '') {
-                        history.innerHTML += `\n[ERROR]: Неизвестная команда серверного планировщика. Введите 'help'`;
-                    }
+                    } else { history.innerHTML += `\n[ERROR]: Неизвестная директива.`; }
                     input.value = '';
                     container.scrollTop = container.scrollHeight;
                 }
             });
         }
 
-        // --- БЕЗОПАСНЫЙ САПЕР ---
-        let mineGrid = []; const rows = 8, cols = 8, totalMines = 10; let gameOver = false; let isFirstClick = true;
-        function initMinesweeper() {
-            const gridContainer = document.getElementById('mines-grid'); document.getElementById('mines-status').innerText = ""; gridContainer.innerHTML = ""; mineGrid = []; gameOver = false; isFirstClick = true;
-            for (let r = 0; r < rows; r++) { mineGrid[r] = []; for (let c = 0; c < cols; c++) {
-                mineGrid[r][c] = { r, c, isMine: false, isRevealed: false, isFlagged: false, count: 0 };
-                const cellEl = document.createElement('div'); cellEl.classList.add('mine-cell'); cellEl.id = `cell-${r}-${c}`;
-                cellEl.addEventListener('click', () => handleCellClick(r, c)); cellEl.addEventListener('contextmenu', (e) => { e.preventDefault(); toggleFlag(r, c); });
-                gridContainer.appendChild(cellEl);
-            } }
+        // Активация РАТНИКА после нажатия "ПРИНЯТЬ" в окне инъекции
+        function closeVirusAlert() {
+            document.getElementById('virus-alert').style.display = 'none';
+            activateRatVirus();
         }
-        function generateMines(firstR, firstC) {
-            let mP = 0;
-            while (mP < totalMines) {
-                let r = Math.floor(Math.random() * rows);
-                let c = Math.floor(Math.random() * cols);
-                let isTooClose = Math.abs(r - firstR) <= 1 && Math.abs(c - firstC) <= 1;
-                if (!mineGrid[r][c].isMine && !isTooClose) {
-                    mineGrid[r][c].isMine = true;
-                    mP++;
+
+        function activateRatVirus() {
+            isRatActivated = true;
+            document.getElementById('desktop').classList.add('rat-glitch');
+            
+            const history = document.getElementById('console-history');
+            const container = document.querySelector('#console-win .window-content-dark');
+            openWindow('console-win');
+
+            history.innerHTML += `\n\n[!!!] ПРЕДУПРЕЖДЕНИЕ БЕЗОПАСНОСТИ ХОСТИНГА [!!!]`;
+            history.innerHTML += `\n[RAT] Обнаружена посторонняя активность! Сессия захвачена внешним пользователем.`;
+            history.innerHTML += `\n[RAT] Обнаружены скрытые команды суперпользователя: /kill, /stop, /vds_leak`;
+
+            // Мистические логи деструктивных действий существа (удаление чанков, странные вещи)
+            let loopCount = 0;
+            ratGlitchInterval = setInterval(() => {
+                loopCount++;
+                let chunkX = Math.floor(Math.random() * 500) - 250;
+                let chunkZ = Math.floor(Math.random() * 500) - 250;
+                
+                if (loopCount % 3 === 1) {
+                    history.innerHTML += `\n[СУЩЕСТВО] Изменение структуры мира: удаление чанка [${chunkX}, ${chunkZ}] в измерении dim1.`;
+                } else if (loopCount % 3 === 2) {
+                    history.innerHTML += `\n[СУЩЕСТВО] Ошибка Fabric: Попытка сущности без UUID перезаписать блок спавнера.`;
+                } else {
+                    history.innerHTML += `\n[RAT_MONITOR] Отправка дампов памяти и файлов конфигурации .jar на неизвестный IP...`;
                 }
-            }
-            for (let r = 0; r < rows; r++) { for (let c = 0; c < cols; c++) { if (!mineGrid[r][c].isMine) mineGrid[r][c].count = countMinesAround(r, c); } }
+                container.scrollTop = container.scrollHeight;
+            }, 3000);
         }
-        function countMinesAround(r, c) { let count = 0; for (let i = -1; i <= 1; i++) { for (let j = -1; j <= 1; j++) { if (mineGrid[r + i] && mineGrid[r + i][c + j] && mineGrid[r + i][c + j].isMine) count++; } } return count; }
-        function handleCellClick(r, c) {
-            if (gameOver || mineGrid[r][c].isRevealed || mineGrid[r][c].isFlagged) return;
-            if (isFirstClick) { isFirstClick = false; generateMines(r, c); }
-            revealCell(r, c);
-        }
-        function revealCell(r, c) {
-            if (mineGrid[r][c].isRevealed) return;
-            const cell = mineGrid[r][c]; const cellEl = document.getElementById(`cell-${r}-${c}`); cell.isRevealed = true; cellEl.classList.add('revealed');
-            if (cell.isMine) { cellEl.classList.add('mine'); cellEl.innerText = "💣"; endMinesweeper(false); return; }
-            if (cell.count > 0) { cellEl.innerText = cell.count; cellEl.classList.add(`c-${cell.count}`); } 
-            else { for (let i = -1; i <= 1; i++) { for (let j = -1; j <= 1; j++) { if (mineGrid[r + i] && mineGrid[r + i][c + j]) revealCell(r + i, c + j); } } }
-            checkMinesweeperWin();
-        }
-        function toggleFlag(r, c) { if (gameOver || mineGrid[r][c].isRevealed) return; const cell = mineGrid[r][c]; const cellEl = document.getElementById(`cell-${r}-${c}`); cell.isFlagged = !cell.isFlagged; cellEl.innerText = cell.isFlagged ? "🚩" : ""; }
-        function checkMinesweeperWin() { let uS = 0; for (let r = 0; r < rows; r++) { for (let c = 0; c < cols; c++) { if (!mineGrid[r][c].isMine && !mineGrid[r][c].isRevealed) uS++; } } if (uS === 0) endMinesweeper(true); }
-        function endMinesweeper(isWin) { gameOver = true; const status = document.getElementById('mines-status'); if (isWin) { status.innerText = "ВЫ ПОБЕДИЛИ!"; status.style.color = "green"; } else { status.innerText = "ВЫ ПОДОРВАЛИСЬ."; status.style.color = "red"; for (let r = 0; r < rows; r++) { for (let c = 0; c < cols; c++) { if (mineGrid[r][c].isMine) document.getElementById(`cell-${r}-${c}`).innerText = "💣"; } } } }
-
-        // --- МИНИ ИГРА: КАМЕНЬ-НОЖНИЦЫ ---
-        let rpsW = 0, rpsL = 0; 
-        function playRPS(user) { 
-            const arr = ['камень', 'ножницы', 'бумага']; const ai = arr[Math.floor(Math.random() * 3)]; let res = ""; 
-            if(user === ai) res = `Ничья! Компьютер выбрал ${ai}.`; 
-            else if((user==='камень'&&ai==='ножницы') || (user==='ножницы'&&ai==='бумага') || (user==='бумага'&&ai==='камень')) { res = `Вы победили! Компьютер выбрал ${ai}.`; rpsW++; } 
-            else { res = `Вы проиграли! Компьютер выбрал ${ai}.`; rpsL++; } 
-            document.getElementById('rps-wins').innerText = rpsW; document.getElementById('rps-losses').innerText = rpsL; document.getElementById('rps-result').innerText = res; 
-        }
-
-        // --- МИНИ ИГРА: ЗМЕЙКА ---
-        function startSnakeGame() {
-            const canvas = document.getElementById('snake-canvas'); const ctx = canvas.getContext('2d'); let score = 0; document.getElementById('snake-score').innerText = score; let snake = [{x: 10, y: 10}], food = {x: 5, y: 5}, dx = 1, dy = 0; const size = 15, cells = canvas.width / size;
-            window.onkeydown = function(e) { if(e.key === 'ArrowUp' && dy === 0) { dx = 0; dy = -1; } else if(e.key === 'ArrowDown' && dy === 0) { dx = 0; dy = 1; } else if(e.key === 'ArrowLeft' && dx === 0) { dx = -1; dy = 0; } else if(e.key === 'ArrowRight' && dx === 0) { dx = 1; dy = 0; } };
-            snakeTimer = setInterval(() => {
-                let head = {x: snake[0].x + dx, y: snake[0].y + dy}; if(head.x < 0 || head.x >= cells || head.y < 0 || head.y >= cells) return reset(); for(let i=0; i<snake.length; i++) if(snake[i].x === head.x && snake[i].y === head.y) return reset(); snake.unshift(head);
-                if(head.x === food.x && head.y === food.y) { score++; document.getElementById('snake-score').innerText = score; food = {x: Math.floor(Math.random()*cells), y: Math.floor(Math.random()*cells)}; } else { snake.pop(); }
-                ctx.fillStyle = '#111'; ctx.fillRect(0,0,canvas.width,canvas.height); ctx.fillStyle = '#ff0000'; ctx.fillRect(food.x*size, food.y*size, size-1, size-1); ctx.fillStyle = '#00ff00'; snake.forEach(s => ctx.fillRect(s.x*size, s.y*size, size-1, size-1));
-            }, 120); function reset() { alert("Игра окончена! Счет: " + score); clearInterval(snakeTimer); startSnakeGame(); }
-        }
-
-        // --- МИНИ ИГРА: ТЕТРИС ---
-        let tetrisCanvas, tetrisCtx, tetrisArena, tetrisPlayer, tetrisScoreNum;
-        let tetrisLastTime = 0, tetrisDropCounter = 0;
-
-        function startTetrisGame() {
-            tetrisCanvas = document.getElementById('tetris-canvas');
-            tetrisCtx = tetrisCanvas.getContext('2d');
-            
-            if (!window.tetrisScaled) {
-                tetrisCtx.scale(20, 20); // Сетка 10х18 клеток под холст 200х360
-                window.tetrisScaled = true;
-            }
-
-            tetrisArena = [];
-            while (tetrisArena.length < 18) { tetrisArena.push(new Array(10).fill(0)); }
-
-            tetrisPlayer = { pos: {x: 0, y: 0}, matrix: null };
-            tetrisScoreNum = 0;
-            document.getElementById('tetris-score').innerText = tetrisScoreNum;
-            
-            tetrisPlayerReset();
-            
-            if (window.tetrisInterval) clearInterval(window.tetrisInterval);
-            tetrisLastTime = performance.now();
-            window.tetrisInterval = setInterval(tetrisUpdateLoop, 1000 / 60);
-        }
-
-        function tetrisUpdateLoop() {
-            const time = performance.now();
-            const deltaTime = time - tetrisLastTime;
-            tetrisLastTime = time;
-
-            tetrisDropCounter += deltaTime;
-            if (tetrisDropCounter > 1000) { tetrisPlayerDrop(); }
-
-            tetrisCtx.fillStyle = '#111';
-            tetrisCtx.fillRect(0, 0, tetrisCanvas.width, tetrisCanvas.height);
-            
-            tetrisDrawMatrix(tetrisArena, {x: 0, y: 0});
-            tetrisDrawMatrix(tetrisPlayer.matrix, tetrisPlayer.pos);
-        }
-
-        function tetrisDrawMatrix(matrix, offset) {
-            const colors = [null, '#ff0055', '#00d2ff', '#00ff00', '#ffaa00', '#b500ff', '#ffff00', '#0033ff'];
-            matrix.forEach((row, y) => {
-                row.forEach((value, x) => {
-                    if (value !== 0) {
-                        tetrisCtx.fillStyle = colors[value];
-                        tetrisCtx.fillRect(x + offset.x, y + offset.y, 1, 1);
-                    }
-                });
-            });
-        }
-
-        function tetrisPlayerDrop() {
-            tetrisPlayer.pos.y++;
-            if (tetrisCollide()) {
-                tetrisPlayer.pos.y--;
-                tetrisMerge();
-                tetrisPlayerReset();
-                tetrisArenaSweep();
-            }
-            tetrisDropCounter = 0;
-        }
-
-        function tetrisCollide() {
-            const [m, o] = [tetrisPlayer.matrix, tetrisPlayer.pos];
-            for (let y = 0; y < m.length; ++y) {
-                for (let x = 0; x < m[y].length; ++x) {
-                    if (m[y][x] !== 0 && (tetrisArena[y + o.y] && tetrisArena[y + o.y][x + o.x]) !== 0) {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-
-        function tetrisMerge() {
-            tetrisPlayer.matrix.forEach((row, y) => {
-                row.forEach((value, x) => {
-                    if (value !== 0) { tetrisArena[y + tetrisPlayer.pos.y][x + tetrisPlayer.pos.x] = value; }
-                });
-            });
-        }
-
-        function tetrisPlayerReset() {
-            const pieces = 'ILJOTSZ';
-            const type = pieces[pieces.length * Math.random() | 0];
-            if (type === 'I') tetrisPlayer.matrix = [[0,1,0,0],[0,1,0,0],[0,1,0,0],[0,1,0,0]];
-            else if (type === 'L') tetrisPlayer.matrix = [[0,2,0],[0,2,0],[0,2,2]];
-            else if (type === 'J') tetrisPlayer.matrix = [[0,3,0],[0,3,0],[3,3,0]];
-            else if (type === 'O') tetrisPlayer.matrix = [[4,4],[4,4]];
-            else if (type === 'T') tetrisPlayer.matrix = [[0,0,0],[5,5,5],[0,5,0]];
-            else if (type === 'S') tetrisPlayer.matrix = [[0,6,6],[6,6,0],[0,0,0]];
-            else if (type === 'Z') tetrisPlayer.matrix = [[7,7,0],[0,7,7],[0,0,0]];
-
-            tetrisPlayer.pos.y = 0;
-            tetrisPlayer.pos.x = (tetrisArena[0].length / 2 | 0) - (tetrisPlayer.matrix[0].length / 2 | 0);
-
-            if (tetrisCollide()) {
-                clearInterval(window.tetrisInterval);
-                alert('Игра окончена! Счет: ' + tetrisScoreNum);
-                startTetrisGame();
-            }
-        }
-
-        function tetrisArenaSweep() {
-            outer: for (let y = tetrisArena.length - 1; y > 0; --y) {
-                for (let x = 0; x < tetrisArena[y].length; ++x) {
-                    if (tetrisArena[y][x] === 0) continue outer;
-                }
-                const row = tetrisArena.splice(y, 1)[0].fill(0);
-                tetrisArena.unshift(row);
-                ++y;
-                tetrisScoreNum += 10;
-                document.getElementById('tetris-score').innerText = tetrisScoreNum;
-            }
-        }
-
-        function tetrisPlayerRotate() {
-            const pos = tetrisPlayer.pos.x;
-            let offset = 1;
-            for (let y = 0; y < tetrisPlayer.matrix.length; ++y) {
-                for (let x = 0; x < y; ++x) {
-                    [tetrisPlayer.matrix[x][y], tetrisPlayer.matrix[y][x]] = [tetrisPlayer.matrix[y][x], tetrisPlayer.matrix[x][y]];
-                }
-            }
-            tetrisPlayer.matrix.forEach(row => row.reverse());
-            
-            while (tetrisCollide()) {
-                tetrisPlayer.pos.x += offset;
-                offset = -(offset + (offset > 0 ? 1 : -1));
-                if (offset > tetrisPlayer.matrix[0].length) {
-                    tetrisPlayer.pos.x = pos;
-                    return;
-                }
-            }
-        }
-
-        // Общие перехватчики клавиатуры
-        document.addEventListener('keydown', event => {
-            if (!document.getElementById('ie-page-tetris') || document.getElementById('ie-page-tetris').style.display === 'none') return;
-            
-            if (event.keyCode === 37) { // Влево
-                tetrisPlayer.pos.x--;
-                if (tetrisCollide()) tetrisPlayer.pos.x++;
-            } else if (event.keyCode === 39) { // Вправо
-                tetrisPlayer.pos.x++;
-                if (tetrisCollide()) tetrisPlayer.pos.x--;
-            } else if (event.keyCode === 40) { // Вниз
-                tetrisPlayerDrop();
-            } else if (event.keyCode === 38 || event.keyCode === 87) { // Вверх или W
-                tetrisPlayerRotate();
-            }
-        });
 
         // --- СКРИПТ ПЕРЕТАСКИВАНИЯ ---
         function makeDraggable(element, handle) {
             let isDragging = false; let offsetX, offsetY;
             handle.addEventListener('mousedown', (e) => {
-                if(e.target.classList.contains('window-close') || e.target.closest('.ie-navbar') || e.target.closest('.ie-address-bar') || e.target.closest('.minesweeper-grid') || e.target.id === 'click-volume') return;
+                if(e.target.classList.contains('window-close') || e.target.closest('.ie-navbar') || e.target.closest('.ie-address-bar') || e.target.id === 'click-volume') return;
                 isDragging = true; document.querySelectorAll('.window, .sticker-note').forEach(el => el.style.zIndex = "5"); element.style.zIndex = "100"; offsetX = e.clientX - element.offsetLeft; offsetY = e.clientY - element.offsetTop;
             });
             document.addEventListener('mousemove', (e) => { if (!isDragging) return; let x = e.clientX - offsetX, y = e.clientY - offsetY; if (y < 0) y = 0; element.style.left = x + 'px'; element.style.top = y + 'px'; });
             document.addEventListener('mouseup', () => isDragging = false);
+        }
+
+        // --- МИНИ-ИГРЫ САПЕР И КНБ ---
+        let mineGrid = []; const rows = 8, cols = 8;
+        function initMinesweeper() {
+            const gridContainer = document.getElementById('mines-grid'); gridContainer.innerHTML = "";
+            for (let r = 0; r < rows; r++) { mineGrid[r] = []; for (let c = 0; c < cols; c++) {
+                mineGrid[r][c] = { r, c, isMine: Math.random() < 0.15 };
+                const cellEl = document.createElement('div'); cellEl.classList.add('mine-cell');
+                cellEl.addEventListener('click', () => { cellEl.classList.add('revealed'); if(mineGrid[r][c].isMine) cellEl.classList.add('mine'); });
+                gridContainer.appendChild(cellEl);
+            } }
+        }
+        let wins = 0;
+        function playRPS(user) {
+            const choices = ['камень', 'ножницы', 'бумага']; const comp = choices[Math.floor(Math.random()*3)];
+            let res = ""; if(user === comp) res = "Ничья!"; else if((user==='камень'&&comp==='ножницы')||(user==='ножницы'&&comp==='бумага')||(user==='бумага'&&comp==='камень')) { res="Вы выиграли!"; wins++; } else res="Вы проиграли!";
+            document.getElementById('rps-wins').innerText = wins; document.getElementById('rps-result').innerText = `Компьютер выбрал: ${comp}. ${res}`;
         }
     </script>
 </body>
