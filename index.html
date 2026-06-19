@@ -37,6 +37,25 @@
             100% { filter: hue-rotate(0deg) brightness(1); }
         }
 
+        /* ЭФФЕКТ МЕРЦАНИЯ КАРТИНКИ GOD.PNG */
+        #god-screamer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('god.png') no-repeat center center;
+            background-size: cover;
+            z-index: 100000;
+            display: none;
+        }
+
+        @keyframes god-flicker {
+            0%, 100% { opacity: 0; }
+            5%, 15%, 25%, 35%, 55%, 75%, 95% { opacity: 1; }
+            10%, 20%, 30%, 40%, 60%, 80% { opacity: 0; }
+        }
+
         /* --- ЭКРАН 1: ЛОГОТИП СИСТЕМЫ --- */
         #boot-screen {
             position: fixed;
@@ -333,6 +352,8 @@
 </head>
 <body>
 
+    <div id="god-screamer"></div>
+
     <audio id="sound-startup" src="windows-95-1995-startup.mp3" preload="auto"></audio>
     <audio id="sound-click" src="button-click-short-close-soft.mp3" preload="auto"></audio>
 
@@ -557,7 +578,7 @@
                     <div class="start-menu-item" onclick="openWindow('cmd-win')">_> Командная строка</div>
                     <div class="start-menu-item" onclick="openWindow('console-win')">⚡ Консоль LK</div>
                     <hr style="border-color: #808080;">
-                    <div class="start-menu-item" onclick="location.reload()">🔄 Перезагрузка</div>
+                    <div class="start-menu-item" onclick="forceSystemCrash()">🔄 Перезагрузка</div>
                 </div>
                 
                 <div class="system-tray">
@@ -618,6 +639,7 @@
             document.getElementById('loading-screen').style.display = 'block';
             
             const logContainer = document.getElementById('boot-logs');
+            logContainer.innerText = ""; // Очищаем старые логи
             let progress = 0;
 
             bootMessages.forEach(item => {
@@ -741,7 +763,7 @@
             }, 6500);
         }
 
-        // --- ЛОГИКА САПЕРА (ИСПРАВЛЕНО: КАСКАДНОЕ ОТКРЫТИЕ ПОЛЕЙ) ---
+        // --- ЛОГИКА САПЕРА ---
         let mineGrid = []; const rows = 8, cols = 8;
         function initMinesweeper() {
             const gridContainer = document.getElementById('mines-grid'); gridContainer.innerHTML = "";
@@ -758,7 +780,6 @@
                     gridContainer.appendChild(cellEl);
                 } 
             }
-            // Подсчет мин вокруг секторов
             for(let r=0; r<rows; r++) {
                 for(let c=0; c<cols; c++) {
                     if(!mineGrid[r][c].isMine) {
@@ -775,9 +796,7 @@
         }
 
         function revealMineCell(r, c) {
-            // Граничные проверки
             if (r < 0 || r >= rows || c < 0 || c >= cols) return;
-            // Если уже открыта — пропускаем
             if (mineGrid[r][c].revealed) return;
             
             const cellEl = document.getElementById(`cell-${r}-${c}`);
@@ -798,7 +817,6 @@
                 else if(mineGrid[r][c].count === 2) cellEl.style.color = 'green';
                 else cellEl.style.color = 'red';
             } else {
-                // Если клетка нулевая, запускаем рекурсивный обход по всем направлениям (лавина)
                 for(let i = -1; i <= 1; i++) {
                     for(let j = -1; j <= 1; j++) {
                         if(i !== 0 || j !== 0) {
@@ -1119,6 +1137,48 @@
                 else history.innerHTML += `\n[RAT_MONITOR] Отправка дампов памяти хостинга на внешний IP...`;
                 container.scrollTop = container.scrollHeight;
             }, 3000);
+
+            // ТАЙМЕР НА 20 СЕКУНД: МЕРЦАНИЕ И КРАШ
+            setTimeout(() => {
+                const screamer = document.getElementById('god-screamer');
+                screamer.style.display = 'block';
+                screamer.style.animation = 'god-flicker 1.5s ease-out forwards';
+                
+                // Через 1.5 секунды мерцания выкидываем на начальный экран
+                setTimeout(() => {
+                    screamer.style.display = 'none';
+                    screamer.style.animation = '';
+                    forceSystemCrash();
+                }, 1500);
+
+            }, 20000);
+        }
+
+        // Функция форсированного сброса системы и возврата к Boot-экрану
+        function forceSystemCrash() {
+            // Очищаем фоновые интервалы вирусов и игр
+            clearInterval(ratGlitchInterval);
+            clearInterval(snakeTimer);
+            clearInterval(tetrisTimer);
+            
+            // Сбрасываем флаги системы до исходного состояния
+            isConsoleUnlocked = false;
+            isDiagnosed = false;
+            isOverloadTriggered = false;
+            isMirrorConnected = false;
+            isEndDownloaded = false;
+            isRatActivated = false;
+
+            // Скрываем рабочий стол и окна, снимаем эффекты глитчей
+            document.getElementById('desktop').style.display = 'none';
+            document.getElementById('desktop').classList.remove('rat-glitch');
+            document.querySelectorAll('.window').forEach(win => win.style.display = 'none');
+            document.getElementById('tab-btn-anon').style.display = 'none';
+            document.getElementById('console-input-row').style.display = 'none';
+            document.getElementById('server-console-input').disabled = false;
+
+            // Возвращаем логотип системы (Экран 1)
+            document.getElementById('boot-screen').style.display = 'flex';
         }
 
         // --- СКРИПТ ПЕРЕТАСКИВАНИЯ ---
