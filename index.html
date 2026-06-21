@@ -47,12 +47,6 @@
             display: none;
         }
 
-        @keyframes god-flicker {
-            0%, 100% { opacity: 0; }
-            5%, 15%, 25%, 35%, 55%, 75%, 95% { opacity: 1; }
-            10%, 20%, 30%, 40%, 60%, 80% { opacity: 0; }
-        }
-
         #boot-screen {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -300,26 +294,25 @@
         .volume-control { display: flex; align-items: center; gap: 5px; font-size: 11px; color: #000; }
         .volume-slider { width: 70px; height: 6px; cursor: pointer; accent-color: #0000aa; }
 
-        #custom-end-overlay {
+        #global-end-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.95);
+            background-color: #000000;
             color: #ff3333;
-            font-size: 28px;
+            font-size: 32px;
             display: none;
             justify-content: center;
             align-items: center;
             text-align: center;
             z-index: 200000;
-            padding: 20px;
-            font-family: monospace;
+            padding: 30px;
         }
     </style>
 </head>
 <body>
 
     <div id="god-screamer"></div>
-    <div id="custom-end-overlay">willdieoc.github.io/LK-earth-crush/end</div>
+    <div id="global-end-overlay">willdieoc.github.io/LK-earth-crush/end</div>
 
     <audio id="sound-startup" src="windows-95-1995-startup.mp3" preload="auto"></audio>
     <audio id="sound-click" src="button-click-short-close-soft.mp3" preload="auto"></audio>
@@ -613,7 +606,7 @@
 
         function startBootSequence() {
             if (localStorage.getItem('download_broken_end_triggered') === 'true') {
-                document.getElementById('custom-end-overlay').style.display = 'flex';
+                document.getElementById('global-end-overlay').style.display = 'flex';
                 return;
             }
 
@@ -768,85 +761,24 @@
                     input.value = "";
                     if (!cmd) return;
 
-                    history.innerText += `\n\nLK:\\Users\leo__king>${cmd}`;
+                    history.innerText += `\n\nLK:\\Users\\leo__king>${cmd}`;
 
                     if (cmd.toLowerCase() === 'help') {
-                        history.innerText += "\nДоступные команды:\n help - помощь\n clear - очистить\n diagnostic - проверка системы\n scan ports - сканировать порты\n patch - установить исправление";
+                        history.innerText += "\nДоступные команды:\n help - помощь\n clear - очистить\n unlock server consol [пароль] - открыть консоль";
                     } else if (cmd.toLowerCase() === 'clear') {
                         history.innerText = "Legion-King's OS [Version 1.0.24]";
-                    } else if (cmd.toLowerCase() === 'diagnostic') {
-                        isDiagnosed = true;
-                        history.innerText += "\nЗапуск проверки...\n[ОК] Память в норме\n[ОК] Диск исправен\n[ОШИБКА] Обнаружен скрытый входящий порт 9966\n[ВНИМАНИЕ] Рекомендуется сканирование портов.";
-                    } else if (cmd.toLowerCase() === 'scan ports') {
-                        if (!isDiagnosed) {
-                            history.innerText += "\nСначала запустите диагностику.";
-                            return;
-                        }
-                        history.innerText += "\nСканирование портов...\nПорт 80: Открыт (HTTP)\nПорт 25565: Открыт (Minecraft Server)\nПорт 9966: Активен (Протокол MIRROR-RAT)\nВнимание: Обнаружено удаленное управление!";
-                        document.getElementById('tab-btn-anon').style.display = 'block';
-                        if (!isMirrorConnected) {
-                            isMirrorConnected = true;
-                            setTimeout(() => {
-                                addAnonMessage("willdie", "Ого, ты нашел этот канал. Быстро.", "unknown");
-                            }, 1500);
-                            setTimeout(() => {
-                                addAnonMessage("willdie", "Я слежу за твоим экраном. Твой сервер почти полностью принадлежит мне.", "unknown");
-                            }, 4500);
-                            setTimeout(() => {
-                                addAnonMessage("willdie", "Попробуй ввести в командную строку 'overload 9966', если хочешь разорвать связь.", "unknown");
-                            }, 8000);
-                        }
-                    } else if (cmd.toLowerCase() === 'overload 9966') {
-                        if (!isMirrorConnected) {
-                            history.innerText += "\nПорт закрыт или недоступен.";
-                            return;
-                        }
-                        isOverloadTriggered = true;
-                        history.innerText += "\nПопытка перегрузки порта 9966...";
-                        setTimeout(() => {
-                            addAnonMessage("willdie", "Эй! Что ты творишь?! Прекрати!", "unknown");
-                        }, 1000);
-                        setTimeout(() => {
-                            addAnonMessage("СИСТЕМА", "Внимание: Критическая ошибка сети. Удаленный хост потерял управление.", "system");
-                            history.innerText += "\nУспешно! Связь разорвана. Порт закрыт.";
-                            addAnonMessage("willdie", "Ладно, ты отключил меня. Но файлы твоего сервера у меня. Введи 'download broken end', если хочешь вернуть свой Край.", "unknown");
-                        }, 4000);
-                    } else if (cmd.toLowerCase() === 'download broken end') {
-                        if (!isOverloadTriggered) {
-                            history.innerText += "\nОшибка доступа. Сервер не отвечает.";
-                            return;
-                        }
-                        isEndDownloaded = true;
-                        localStorage.setItem('download_broken_end_triggered', 'true');
-                        history.innerText += "\nЗагрузка патча патча с внешнего сервера...";
-                        let p = 0;
-                        const interval = setInterval(() => {
-                            p += 20;
-                            history.innerText += `\nЗагрузка файлов... ${p}%`;
-                            if (p >= 100) {
-                                clearInterval(interval);
-                                history.innerText += "\nГотово. Ошибка: Патч поврежден. Перезагрузите систему.";
-                                addAnonMessage("willdie", "Ты правда поверил мне? Ха-ха. Теперь твой сервер окончательно сломан.", "unknown");
-                            }
-                        }, 600);
                     } else if (cmd.toLowerCase().startsWith('unlock server consol')) {
                         const parts = cmd.split(' ');
                         const pass = parts[3];
                         if (pass === '7162') {
                             isConsoleUnlocked = true;
-                            document.getElementById('console-history').innerText = "[INFO] Доступ получен.\n[INFO] Панель управления сервером готова.";
+                            document.getElementById('console-history').innerText = "[INFO] Доступ получен.\n[INFO] Панель управления сервером готова. Введи help для списка команд.";
                             document.getElementById('console-input-row').style.display = 'flex';
                             history.innerText += "\nДоступ к консоли сервера открыт.";
                             openWindow('console-win');
                         } else {
                             history.innerText += "\nНеверный пароль.";
                         }
-                    } else if (cmd.toLowerCase() === 'patch') {
-                        if (isRatActivated) {
-                            history.innerText += "\nОшибка. Файловая система заблокирована.";
-                            return;
-                        }
-                        history.innerText += "\nВсе обновления уже установлены.";
                     } else {
                         history.innerText += `\n Команда "${cmd}" не найдена. Введите help.`;
                     }
@@ -868,14 +800,64 @@
                     history.innerText += `\nCONSOLES@LK_SERVER>${cmd}`;
 
                     if (cmd.toLowerCase() === 'help') {
-                        history.innerText += "\nКоманды:\n status - статус сервера\n restart - перезапустить сервер\n filemanager - список важных файлов";
+                        history.innerText += "\nКоманды:\n status - статус сервера\n diagnostic - проверка портов и системы\n scan ports - сканировать активные соединения";
                     } else if (cmd.toLowerCase() === 'status') {
                         history.innerText += "\nХост: legion-kings.ru\nИгроков онлайн: 0\nМир 'world': ОК\nМир 'world_nether': ОК\nМир 'world_the_end': КРИТИЧЕСКАЯ ОШИБКА (Файлы повреждены)";
-                    } else if (cmd.toLowerCase() === 'filemanager') {
-                        history.innerText += "\nКаталог серверов:\n  [DIR] world\n  [DIR] world_nether\n  [DIR] world_the_end (ЗАБЛОКИРОВАНО)\n  [FILE] server.properties\n  [FILE] backup_config.json";
-                    } else if (cmd.toLowerCase() === 'restart') {
-                        history.innerText += "\nПерезапуск игрового сервера...";
-                        setTimeout(() => { history.innerText += "\nОшибка запуска мира 'world_the_end'. Сервер остановлен."; }, 1500);
+                    } else if (cmd.toLowerCase() === 'diagnostic') {
+                        isDiagnosed = true;
+                        history.innerText += "\nЗапуск проверки...\n[ОК] Память в норме\n[ОК] Диск исправен\n[ОШИБКА] Обнаружен скрытый входящий порт 9966\n[ВНИМАНИЕ] Рекомендуется выполнить проверку: \"scan ports\"";
+                    } else if (cmd.toLowerCase() === 'scan ports') {
+                        if (!isDiagnosed) {
+                            history.innerText += "\nСначала запустите диагностику (diagnostic).";
+                            return;
+                        }
+                        history.innerText += "\nСканирование портов...\nПорт 80: Открыт (HTTP)\nПорт 25565: Открыт (Minecraft Server)\nПорт 9966: Активен (Протокол MIRROR-RAT)\nВнимание: Обнаружено удаленное управление!";
+                        document.getElementById('tab-btn-anon').style.display = 'block';
+                        if (!isMirrorConnected) {
+                            isMirrorConnected = true;
+                            setTimeout(() => {
+                                addAnonMessage("Засекреченный пользователь", "Привет, leo__king. Я вижу твой экран прямо сейчас.", "unknown");
+                            }, 1500);
+                            setTimeout(() => {
+                                addAnonMessage("Засекреченный пользователь", "Твой сервер на legion-kings.ru почти полностью под моим контролем.", "unknown");
+                            }, 4500);
+                            setTimeout(() => {
+                                addAnonMessage("Засекреченный пользователь", "Хочешь прервать связь? Наивный... Ну попробуй прописать \"overload 9966\" в свою консоль, если сможешь.", "unknown");
+                            }, 8000);
+                        }
+                    } else if (cmd.toLowerCase() === 'overload 9966') {
+                        if (!isMirrorConnected) {
+                            history.innerText += "\nОшибка связи. Порт закрыт.";
+                            return;
+                        }
+                        isOverloadTriggered = true;
+                        history.innerText += "\nПопытка перегрузки порта 9966...";
+                        setTimeout(() => {
+                            addAnonMessage("Засекреченный пользователь", "Эй! Что ты творишь?! Прекрати!", "unknown");
+                        }, 1000);
+                        setTimeout(() => {
+                            addAnonMessage("СИСТЕМА", "Внимание: Критическая ошибка сети. Удаленный хост потерял управление.", "system");
+                            history.innerText += "\nУспешно! Связь разорвана. Порт закрыт.";
+                            addAnonMessage("Засекреченный пользователь", "Ах ты мелкий... Отключить меня вздумал?! Ну ладно. Связь ты разорвал, но файлы твоего сервера теперь у меня. Вся папка Края зашифрована и удалена.\nЕсли хочешь вернуть сервер к жизни — введи \"download broken end\" в Командную строку. Посмотрим, что из этого выйдет...", "unknown");
+                        }, 4000);
+                    } else if (cmd.toLowerCase() === 'download broken end') {
+                        if (!isOverloadTriggered) {
+                            history.innerText += "\nОшибка доступа. Команда заблокирована.";
+                            return;
+                        }
+                        isEndDownloaded = true;
+                        localStorage.setItem('download_broken_end_triggered', 'true');
+                        history.innerText += "\nЗагрузка патча патча с внешнего сервера...";
+                        let p = 0;
+                        const interval = setInterval(() => {
+                            p += 20;
+                            history.innerText += `\nЗагрузка файлов... ${p}%`;
+                            if (p >= 100) {
+                                clearInterval(interval);
+                                history.innerText += "\nГотово. Ошибка: Патч поврежден. Перезагрузите систему.";
+                                addAnonMessage("Засекреченный пользователь", "Ты правда поверил мне? Ха-ха. Теперь твой сервер окончательно сломан.", "unknown");
+                            }
+                        }, 600);
                     } else {
                         history.innerText += `\nНеизвестная команда консоли.`;
                     }
@@ -964,7 +946,7 @@
             document.getElementById('virus-alert').style.display = 'none';
             document.getElementById('desktop').style.display = 'flex';
             document.getElementById('desktop').classList.add('rat-glitch');
-            addAnonMessage("willdie", "Система уничтожена. Твой Край теперь полностью мой.", "unknown");
+            addAnonMessage("Засекреченный пользователь", "Система уничтожена. Твой Край теперь полностью мой.", "unknown");
         }
 
         function initMinesweeper() {
