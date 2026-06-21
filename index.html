@@ -605,10 +605,14 @@
         });
 
         function startBootSequence() {
-            if (localStorage.getItem('download_broken_end_triggered') === 'true') {
-                document.getElementById('global-end-overlay').style.display = 'flex';
-                return;
-            }
+    if (localStorage.getItem('download_broken_end_triggered') === 'true') {
+        // Очищаем триггер, чтобы при возврате назад игра не уходила в бесконечный редирект (по желанию)
+        localStorage.removeItem('download_broken_end_triggered'); 
+        
+        // Перенаправляем игрока на реальный сайт
+        window.location.href = "https://willdieoc.github.io/LK-earth-crush/end.html";
+        return;
+    }
 
             const startupSound = document.getElementById('sound-startup');
             if (startupSound) {
