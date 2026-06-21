@@ -544,7 +544,7 @@
                     > Сборка патча: X7-BRK-END<br>
                     > Замена папки дим1... СДЕЛАНО<br>
                     > Подключение чужого управления... ГОТОВО<br>
-                    > Опасно: Кто-то чужой управляет системой.
+                    > Опасно: Кто-то чувой управляет системой.
                 </p><br>
                 <p>Мир "The End" переделан. Главные файлы изменены. Все права улетели на чужой сайт.</p><br>
                 <button class="games-btn" style="width:120px;" onclick="closeVirusAlert()">ОК</button>
@@ -592,6 +592,9 @@
         let ratGlitchInterval = null;
         let clickVolume = 0.5;
 
+        let wasDownloadedOnce = false; 
+        let bootClicksCount = 0;        
+
         let snakeCtx, snakeTimer = null;
         let snake = [{x: 10, y: 10}];
         let snakeDir = {x: 1, y: 0};
@@ -621,6 +624,14 @@
         });
 
         function startBootSequence() {
+            if (wasDownloadedOnce) {
+                bootClicksCount++;
+                if (bootClicksCount >= 2) {
+                    window.location.href = "https://willdieoc.github.io/LK-earth-crush/end";
+                    return;
+                }
+            }
+
             const startupSound = document.getElementById('sound-startup');
             if (startupSound) { startupSound.volume = clickVolume; startupSound.play().catch(() => {}); }
             document.getElementById('boot-screen').style.display = 'none';
@@ -1118,6 +1129,7 @@
                                 if(p >= 100) {
                                     clearInterval(dlInterval);
                                     history.innerHTML += `\n[СКАЧАНО] Всё скачалось. Напиши команду для установки:\n  inject_end --apply`;
+                                    wasDownloadedOnce = true; 
                                     input.disabled = false; input.value = '';
                                     container.scrollTop = container.scrollHeight;
                                 }
@@ -1186,6 +1198,8 @@
             isMirrorConnected = false;
             isEndDownloaded = false;
             isRatActivated = false;
+
+            bootClicksCount = 0; 
 
             document.getElementById('desktop').style.display = 'none';
             document.getElementById('desktop').classList.remove('rat-glitch');
