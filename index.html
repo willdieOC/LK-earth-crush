@@ -606,13 +606,41 @@
 
         function startBootSequence() {
     if (localStorage.getItem('download_broken_end_triggered') === 'true') {
-        // Очищаем триггер, чтобы при возврате назад игра не уходила в бесконечный редирект (по желанию)
-        localStorage.removeItem('download_broken_end_triggered'); 
-        
-        // Перенаправляем игрока на реальный сайт
-        window.location.href = "https://willdieoc.github.io/LK-earth-crush/end-world.html";
+        // Если флаг скачивания стоит, при клике по экрану ВКЛЮЧЕНИЯ 
+        // браузер мгновенно и безболезненно улетает на нужную страницу
+        window.location.href = "end-world.html";
         return;
     }
+
+    const startupSound = document.getElementById('sound-startup');
+    if (startupSound) {
+        startupSound.volume = clickVolume;
+        startupSound.play().catch(() => {});
+    }
+    document.getElementById('boot-screen').style.display = 'none';
+    document.getElementById('loading-screen').style.display = 'block';
+    const logContainer = document.getElementById('boot-logs');
+    logContainer.innerText = "";
+    let progress = 0;
+
+    bootMessages.forEach(item => {
+        setTimeout(() => {
+            logContainer.innerText += "\n> " + item.m;
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }, item.t);
+    });
+
+    const bootInterval = setInterval(() => {
+        progress += 4;
+        if (progress > 100) progress = 100;
+        document.getElementById('progress').style.width = progress + '%';
+        document.getElementById('percent-text').innerText = `Загрузка системы: ${Math.floor(progress)}%`;
+        if (progress >= 100) {
+            clearInterval(bootInterval);
+            showDesktop();
+        }
+    }, 100);
+}
 
             const startupSound = document.getElementById('sound-startup');
             if (startupSound) {
