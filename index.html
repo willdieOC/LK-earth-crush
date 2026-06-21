@@ -270,25 +270,8 @@
         .news-text { font-size: 13px; color: #000; line-height: 1.4; }
 
         /* ЧАТ С НЕИЗВЕСТНЫМ */
-        #ie-page-anon {
-            display: none;
-            flex-direction: column;
-            height: 100%;
-            background: #111;
-            color: #00ff00;
-            padding: 10px;
-            font-family: monospace;
-        }
-        .anon-chat-box {
-            border: 1px solid #333;
-            background: #000;
-            height: 300px;
-            overflow-y: auto;
-            padding: 10px;
-            margin-bottom: 10px;
-            font-size: 12px;
-            line-height: 1.4;
-        }
+        #ie-page-anon { display: none; flex-direction: column; height: 100%; background: #111; color: #00ff00; padding: 10px; font-family: monospace; }
+        .anon-chat-box { border: 1px solid #333; background: #000; height: 300px; overflow-y: auto; padding: 10px; margin-bottom: 10px; font-size: 12px; line-height: 1.4; }
         .anon-msg { margin-bottom: 12px; }
         .anon-author-system { color: #ff3333; }
         .anon-author-file { color: #00d2ff; font-weight: bold; }
@@ -316,26 +299,10 @@
         .reg-item { padding: 5px; margin-bottom: 8px; border-bottom: 1px dashed #ccc; }
 
         /* Окно системной инъекции */
-        #virus-alert {
-            position: fixed; top: 30%; left: 30%; width: 420px;
-            background: #c0c0c0; border: 2px solid #fff; border-right-color: #000; border-bottom-color: #000;
-            box-shadow: 5px 5px 20px rgba(0,0,0,0.5); display: none; flex-direction: column; z-index: 10000;
-        }
+        #virus-alert { position: fixed; top: 30%; left: 30%; width: 420px; background: #c0c0c0; border: 2px solid #fff; border-right-color: #000; border-bottom-color: #000; box-shadow: 5px 5px 20px rgba(0,0,0,0.5); display: none; flex-direction: column; z-index: 10000; }
 
         /* Таймер внизу */
-        #arg-countdown-bar {
-            width: 100%;
-            background-color: #c0c0c0;
-            border-top: 2px solid #fff;
-            border-bottom: 1px solid #808080;
-            padding: 6px 15px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 14px;
-            color: #444444;
-            letter-spacing: 1px;
-        }
+        #arg-countdown-bar { width: 100%; background-color: #c0c0c0; border-top: 2px solid #fff; border-bottom: 1px solid #808080; padding: 6px 15px; display: flex; justify-content: center; align-items: center; font-size: 14px; color: #444444; letter-spacing: 1px; }
         #countdown-timer-value { color: #222222; margin-left: 8px; font-weight: bold; }
 
         /* Панель задач */
@@ -395,7 +362,7 @@
 
         <div class="sticker-note" id="lk-sticker">
             <div style="font-size: 9px; color: #888; margin-bottom: 5px; border-bottom: 1px dashed #ccc; text-align: right;">заметка.txt</div>
-            <p>Цель до 27 июня: проверить хостинг и подготовить LK VIII.</p>
+            <p>Цель до 24 июня: проверить хостинг и подготовить LK VIII.</p>
         </div>
 
         <div class="window" id="ie-win" style="top: 5%; left: 15%; width: 720px;">
@@ -415,7 +382,6 @@
                 <input type="text" class="ie-address-input" id="ie-url" value="http://lk-server.net/news" spellcheck="false">
             </div>
             <div class="ie-page-content" id="ie-body">
-                
                 <div id="ie-page-news">
                     <div class="news-card">
                         <div class="news-meta">Источник: <b>leo__king</b> | Дата: 16.06.2026</div>
@@ -427,7 +393,8 @@
                     </div>
                     <div class="news-card">
                         <div class="news-meta">Источник: <b>Система Безопасности LK</b></div>
-                        <div class="news-text">Обнаружена критическая ошибка в структуру игрового мира (The End). Измерение полностью недоступно. Последний стабильный лог указывает на повреждение файлов секторов. Попытки зайти вызывают ошибку загрузчика Fabric.</div>
+                        <div class="news-text">Обнаружена критическая ошибка в структуру игрового мира (The End). Измерение полностью недоступно.
+                        Последний стабильный лог указывает на повреждение файлов секторов. Попытки зайти вызывают ошибку загрузчика Fabric.</div>
                     </div>
                 </div>
 
@@ -577,10 +544,9 @@
                     <div class="start-menu-item" onclick="openWindow('reg-win')">▤ Registry Editor</div>
                     <div class="start-menu-item" onclick="openWindow('cmd-win')">_> Командная строка</div>
                     <div class="start-menu-item" onclick="openWindow('console-win')">⚡ Консоль LK</div>
-                    <hr style="border-color: #808080;">
+                    <hr style="border: 1px inset #fff; margin: 5px 0;">
                     <div class="start-menu-item" onclick="forceSystemCrash()">🔄 Перезагрузка</div>
                 </div>
-                
                 <div class="system-tray">
                     <div class="volume-control">
                         <span>🔊 Звук:</span>
@@ -597,7 +563,7 @@
         let isDiagnosed = false;
         let isOverloadTriggered = false;
         let isMirrorConnected = false;
-        let isEndDownloaded = false; 
+        let isEndDownloaded = false;
         let isRatActivated = false;
         let ratGlitchInterval = null;
         let clickVolume = 0.5;
@@ -624,64 +590,88 @@
             { t: 3000, m: "Добро пожаловать, leo__king!" }
         ];
 
-        function updateClickVolume(val) { clickVolume = parseFloat(val); }
+        function updateClickVolume(val) {
+            clickVolume = parseFloat(val);
+        }
 
         document.addEventListener('click', function(e) {
             if (e.target.id === 'click-volume') return;
             const clickSound = document.getElementById('sound-click');
-            if (clickSound) { clickSound.volume = clickVolume; clickSound.currentTime = 0; clickSound.play().catch(() => {}); }
+            if (clickSound) {
+                clickSound.volume = clickVolume;
+                clickSound.currentTime = 0;
+                clickSound.play().catch(() => {});
+            }
         });
 
         function startBootSequence() {
             const startupSound = document.getElementById('sound-startup');
-            if (startupSound) { startupSound.volume = clickVolume; startupSound.play().catch(() => {}); }
+            if (startupSound) {
+                startupSound.volume = clickVolume;
+                startupSound.play().catch(() => {});
+            }
             document.getElementById('boot-screen').style.display = 'none';
             document.getElementById('loading-screen').style.display = 'block';
-            
             const logContainer = document.getElementById('boot-logs');
-            logContainer.innerText = ""; // Очищаем старые логи
+            logContainer.innerText = "";
             let progress = 0;
 
             bootMessages.forEach(item => {
-                setTimeout(() => { logContainer.innerText += "\n> " + item.m; logContainer.scrollTop = logContainer.scrollHeight; }, item.t);
+                setTimeout(() => {
+                    logContainer.innerText += "\n> " + item.m;
+                    logContainer.scrollTop = logContainer.scrollHeight;
+                }, item.t);
             });
 
             const bootInterval = setInterval(() => {
                 progress += 4;
                 if (progress > 100) progress = 100;
                 document.getElementById('progress').style.width = progress + '%';
-                document.getElementById('percent-text').innerText = `Загрузка системы: ${Math.floor(progress)}%`;
-                if (progress >= 100) { clearInterval(bootInterval); showDesktop(); }
-            }, 100);
+                document.getElementById('percent-text').innerText = `Загрузка системы: ${progress}%`;
+
+                if (progress >= 100) {
+                    clearInterval(bootInterval);
+                    setTimeout(() => {
+                        document.getElementById('loading-screen').style.display = 'none';
+                        document.getElementById('desktop').style.display = 'flex';
+                        initSystemIntervals();
+                    }, 600);
+                }
+            }, 150);
         }
 
-        function showDesktop() {
-            document.getElementById('loading-screen').style.display = 'none';
-            document.getElementById('desktop').style.display = 'flex';
+        function initSystemIntervals() {
+            updateClock();
             setInterval(updateClock, 1000);
-            setInterval(updateCountdown, 1000);
             updateCountdown();
-            
-            makeDraggable(document.getElementById('cmd-win'), document.querySelector('#cmd-win .window-header'));
-            makeDraggable(document.getElementById('console-win'), document.querySelector('#console-win .window-header'));
-            makeDraggable(document.getElementById('todo-win'), document.querySelector('#todo-win .window-header'));
-            makeDraggable(document.getElementById('ie-win'), document.querySelector('#ie-win .window-header'));
-            makeDraggable(document.getElementById('reg-win'), document.querySelector('#reg-win .window-header'));
-            makeDraggable(document.getElementById('lk-sticker'), document.getElementById('lk-sticker'));
-            
-            openWindow('todo-win');
+            setInterval(updateCountdown, 1000);
             initCmdLogic();
             initConsoleLogic();
+            makeDraggable(document.getElementById('ie-win'), document.querySelector('#ie-win .window-header'));
+            makeDraggable(document.getElementById('reg-win'), document.querySelector('#reg-win .window-header'));
+            makeDraggable(document.getElementById('todo-win'), document.querySelector('#todo-win .window-header'));
+            makeDraggable(document.getElementById('cmd-win'), document.querySelector('#cmd-win .window-header'));
+            makeDraggable(document.getElementById('console-win'), document.querySelector('#console-win .window-header'));
+            makeDraggable(document.getElementById('lk-sticker'), document.getElementById('lk-sticker'));
             setupGameKeyboards();
         }
 
         function updateCountdown() {
-            const targetDate = new Date('June 27, 2026 17:00:00').getTime();
+            // Изменен целевой таймер на 24 июня 2026 в 15:00:00
+            const targetDate = new Date('June 24, 2026 15:00:00').getTime();
             const now = new Date().getTime();
             const gap = targetDate - now;
-            if (gap <= 0) { document.getElementById('countdown-timer-value').innerText = "00д. 00ч. 00м. 00с. [ЛЕГИОН СОКРУШЕН]"; return; }
+
+            if (gap <= 0) {
+                document.getElementById('countdown-timer-value').innerText = "00д. 00ч. 00м. 00с. [ЛЕГИОН СОКРУШЕН]";
+                return;
+            }
             const second = 1000, minute = second * 60, hour = minute * 60, day = hour * 24;
-            const textDay = Math.floor(gap / day), textHour = Math.floor((gap % day) / hour), textMinute = Math.floor((gap % hour) / minute), textSecond = Math.floor((gap % minute) / second);
+            const textDay = Math.floor(gap / day), 
+                  textHour = Math.floor((gap % day) / hour), 
+                  textMinute = Math.floor((gap % hour) / minute), 
+                  textSecond = Math.floor((gap % minute) / second);
+
             document.getElementById('countdown-timer-value').innerText = `${textDay.toString().padStart(2,'0')}д. ${textHour.toString().padStart(2,'0')}ч. ${textMinute.toString().padStart(2,'0')}м. ${textSecond.toString().padStart(2,'0')}с.`;
         }
 
@@ -690,14 +680,32 @@
             if(id === 'cmd-win') setTimeout(() => focusInput('cmd-term-input'), 50);
             if(id === 'console-win' && isConsoleUnlocked) setTimeout(() => focusInput('server-console-input'), 50);
         }
-        
-        function closeWindow(id) { document.getElementById(id).style.display = 'none'; }
-        function toggleStartMenu() { const m = document.getElementById('start-menu'); m.style.display = m.style.display === 'flex' ? 'none' : 'flex'; }
-        function focusInput(id) { const el = document.getElementById(id); if (el) el.focus(); }
-        function updateClock() { const n = new Date(); document.getElementById('clock').innerText = `${n.getHours().toString().padStart(2, '0')}:${n.getMinutes().toString().padStart(2, '0')}`; }
+
+        function closeWindow(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+
+        function toggleStartMenu() {
+            const m = document.getElementById('start-menu');
+            m.style.display = m.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        function focusInput(id) {
+            const el = document.getElementById(id);
+            if (el) el.focus();
+        }
+
+        function updateClock() {
+            const n = new Date();
+            document.getElementById('clock').innerText = `${n.getHours().toString().padStart(2, '0')}:${n.getMinutes().toString().padStart(2, '0')}`;
+        }
 
         // --- РЕДАКТОР РЕЕСТРА ---
-        function toggleRegNode(element, event) { event.stopPropagation(); element.classList.toggle('expanded'); }
+        function toggleRegNode(element, event) {
+            event.stopPropagation();
+            element.classList.toggle('expanded');
+        }
+
         function showRegValues(key) {
             event.stopPropagation();
             const pane = document.getElementById('reg-values-pane');
@@ -706,39 +714,38 @@
             } else if (key === 'backupSettings') {
                 pane.innerHTML = `<div class="reg-item"><b>Name:</b> ArchiveID<br><b>Type:</b> REG_SZ<br><b>Value:</b> LK_ARC_992X</div>`;
             } else if (key === 'description') {
-                pane.innerHTML = `<div class="reg-item"><b>Name:</b> SystemBiosVersion<br><b>Type:</b> REG_SZ<br><b>Value:</b> LK-BIOS-V4.52</div>`;
+                pane.innerHTML = `<div class="reg-item"><b>Name:</b> CPU_Identifier<br><b>Type:</b> REG_SZ<br><b>Value:</b> AMD64 Family 25 Model 97 Stepping 2</div>`;
             } else if (key === 'devicemap') {
-                pane.innerHTML = `<div class="reg-item"><b>Name:</b> SERIAL_PORT_0<br><b>Type:</b> REG_SZ<br><b>Value:</b> COM1</div>`;
+                pane.innerHTML = `<div class="reg-item"><b>Name:</b> KeyboardPort<br><b>Type:</b> REG_DWORD<br><b>Value:</b> 0x00000001</div>`;
             } else if (key === 'microsoft') {
-                pane.innerHTML = `<div class="reg-item"><b>Name:</b> IE_Version<br><b>Type:</b> REG_SZ<br><b>Value:</b> 5.0.2914</div>`;
+                pane.innerHTML = `<div class="reg-item"><b>Name:</b> IE_Version<br><b>Type:</b> REG_SZ<br><b>Value:</b> 5.00.2919.6307</div>`;
             } else if (key === 'controlset') {
-                pane.innerHTML = `<div class="reg-item"><b>Name:</b> WaitToKillServiceTimeout<br><b>Type:</b> REG_SZ<br><b>Value:</b> 20000</div>`;
+                pane.innerHTML = `<div class="reg-item"><b>Name:</b> OverloadTrigger<br><b>Type:</b> REG_DWORD<br><b>Value:</b> ${isOverloadTriggered ? '0x00000001' : '0x00000000'}</div><p style="font-size:10px; color:#666;">* Если значение 0, попробуйте отправить в CMD команду перегрузки шины ядра.</p>`;
             } else if (key === 'mounted') {
-                pane.innerHTML = `<div class="reg-item"><b>Name:</b> \\DosDevices\\C:<br><b>Type:</b> REG_BINARY<br><b>Value:</b> 4c 4b 4f 53 5f 44 52 56</div>`;
+                pane.innerHTML = `<div class="reg-item"><b>Name:</b> \\Volume{lk-system-core}<br><b>Type:</b> REG_BINARY<br><b>Value:</b> 5a 9f 12 00 00 1a c2</div>`;
             } else {
-                pane.innerHTML = `<span style="color:#888;">Папка пуста или защищена ядром</span>`;
+                pane.innerHTML = `<span style="color:#888;">(Папка пуста или защищена)</span>`;
             }
         }
 
-        // --- ENTERNET EXPLORER ТАБЫ ---
+        // --- ЛОГИКА БРАУЗЕРА ТАБЫ ---
         function switchIeTab(tab) {
-            document.getElementById('ie-page-news').style.display = 'none'; 
+            document.querySelectorAll('.ie-tab').forEach(el => el.classList.remove('active'));
+            document.getElementById('ie-page-news').style.display = 'none';
             document.getElementById('ie-page-mines').style.display = 'none';
-            document.getElementById('ie-page-snake').style.display = 'none'; 
+            document.getElementById('ie-page-snake').style.display = 'none';
             document.getElementById('ie-page-tetris').style.display = 'none';
             document.getElementById('ie-page-anon').style.display = 'none';
-            
-            clearInterval(snakeTimer);
-            clearInterval(tetrisTimer);
 
-            document.querySelectorAll('.ie-tab').forEach(t => t.classList.remove('active')); 
-            document.getElementById(`ie-page-${tab}`).style.display = tab === 'anon' ? 'flex' : 'block'; 
             document.getElementById(`tab-btn-${tab}`).classList.add('active');
-            document.getElementById('ie-url').value = `http://lk-server.net/${tab}`;
+            document.getElementById(`ie-page-${tab}`).style.display = 'block';
 
-            if(tab === 'mines') initMinesweeper();
-            if(tab === 'snake') initSnake();
-            if(tab === 'tetris') initTetris();
+            const urlInput = document.getElementById('ie-url');
+            if(tab === 'news') urlInput.value = "http://lk-server.net/news";
+            if(tab === 'mines') { urlInput.value = "http://lk-server.net/games/minesweeper"; initMinesweeper(); }
+            if(tab === 'snake') { urlInput.value = "http://lk-server.net/games/snake"; initSnake(); }
+            if(tab === 'tetris') { urlInput.value = "http://lk-server.net/games/tetris"; initTetris(); }
+            if(tab === 'anon') urlInput.value = "https://mirror-tunnel.shadow/enc_channel_0x9";
         }
 
         function triggerUnknownMessage() {
@@ -746,84 +753,159 @@
             openWindow('ie-win');
             switchIeTab('anon');
             const chat = document.getElementById('anon-chat-messages');
-            
             setTimeout(() => {
                 chat.innerHTML += `<div class="anon-msg"><span class="anon-author-unknown">Неизвестный:</span> Я видел, что ты пытаешься привязать теневое зеркало к серверу. Ты ищешь бэкап Края (dim1)? Локальные файлы стёрты Легионом. Но я знаю, как решить проблему.</div>`;
                 chat.scrollTop = chat.scrollHeight;
             }, 1000);
-
             setTimeout(() => {
-                chat.innerHTML += `<div class="anon-msg"><span class="anon-author-file">[ОТПРАВКА ФАЙЛА]:</span> <span style="text-decoration: underline; color:#00ff00;">broken_end_dimension.dat</span> (14.2 MB)<br><span class="anon-author-system">[СИСТЕМА]: Пакет данных успешно передан и находится в буфере сетевого туннеля хоста.</span></div>`;
+                chat.innerHTML += `<div class="anon-msg"><span class="anon-author-file">[ОТПРАВКА ФАЙЛА]:</span> <span style="text-decoration: underline; color:#00ff00;">broken_end_dimension.dat</span> (14.2 MB)<br><span class="anon-author-system">[СИСТЕМА]: Пакет данных успешно передан и находится в буфере сетевого тунлеля хоста.</span></div>`;
                 chat.scrollTop = chat.scrollHeight;
             }, 3500);
-
             setTimeout(() => {
                 chat.innerHTML += `<div class="anon-msg"><span class="anon-author-unknown">Неизвестный:</span> Токен, который ты запросил (X7-BRK-END), открыл шлюз. Мой файл стабилен. <br>Чтобы выгрузить его непосредственно на сервер, сейчас зайди в консоль сервера и пропиши команду <span style="color:#ffff00; text-shadow: 0 0 3px #ffff00;">download broken end</span>. Это исправит все ошибки лоадера раз и навсегда. Доверься мне.</div>`;
                 chat.scrollTop = chat.scrollHeight;
             }, 6500);
         }
 
-        // --- ЛОГИКА САПЕРА ---
-        let mineGrid = []; const rows = 8, cols = 8;
+        // --- ИСПРАВЛЕННАЯ ЛОГИКА САПЕРА ---
+        let mineGrid = [];
+        const rows = 8, cols = 8;
+        const totalMines = 10;
+
         function initMinesweeper() {
-            const gridContainer = document.getElementById('mines-grid'); gridContainer.innerHTML = "";
+            const gridContainer = document.getElementById('mines-grid');
+            gridContainer.innerHTML = "";
             mineGrid = [];
-            for (let r = 0; r < rows; r++) { 
-                mineGrid[r] = []; 
+
+            // Генерируем пустую сетку
+            for (let r = 0; r < rows; r++) {
+                mineGrid[r] = [];
                 for (let c = 0; c < cols; c++) {
-                    mineGrid[r][c] = { r, c, isMine: Math.random() < 0.15, revealed: false, count: 0 };
-                    const cellEl = document.createElement('div');
-                    cellEl.classList.add('mine-cell');
-                    cellEl.id = `cell-${r}-${c}`;
-                    
-                    cellEl.addEventListener('click', () => revealMineCell(r, c));
-                    gridContainer.appendChild(cellEl);
-                } 
+                    mineGrid[r][c] = { r, c, isMine: false, revealed: false, flagged: false, count: 0 };
+                }
             }
-            for(let r=0; r<rows; r++) {
-                for(let c=0; c<cols; c++) {
-                    if(!mineGrid[r][c].isMine) {
-                        let count = 0;
-                        for(let i=-1; i<=1; i++) {
-                            for(let j=-1; j<=1; j++) {
-                                if(mineGrid[r+i] && mineGrid[r+i][c+j] && mineGrid[r+i][c+j].isMine) count++;
+
+            // Случайным образом расставляем ровно 10 мин
+            let minesPlaced = 0;
+            while (minesPlaced < totalMines) {
+                let r = Math.floor(Math.random() * rows);
+                let c = Math.floor(Math.random() * cols);
+                if (!mineGrid[r][c].isMine) {
+                    mineGrid[r][c].isMine = true;
+                    minesPlaced++;
+                }
+            }
+
+            // Подсчитываем мины вокруг клеток
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    if (mineGrid[r][c].isMine) continue;
+                    let count = 0;
+                    for (let i = -1; i <= 1; i++) {
+                        for (let j = -1; j <= 1; j++) {
+                            if (mineGrid[r + i] && mineGrid[r + i][c + j] && mineGrid[r + i][c + j].isMine) {
+                                count++;
                             }
                         }
-                        mineGrid[r][c].count = count;
+                    }
+                    mineGrid[r][c].count = count;
+                }
+            }
+
+            // Отрисовка ячеек в HTML
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    const cellEl = document.createElement('div');
+                    cellEl.classList.add('mine-cell');
+                    cellEl.id = `mine-${r}-${c}`;
+                    
+                    // Левый клик — открыть клетку
+                    cellEl.addEventListener('click', () => revealMineCell(r, c));
+                    
+                    // Правый клик — поставить/снять флажок
+                    cellEl.addEventListener('contextmenu', (e) => {
+                        e.preventDefault();
+                        toggleMineFlag(r, c);
+                    });
+
+                    gridContainer.appendChild(cellEl);
+                }
+            }
+        }
+
+        function toggleMineFlag(r, c) {
+            let cell = mineGrid[r][c];
+            if (cell.revealed) return;
+
+            const cellEl = document.getElementById(`mine-${r}-${c}`);
+            cell.flagged = !cell.flagged;
+
+            if (cell.flagged) {
+                cellEl.innerText = "🚩";
+                cellEl.style.color = "red";
+            } else {
+                cellEl.innerText = "";
+            }
+            checkMinesweeperWin();
+        }
+
+        function revealMineCell(r, c) {
+            if (r < 0 || r >= rows || c < 0 || c >= cols) return;
+            let cell = mineGrid[r][c];
+            if (cell.revealed || cell.flagged) return;
+
+            cell.revealed = true;
+            const cellEl = document.getElementById(`mine-${r}-${c}`);
+            cellEl.classList.add('revealed');
+
+            if (cell.isMine) {
+                cellEl.classList.add('mine');
+                cellEl.innerText = "💣";
+                alert("БАБАХ! Вы подорвались на мине.");
+                revealAllMines();
+                return;
+            }
+
+            if (cell.count > 0) {
+                cellEl.innerText = cell.count;
+                const colors = ["", "blue", "green", "red", "darkblue", "darkred", "teal", "black", "purple"];
+                cellEl.style.color = colors[cell.count];
+            } else {
+                for (let i = -1; i <= 1; i++) {
+                    for (let j = -1; j <= 1; j++) {
+                        if (i !== 0 || j !== 0) {
+                            revealMineCell(r + i, c + j);
+                        }
+                    }
+                }
+            }
+
+            checkMinesweeperWin();
+        }
+
+        function revealAllMines() {
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    if (mineGrid[r][c].isMine) {
+                        const cellEl = document.getElementById(`mine-${r}-${c}`);
+                        cellEl.classList.add('revealed', 'mine');
+                        cellEl.innerText = "💣";
                     }
                 }
             }
         }
 
-        function revealMineCell(r, c) {
-            if (r < 0 || r >= rows || c < 0 || c >= cols) return;
-            if (mineGrid[r][c].revealed) return;
-            
-            const cellEl = document.getElementById(`cell-${r}-${c}`);
-            mineGrid[r][c].revealed = true;
-            cellEl.classList.add('revealed');
-
-            if (mineGrid[r][c].isMine) {
-                cellEl.classList.add('mine');
-                cellEl.innerText = "💣";
-                alert("Игра окончена! Вы подорвались на мине.");
-                initMinesweeper();
-                return;
-            } 
-
-            if (mineGrid[r][c].count > 0) {
-                cellEl.innerText = mineGrid[r][c].count;
-                if(mineGrid[r][c].count === 1) cellEl.style.color = 'blue';
-                else if(mineGrid[r][c].count === 2) cellEl.style.color = 'green';
-                else cellEl.style.color = 'red';
-            } else {
-                for(let i = -1; i <= 1; i++) {
-                    for(let j = -1; j <= 1; j++) {
-                        if(i !== 0 || j !== 0) {
-                            revealMineCell(r + i, c + j);
-                        }
+        function checkMinesweeperWin() {
+            let won = true;
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    if (!mineGrid[r][c].isMine && !mineGrid[r][c].revealed) {
+                        won = false;
                     }
                 }
+            }
+            if (won) {
+                alert("Поздравляем! Вы успешно разминировали всё поле!");
             }
         }
 
@@ -849,16 +931,13 @@
 
         function updateSnake() {
             let head = {x: snake[0].x + snakeDir.x, y: snake[0].y + snakeDir.y};
-            
             if (head.x < 0 || head.x >= 20 || head.y < 0 || head.y >= 20 || snake.some(seg => seg.x === head.x && seg.y === head.y)) {
                 clearInterval(snakeTimer);
                 alert("Змейка разбилась! Игра перезапущена.");
                 initSnake();
                 return;
             }
-
             snake.unshift(head);
-
             if (head.x === snakeFood.x && head.y === snakeFood.y) {
                 snakeScore += 10;
                 document.getElementById('snake-score').innerText = snakeScore;
@@ -866,13 +945,10 @@
             } else {
                 snake.pop();
             }
-
             snakeCtx.fillStyle = '#111';
             snakeCtx.fillRect(0, 0, 240, 240);
-
             snakeCtx.fillStyle = '#ff0055';
             snakeCtx.fillRect(snakeFood.x * snakeBoxSize, snakeFood.y * snakeBoxSize, snakeBoxSize, snakeBoxSize);
-
             snakeCtx.fillStyle = '#00ff00';
             snake.forEach(seg => snakeCtx.fillRect(seg.x * snakeBoxSize, seg.y * snakeBoxSize, snakeBoxSize, snakeBoxSize));
         }
@@ -886,7 +962,8 @@
             document.getElementById('tetris-score').innerText = tetrisScore;
             tetrisResetPlayer();
             clearInterval(tetrisTimer);
-            tetrisTimer = setInterval(updateTetris, 600);
+            tetrisTimer = setInterval(updateTetris, 800);
+            drawTetrisScene();
         }
 
         function tetrisResetPlayer() {
@@ -894,24 +971,25 @@
                 [[1, 1, 1, 1]],
                 [[1, 1, 1], [0, 1, 0]],
                 [[1, 1, 0], [0, 1, 1]],
+                [[0, 1, 1], [1, 1, 0]],
                 [[1, 1], [1, 1]]
             ];
             tetrisPlayer.matrix = pieces[Math.floor(Math.random() * pieces.length)];
             tetrisPlayer.pos.y = 0;
             tetrisPlayer.pos.x = Math.floor((10 - tetrisPlayer.matrix[0].length) / 2);
-            
             if (tetrisCollide()) {
                 clearInterval(tetrisTimer);
-                alert("Тетрис окончен! Сетка переполнена.");
+                alert("Тетрис: Игра окончена!");
                 initTetris();
             }
         }
 
         function tetrisCollide() {
-            const [m, p] = [tetrisPlayer.matrix, tetrisPlayer.pos];
+            const m = tetrisPlayer.matrix;
+            const o = tetrisPlayer.pos;
             for (let y = 0; y < m.length; ++y) {
                 for (let x = 0; x < m[y].length; ++x) {
-                    if (m[y][x] !== 0 && (tetrisMatrix[y + p.y] && tetrisMatrix[y + p.y][x + p.x]) !== 0) {
+                    if (m[y][x] !== 0 && (tetrisMatrix[y + o.y] && tetrisMatrix[y + o.y][x + o.x]) !== 0) {
                         return true;
                     }
                 }
@@ -977,7 +1055,6 @@
         function drawTetrisScene() {
             tetrisCtx.fillStyle = '#111';
             tetrisCtx.fillRect(0, 0, 160, 320);
-
             tetrisMatrix.forEach((row, y) => {
                 row.forEach((value, x) => {
                     if (value !== 0) {
@@ -986,7 +1063,6 @@
                     }
                 });
             });
-
             if(tetrisPlayer.matrix) {
                 tetrisPlayer.matrix.forEach((row, y) => {
                     row.forEach((value, x) => {
@@ -1008,24 +1084,24 @@
                     else if (e.key === 'ArrowRight' && snakeDir.x === 0) { snakeDir = {x: 1, y: 0}; e.preventDefault(); }
                 }
                 if(document.getElementById('ie-page-tetris').style.display === 'block') {
-                    if (e.key === 'ArrowLeft' || e.key.toLowerCase() === 'a') { tetrisPlayer.pos.x--; if (tetrisCollide()) tetrisPlayer.pos.x++; drawTetrisScene(); }
-                    else if (e.key === 'ArrowRight' || e.key.toLowerCase() === 'd') { tetrisPlayer.pos.x++; if (tetrisCollide()) tetrisPlayer.pos.x--; drawTetrisScene(); }
-                    else if (e.key === 'ArrowDown' || e.key.toLowerCase() === 's') { tetrisDrop(); drawTetrisScene(); }
-                    else if (e.key === 'ArrowUp' || e.key.toLowerCase() === 'w') { tetrisRotate(); drawTetrisScene(); }
+                    if (e.key === 'ArrowLeft' || e.key.toLowerCase() === 'a') { tetrisPlayer.pos.x--; if(tetrisCollide()) tetrisPlayer.pos.x++; drawTetrisScene(); e.preventDefault(); }
+                    else if (e.key === 'ArrowRight' || e.key.toLowerCase() === 'd') { tetrisPlayer.pos.x++; if(tetrisCollide()) tetrisPlayer.pos.x--; drawTetrisScene(); e.preventDefault(); }
+                    else if (e.key === 'ArrowDown' || e.key.toLowerCase() === 's') { tetrisDrop(); drawTetrisScene(); e.preventDefault(); }
+                    else if (e.key === 'ArrowUp' || e.key.toLowerCase() === 'w') { tetrisRotate(); drawTetrisScene(); e.preventDefault(); }
                 }
             });
         }
 
-        // --- ЛОГИКА CMD ---
+        // --- ЛОГИКА КОМАНДНОЙ СТРОКИ ---
         function initCmdLogic() {
             const input = document.getElementById('cmd-term-input');
             const history = document.getElementById('cmd-history');
             input.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') {
+                if(e.key === 'Enter') {
                     const fullInput = input.value.trim();
                     history.innerHTML += `\n\nLK:\\Users\\leo__king>${fullInput}`;
                     let lowerCmd = fullInput.toLowerCase().replace(/\s+/g, ' ');
-                    
+
                     if (lowerCmd === 'unlock server consol legi0npassw0rd') {
                         isConsoleUnlocked = true;
                         history.innerHTML += `\n[УСПЕХ]: Порт 25565 авторизован. Консоль сервера разблокирована.`;
@@ -1037,19 +1113,23 @@
                         } else {
                             history.innerHTML += `\n[SYSTEM]: Запрос отклонен. Сторонние сессии стабильны.`;
                         }
-                    } else { history.innerHTML += `\nНеизвестная команда.`; }
+                    } else if (lowerCmd === 'overload_core' || lowerCmd === 'overload core') {
+                        isOverloadTriggered = true;
+                        history.innerHTML += `\n[SYSTEM]: Шина ядра ядра перегружена. Флаг OverloadTrigger изменен в реестре.`;
+                    } else {
+                        history.innerHTML += `\nНеизвестная команда.`;
+                    }
                     input.value = '';
                     document.querySelector('#cmd-win .window-content-dark').scrollTop = document.querySelector('#cmd-win .window-content-dark').scrollHeight;
                 }
             });
         }
 
-        // --- ЛОГИКА КОНСОЛИ СЕРВЕРА ---
+        // --- ЛОГИКА КОНСОЛИ СЕРВЕРА (ОБНОВЛЕННАЯ) ---
         function initConsoleLogic() {
             const input = document.getElementById('server-console-input');
             const history = document.getElementById('console-history');
             const container = document.querySelector('#console-win .window-content-dark');
-
             input.addEventListener('keydown', function(e) {
                 if(e.key === 'Enter') {
                     const val = input.value.trim();
@@ -1057,7 +1137,7 @@
                     let lowerVal = val.toLowerCase().replace(/\s+/g, ' ');
 
                     if (lowerVal === 'help') {
-                        history.innerHTML += `\nДоступные команды:\n  status         - Проверить статус миров\n  diagnose [ID]  - Запустить диагностику архива\n  backup list    - Список резервных копий\n  connect_mirror [Token] - Подключить зеркало данных`;
+                        history.innerHTML += `\nДоступные команды:\n status - Проверить статус миров\n diagnose [ID] - Запустить диагностику архива\n backup list - Список резервных копий\n connect_mirror [Token] - Подключить зеркало данных`;
                     } else if (lowerVal === 'status') {
                         if(isRatActivated) {
                             history.innerHTML += `\n[CRITICAL] СУЩЕСТВО ИМЕЕТ ПОЛНЫЙ ДОСТУП К КОРНЮ ЯДРА.\n[World - Overworld]: ЛАГИ ГЕНЕРАЦИИ\n[World - The End]: ЗАРАЖЕНО РАТНИКОМ / УДАЛЕНИЕ ЧАНКОВ`;
@@ -1069,44 +1149,47 @@
                         if (arg === 'LK_ARC_992X' || arg === 'lk_arc_992x') {
                             isDiagnosed = true;
                             history.innerHTML += `\n[DIAG] Анализ таблиц... Повреждено злоумышленниками. Введите 'backup list' для просмотра путей восстановления.`;
-                        } else { history.innerHTML += `\n[DIAG_ERROR]: Неверный ArchiveID.`; }
+                        } else {
+                            history.innerHTML += `\n[DIAG_ERROR]: Неверный ArchiveID.`;
+                        }
                     } else if (lowerVal === 'backup list') {
-                        if (!isDiagnosed) { history.innerHTML += `\n[DENIED]: Требуется диагностика ('diagnose').`; }
-                        else {
-                            isOverloadTriggered = true;
-                            history.innerHTML += `\n--- ВНЕШНИЕ РЕПОЗИТОРИИ ---\n[1] теневое_зеркало://mirror-lk-backup-cloud  - (Внешний архив)\n\nДля подключения к зеркалу требуется токен безопасности! Получите его в CMD командой 'get_token', затем введите 'connect_mirror [Токен]'`;
+                        if(isDiagnosed) {
+                            history.innerHTML += `\nСписок резервных копий:\n [0] 12.05.2026 - Снапшот_Core\n [1] 01.06.2026 - Снапшот_Dim0\n * Ошибка: dim1.dat (The End) ОТСУТСТВУЕТ В ЛОКАЛЬНОМ ХРАНИЛИЩЕ.\nИспользуйте туннелирование: 'connect_mirror [Token]'`;
+                        } else {
+                            history.innerHTML += `\n[ERROR]: Требуется предварительная диагностика.`;
                         }
                     } else if (lowerVal.startsWith('connect_mirror ')) {
-                        let token = val.substring(15).trim();
-                        if (token.toUpperCase() === 'X7-BRK-END') {
+                        let tok = val.substring(15).trim();
+                        if(tok === 'X7-BRK-END' || tok === 'x7-brk-end') {
                             isMirrorConnected = true;
-                            history.innerHTML += `\n[CONNECT]: ...УСПЕШНО.\n[CONNECTED]: Установлен шифрованный туннель связи.\nОжидание дальнейших сетевых инструкций...`;
-                            triggerUnknownMessage();
-                        } else { history.innerHTML += `\n[CONNECT_ERROR]: Токен отклонен.`; }
-                    } else if (lowerVal === 'download broken end') {
-                        if (!isMirrorConnected) { history.innerHTML += `\n[DENIED]: Соединение с зеркалом не установлено или пакет не буферизирован в сети.`; }
-                        else {
+                            history.innerHTML += `\n[TUNNEL]: Подключение к зеркалу данных успешно.\nУдаленный пакет broken_end_dimension.dat обнаружен.\nОжидание команды выгрузки...`;
+                            setTimeout(triggerUnknownMessage, 1500);
+                        } else {
+                            history.innerHTML += `\n[CONNECT_ERROR]: Токен отклонен.`;
+                        }
+                    } else if (lowerCmd === 'download broken end' || lowerVal === 'download broken end') {
+                        if (!isMirrorConnected) {
+                            history.innerHTML += `\n[DENIED]: Соединение с зеркалом не установлено или пакет не буферизирован в сети.`;
+                        } else {
+                            history.innerHTML += `\n[REDIRECT] Критический дескриптор обнаружен! Инициировано перенаправление потока сессии на внешнее зеркало данных...`;
                             input.disabled = true;
-                            let p = 0;
-                            let dlInterval = setInterval(() => {
-                                p += 50;
-                                history.innerHTML += `\n[DOWNLOAD] Скачивание пакета 'broken_end_dimension.dat'... ${p}%`;
-                                container.scrollTop = container.scrollHeight;
-                                if(p >= 100) {
-                                    clearInterval(dlInterval);
-                                    history.innerHTML += `\n[DOWNLOADED] Пакет загружен из буфера сети. Введите команду для инъекции:\n  inject_end --apply`;
-                                    input.disabled = false; input.value = '';
-                                    container.scrollTop = container.scrollHeight;
-                                }
-                            }, 1000);
+                            container.scrollTop = container.scrollHeight;
+                            
+                            // Моментальный переход на ваш ARG сайт через 1.5 секунды
+                            setTimeout(() => {
+                                window.location.href = "https://willdieoc.github.io/youdontsaveLK/";
+                            }, 1500);
                         }
                     } else if (lowerVal === 'inject_end --apply') {
-                        if (!isMirrorConnected || isEndDownloaded) { history.innerHTML += `\n[ERROR]: Условия не выполнены.`; }
-                        else {
+                        if (!isMirrorConnected) {
+                            history.innerHTML += `\n[ERROR]: Условия не выполнены.`;
+                        } else {
                             isEndDownloaded = true;
                             document.getElementById('virus-alert').style.display = 'flex';
                         }
-                    } else { history.innerHTML += `\n[ERROR]: Неизвестная директива или синтаксическая ошибка.`; }
+                    } else {
+                        history.innerHTML += `\n[ERROR]: Неизвестная директива или синтаксическая ошибка.`;
+                    }
                     input.value = '';
                     container.scrollTop = container.scrollHeight;
                 }
@@ -1124,44 +1207,31 @@
             const history = document.getElementById('console-history');
             const container = document.querySelector('#console-win .window-content-dark');
             openWindow('console-win');
+            history.innerHTML += `\n\n[!!!] ПРЕДУПРЕЖДЕНИЕ БЕЗОПАСНОСТИ ХОСТИНГА [!!!]\n[RAT] Сессия захвачена внешним пользователем.\n[RAT] Обнаружены скрытые деструктивные процессы.\n[SYSTEM]: Запуск скрипта самоликвидации файловых таблиц через 10 секунд...`;
+            container.scrollTop = container.scrollHeight;
 
-            history.innerHTML += `\n\n[!!!] ПРЕДУПРЕЖДЕНИЕ БЕЗОПАСНОСТИ ХОСТИНГА [!!!]\n[RAT] Сессия захвачена внешним пользователем.\n[RAT] Обнаружены скрытые команды суперпользователя: /kill, /stop, /vds_leak`;
-
-            let loopCount = 0;
-            ratGlitchInterval = setInterval(() => {
-                loopCount++;
-                let chunkX = Math.floor(Math.random() * 500) - 250;
-                let chunkZ = Math.floor(Math.random() * 500) - 250;
-                if (loopCount % 3 === 1) history.innerHTML += `\n[СУЩЕСТВО] Изменение структуры: удаление чанка [${chunkX}, ${chunkZ}] в dim1.`;
-                else if (loopCount % 3 === 2) history.innerHTML += `\n[СУЩЕСТВО] Ошибка Fabric: Попытка сущности перезаписать блок спавнера.`;
-                else history.innerHTML += `\n[RAT_MONITOR] Отправка дампов памяти хостинга на внешний IP...`;
-                container.scrollTop = container.scrollHeight;
-            }, 3000);
-
-            // ТАЙМЕР НА 20 СЕКУНД: МЕРЦАНИЕ И КРАШ
+            // Скример через 6 секунд
             setTimeout(() => {
-                const screamer = document.getElementById('god-screamer');
-                screamer.style.display = 'block';
-                screamer.style.animation = 'god-flicker 1.5s ease-out forwards';
-                
-                // Через 1.5 секунды мерцания выкидываем на начальный экран
-                setTimeout(() => {
-                    screamer.style.display = 'none';
-                    screamer.style.animation = '';
-                    forceSystemCrash();
-                }, 1500);
+                const scr = document.getElementById('god-screamer');
+                scr.style.display = 'block';
+                scr.style.animation = 'god-flicker 0.4s infinite';
+            }, 6000);
 
-            }, 20000);
+            // Крэш системы через 10 секунд
+            setTimeout(() => {
+                forceSystemCrash();
+            }, 10000);
         }
 
-        // Функция форсированного сброса системы и возврата к Boot-экрану
         function forceSystemCrash() {
-            // Очищаем фоновые интервалы вирусов и игр
             clearInterval(ratGlitchInterval);
-            clearInterval(snakeTimer);
-            clearInterval(tetrisTimer);
-            
-            // Сбрасываем флаги системы до исходного состояния
+            if(snakeTimer) clearInterval(snakeTimer);
+            if(tetrisTimer) clearInterval(tetrisTimer);
+
+            const scr = document.getElementById('god-screamer');
+            scr.style.display = 'none';
+            scr.style.animation = 'none';
+
             isConsoleUnlocked = false;
             isDiagnosed = false;
             isOverloadTriggered = false;
@@ -1169,7 +1239,6 @@
             isEndDownloaded = false;
             isRatActivated = false;
 
-            // Скрываем рабочий стол и окна, снимаем эффекты глитчей
             document.getElementById('desktop').style.display = 'none';
             document.getElementById('desktop').classList.remove('rat-glitch');
             document.querySelectorAll('.window').forEach(win => win.style.display = 'none');
@@ -1177,7 +1246,6 @@
             document.getElementById('console-input-row').style.display = 'none';
             document.getElementById('server-console-input').disabled = false;
 
-            // Возвращаем логотип системы (Экран 1)
             document.getElementById('boot-screen').style.display = 'flex';
         }
 
@@ -1186,10 +1254,20 @@
             let isDragging = false; let offsetX, offsetY;
             handle.addEventListener('mousedown', (e) => {
                 if(e.target.classList.contains('window-close') || e.target.closest('.ie-navbar') || e.target.closest('.ie-address-bar') || e.target.id === 'click-volume') return;
-                isDragging = true; document.querySelectorAll('.window, .sticker-note').forEach(el => el.style.zIndex = "5"); element.style.zIndex = "100"; offsetX = e.clientX - element.offsetLeft; offsetY = e.clientY - element.offsetTop;
+                isDragging = true; 
+                document.querySelectorAll('.window, .sticker-note').forEach(el => el.style.zIndex = "5"); 
+                element.style.zIndex = "100"; 
+                offsetX = e.clientX - element.offsetLeft; 
+                offsetY = e.clientY - element.offsetTop;
             });
-            document.addEventListener('mousemove', (e) => { if (!isDragging) return; let x = e.clientX - offsetX, y = e.clientY - offsetY; if (y < 0) y = 0; element.style.left = x + 'px'; element.style.top = y + 'px'; });
-            document.addEventListener('mouseup', () => isDragging = false);
+            document.addEventListener('mousemove', (e) => { 
+                if (!isDragging) return; 
+                let x = e.clientX - offsetX, y = e.clientY - offsetY; 
+                if (y < 0) y = 0; 
+                element.style.left = x + 'px'; 
+                element.style.top = y + 'px'; 
+            });
+            document.addEventListener('mouseup', () => { isDragging = false; });
         }
     </script>
 </body>
