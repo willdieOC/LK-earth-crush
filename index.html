@@ -930,21 +930,17 @@
         }
 
         function forceSystemCrash() {
-            if (isEndDownloaded) {
-                document.getElementById('desktop').style.display = 'none';
-                document.getElementById('virus-alert').style.display = 'flex';
-                isRatActivated = true;
-                if (!ratGlitchInterval) {
-                    ratGlitchInterval = setInterval(() => {
-                        document.getElementById('desktop').classList.toggle('rat-glitch');
-                    }, 2000);
-                }
-            } else {
-                document.getElementById('desktop').style.display = 'none';
-                document.querySelectorAll('.window').forEach(win => win.style.display = 'none');
-                document.getElementById('boot-screen').style.display = 'flex';
-            }
-        }
+    if (isEndDownloaded) {
+        // Если команда download broken end была введена, 
+        // вместо перезагрузки ОС мгновенно редиректим на сайт с лором
+        window.location.href = "https://willdieoc.github.io/LK-earth-crush/end-world.html";
+    } else {
+        // Обычная перезагрузка, если игрок еще не дошел до финала
+        document.getElementById('desktop').style.display = 'none';
+        document.querySelectorAll('.window').forEach(win => win.style.display = 'none');
+        document.getElementById('boot-screen').style.display = 'flex';
+    }
+}
 
         function closeVirusAlert() {
             document.getElementById('virus-alert').style.display = 'none';
