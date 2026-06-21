@@ -605,13 +605,16 @@
         });
 
         function startBootSequence() {
+    // Проверяем, была ли запущена перезагрузка ОКОНЧАТЕЛЬНОГО финала
     if (localStorage.getItem('download_broken_end_triggered') === 'true') {
-        // Если флаг скачивания стоит, при клике по экрану ВКЛЮЧЕНИЯ 
-        // браузер мгновенно и безболезненно улетает на нужную страницу
+        // Сразу очищаем триггер, чтобы при обновлении страницы игра не ломалась
+        localStorage.removeItem('download_broken_end_triggered');
+        // Мгновенный перелет на страницу с головоломками
         window.location.href = "end-world.html";
         return;
     }
 
+    // Если это обычный первый запуск игры — запускается стандартный лог загрузки
     const startupSound = document.getElementById('sound-startup');
     if (startupSound) {
         startupSound.volume = clickVolume;
@@ -959,13 +962,16 @@
 
         function forceSystemCrash() {
     if (isEndDownloaded) {
-        // Гасим рабочий стол, прячем все окна и показываем чистый стартовый экран загрузки
+        // Записываем в память браузера, что финал активирован
+        localStorage.setItem('download_broken_end_triggered', 'true');
+        
+        // Сворачиваем рабочий стол и возвращаем стартовый экран
         document.getElementById('desktop').style.display = 'none';
         document.getElementById('desktop').classList.remove('rat-glitch');
         document.querySelectorAll('.window').forEach(win => win.style.display = 'none');
         document.getElementById('boot-screen').style.display = 'flex';
     } else {
-        // Обычный сброс, если финал еще не активирован
+        // Обычная перезагрузка, если игрок нажал её просто так в начале игры
         document.getElementById('desktop').style.display = 'none';
         document.getElementById('desktop').classList.remove('rat-glitch');
         document.querySelectorAll('.window').forEach(win => win.style.display = 'none');
