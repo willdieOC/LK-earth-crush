@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Legion-King'sOS</title>
     <style>
-        /* Сброс стилей и олдскульный шрифт */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -22,7 +21,6 @@
             background-color: #000;
         }
 
-        /* Эффект тотального глитча при заражении Ратником */
         .rat-glitch {
             animation: screen-shake 0.15s infinite alternate, matrix-flash 4s infinite!important;
         }
@@ -37,14 +35,13 @@
             100% { filter: hue-rotate(0deg) brightness(1); }
         }
 
-        /* ЭФФЕКТ МЕРЦАНИЯ КАРТИНКИ GOD.PNG */
         #god-screamer {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: url('god.png') no-repeat center center;
+            background: url('GOD.png') no-repeat center center;
             background-size: cover;
             z-index: 100000;
             display: none;
@@ -56,7 +53,6 @@
             10%, 20%, 30%, 40%, 60%, 80% { opacity: 0; }
         }
 
-        /* --- ЭКРАН 1: ЛОГОТИП СИСТЕМЫ --- */
         #boot-screen {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -83,7 +79,6 @@
             100% { transform: scale(1); opacity: 0.9; }
         }
 
-        /* --- ЭКРАН 2: ЭКРАН ЗАГРУЗКИ --- */
         #loading-screen {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -120,7 +115,6 @@
             background-color: #00ff00;
         }
 
-        /* --- ЭКРАН 3: РАБОЧИЙ СТОЛ OS --- */
         #desktop {
             position: relative;
             width: 100%;
@@ -131,7 +125,6 @@
             justify-content: space-between;
         }
 
-        /* Иконки */
         .desktop-icons {
             padding: 20px;
             display: flex;
@@ -167,7 +160,6 @@
             font-size: 18px;
         }
 
-        /* Стикер */
         .sticker-note {
             position: absolute;
             top: 25px;
@@ -185,7 +177,6 @@
             border: 1px solid #e6e680;
         }
 
-        /* Окна */
         .window {
             position: absolute;
             background-color: #c0c0c0;
@@ -257,7 +248,6 @@
         #cmd-term-input { color: #00ff00; }
         #server-console-input { color: #ffaa00; }
 
-        /* --- ENTERNET EXPLORER --- */
         .ie-navbar { display: flex; background: #c0c0c0; padding: 5px; gap: 5px; border-bottom: 2px solid #808080; }
         .ie-tab { padding: 4px 12px; background: #a0a0a0; border: 2px solid #fff; border-bottom: none; cursor: pointer; font-size: 12px; color: #000; }
         .ie-tab.active { background: #fff; border-bottom: 2px solid #fff; margin-bottom: -2px; z-index: 11; }
@@ -269,7 +259,6 @@
         .news-meta { font-size: 11px; color: #555; margin-bottom: 5px; }
         .news-text { font-size: 13px; color: #000; line-height: 1.4; }
 
-        /* ЧАТ С НЕИЗВЕСТНЫМ */
         #ie-page-anon {
             display: none;
             flex-direction: column;
@@ -294,19 +283,17 @@
         .anon-author-file { color: #00d2ff; font-weight: bold; }
         .anon-author-unknown { color: #d633ff; text-shadow: 0 0 3px #d633ff; }
         
-        /* Игры в браузере */
         #snake-canvas, #tetris-canvas { background: #111; display: block; margin: 0 auto; border: 4px solid #808080; }
         .games-btn { padding: 6px 14px; margin: 5px; background: #c0c0c0; border: 2px solid #fff; border-right-color:#000; border-bottom-color:#000; cursor:pointer; font-size: 12px; color: #000; }
         .games-btn:active { border: 2px solid #000; border-right-color:#fff; border-bottom-color:#fff; }
 
-        /* САПЕР СТИЛИ */
         .minesweeper-container { display: flex; flex-direction: column; align-items: center; justify-content: center; color: #000; }
         .minesweeper-grid { display: grid; grid-template-columns: repeat(8, 28px); grid-template-rows: repeat(8, 28px); gap: 1px; background-color: #808080; border: 3px solid #808080; width: fit-content; margin-top: 10px; }
         .mine-cell { width: 28px; height: 28px; background-color: #c0c0c0; border: 2px solid #fff; border-right-color: #808080; border-bottom-color: #808080; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: bold; cursor: pointer; }
         .mine-cell.revealed { background-color: #dbdbdb; border: 1px solid #a0a0a0; }
+        .mine-cell.flagged { background-color: #c0c0c0; color: #ff0000; }
         .mine-cell.mine { background-color: #ff3333; }
 
-        /* РЕДАКТОР РЕЕСТРА */
         .registry-container { display: flex; height: 320px; background: white; border: 2px solid #808080; }
         .reg-tree { width: 45%; border-right: 2px solid #808080; padding: 10px; overflow-y: auto; font-size: 11px; color: #000; }
         .reg-values { width: 55%; padding: 10px; overflow-y: auto; font-size: 11px; color: #000; background: #fafafa; }
@@ -315,14 +302,12 @@
         .tree-node.expanded > .tree-children { display: block; }
         .reg-item { padding: 5px; margin-bottom: 8px; border-bottom: 1px dashed #ccc; }
 
-        /* Окно системной инъекции */
         #virus-alert {
             position: fixed; top: 30%; left: 30%; width: 420px;
             background: #c0c0c0; border: 2px solid #fff; border-right-color: #000; border-bottom-color: #000;
             box-shadow: 5px 5px 20px rgba(0,0,0,0.5); display: none; flex-direction: column; z-index: 10000;
         }
 
-        /* Таймер внизу */
         #arg-countdown-bar {
             width: 100%;
             background-color: #c0c0c0;
@@ -338,7 +323,6 @@
         }
         #countdown-timer-value { color: #222222; margin-left: 8px; font-weight: bold; }
 
-        /* Панель задач */
         #taskbar { width: 100%; height: 40px; background-color: #c0c0c0; border-top: 2px solid #fff; display: flex; align-items: center; justify-content: space-between; padding: 2px 10px; z-index: 1000; }
         .start-button { height: 30px; padding: 0 15px; background-color: #c0c0c0; border: 2px solid #fff; border-right-color: #000; border-bottom-color: #000; display: flex; align-items: center; gap: 5px; cursor: pointer; font-size: 14px; color: #000; }
         #start-menu { position: absolute; bottom: 42px; left: 5px; width: 240px; background-color: #c0c0c0; border: 2px solid #fff; border-right-color: #000; border-bottom-color: #000; display: none; flex-direction: column; box-shadow: 2px 2px 10px rgba(0,0,0,0.5); z-index: 1100; }
@@ -395,7 +379,7 @@
 
         <div class="sticker-note" id="lk-sticker">
             <div style="font-size: 9px; color: #888; margin-bottom: 5px; border-bottom: 1px dashed #ccc; text-align: right;">заметка.txt</div>
-            <p>Цель до 27 июня: проверить хостинг и подготовить LK VIII.</p>
+            <p>Цель до 26 июня: проверить хостинг и полностью подготовить LK VIII.</p>
         </div>
 
         <div class="window" id="ie-win" style="top: 5%; left: 15%; width: 720px;">
@@ -418,6 +402,10 @@
                 
                 <div id="ie-page-news">
                     <div class="news-card">
+                        <div class="news-meta">Источник: <b>willdie</b></div>
+                        <div class="news-text">leo__king заметил этот сайт!!</div>
+                    </div>
+                    <div class="news-card">
                         <div class="news-meta">Источник: <b>leo__king</b> | Дата: 16.06.2026</div>
                         <div class="news-text" style="color: #aa0000;">Сегодня случился праздник! Игрока vekss_lk забанили!</div>
                     </div>
@@ -427,20 +415,21 @@
                     </div>
                     <div class="news-card">
                         <div class="news-meta">Источник: <b>Система Безопасности LK</b></div>
-                        <div class="news-text">Обнаружена критическая ошибка в структуру игрового мира (The End). Измерение полностью недоступно. Последний стабильный лог указывает на повреждение файлов секторов. Попытки зайти вызывают ошибку загрузчика Fabric.</div>
+                        <div class="news-text">Сломался Край. Туда вообще нельзя зайти. Логи говорят, что файлы папок побились. Из-за этого вылетает Fabric.</div>
                     </div>
                 </div>
 
                 <div id="ie-page-anon">
                     <div class="anon-chat-box" id="anon-chat-messages">
-                        <div class="anon-msg"><span class="anon-author-system">[СИСТЕМА]: Установлено принудительное туннелирование сессии со стороны теневого зеркала.</span></div>
+                        <div class="anon-msg"><span class="anon-author-system">[СИСТЕМА]: Кто-то чужой подключился к вашему экрану.</span></div>
                     </div>
-                    <p style="font-size:11px; color:#666;">* Вы не можете отправлять сообщения в этот зашифрованный канал связи.</p>
+                    <p style="font-size:11px; color:#666;">* Писать сюда нельзя.</p>
                 </div>
 
                 <div id="ie-page-mines" style="display:none;">
                     <div class="minesweeper-container">
-                        <div style="font-size: 14px;">Minesweeper 8x8 (Мины: 10)</div>
+                        <div style="font-size: 14px;">Сапер 8x8 (Мины: 10)</div>
+                        <div style="font-size: 11px; color: #555; margin-bottom: 5px;">Левый клик — открыть, Правый клик — поставить/снять флаг</div>
                         <button class="games-btn" onclick="initMinesweeper()">Рестарт</button>
                         <div class="minesweeper-grid" id="mines-grid" oncontextmenu="return false;"></div>
                     </div>
@@ -455,7 +444,7 @@
                 <div id="ie-page-tetris" style="display:none; text-align:center;">
                     <div style="font-size:12px; margin-bottom:5px; color:#000;">Счет Тетриса: <span id="tetris-score">0</span></div>
                     <canvas id="tetris-canvas" width="160" height="320"></canvas>
-                    <p style="font-size:11px; color:#555; margin-top:5px;">A/D или Стрелки - движение, W или Вверх - поворот, S или Вниз - падение</p>
+                    <p style="font-size:11px; color:#555; margin-top:5px;">A/D или Стрелки - двигаться, W или Вверх - крутить, S или Вниз - падать</p>
                 </div>
             </div>
         </div>
@@ -496,7 +485,7 @@
                     </div>
                 </div>
                 <div class="reg-values" id="reg-values-pane">
-                    <span style="color:#888;">(Выберите папку реестра)</span>
+                    <span style="color:#888;">(Выберите папку)</span>
                 </div>
             </div>
         </div>
@@ -510,8 +499,9 @@
 - Проверить стабильность хоста (legion-kings.ru)
 - Разобраться с крашем Fabric при загрузке Края
 - Найти резервную копию стертых секторов
+-Позвать попинга на LK VIII
 
-* ВАЖНО: Проверить скрытый сектор архива хоста. Лог-ключ лежит в реестре (ищи параметр ядра ArchiveID)</div>
+* ТАКЖЕ: Ключ для архива лежит в папке BackupSettings в реестре (ищи параметр ArchiveID)</div>
         </div>
 
         <div class="window" id="cmd-win" style="top: 15%; left: 5%; width: 520px;">
@@ -521,7 +511,7 @@
             </div>
             <div class="window-content-dark" onclick="focusInput('cmd-term-input')">
                 <div id="cmd-history" class="cmd-output">Legion-King's OS [Version 1.0.24]
-Для авторизации удаленного хоста используйте: unlock server consol [пароль]</div>
+Для открытия консоли сервера введи: unlock server consol [пароль]</div>
                 <div class="input-line">
                     <span class="prefix">LK:\Users\leo__king></span>
                     <input type="text" id="cmd-term-input" class="dark-input" autocomplete="off" spellcheck="false">
@@ -535,8 +525,8 @@
                 <div class="window-close" onclick="closeWindow('console-win')">X</div>
             </div>
             <div class="window-content-dark" onclick="focusInput('server-console-input')">
-                <div id="console-history" class="console-output">[INFO] Запуск удаленного мониторинга...
-[WARN] Доступ ограничен. Авторизуйте сессию через локальный CMD.</div>
+                <div id="console-history" class="console-output">[INFO] Запуск слежки за сервером...
+[WARN] Сюда нельзя. Сначала зайди через обычную командную строку (CMD).</div>
                 <div class="input-line" id="console-input-row" style="display: none; border-top: 1px dashed #ffaa00; padding-top: 5px;">
                     <span class="prefix" style="color: #ffaa00;">CONSOLES@LK_SERVER></span>
                     <input type="text" id="server-console-input" class="dark-input" autocomplete="off" spellcheck="false">
@@ -546,24 +536,24 @@
 
         <div id="virus-alert">
             <div class="window-header" style="background:linear-gradient(90deg, #aa0000, #ff0055); color: white;">
-                <span>⚙️ КРИТИЧЕСКОЕ СЛИЯНИЕ РЕГИОНА — СИСТЕМНЫЙ СБОЙ ХОСТИНГА</span>
+                <span>⚙️ СЕРВЕР СЛОМАЛСЯ — СБОЙ ХОСТИНГА</span>
             </div>
             <div class="window-content" style="background:#fff; text-align:center; padding: 20px; color:#000;">
-                <p style="font-size:15px; color:#ff0055; margin-bottom:10px;">[ВНИМАНИЕ: СЛИЯНИЕ ЗАВЕРШЕНО С ОШИБКАМИ]</p>
+                <p style="font-size:15px; color:#ff0055; margin-bottom:10px;">[ОШИБКА: ОБЪЕДИНЕНИЕ С ОШИБКАМИ]</p>
                 <p style="font-size:12px; text-align: left; background: #eee; padding: 8px; font-family: monospace; color: #333;">
-                    > Архивация патча: X7-BRK-END<br>
-                    > Замена дескрипторов региона dim1... УСПЕШНО<br>
-                    > Внедрение внешнего модуля управления... ГОТОВО<br>
-                    > Предупреждение: Обнаружен бэкдор удаленного суперпользователя.
+                    > Сборка патча: X7-BRK-END<br>
+                    > Замена папки дим1... СДЕЛАНО<br>
+                    > Подключение чужого управления... ГОТОВО<br>
+                    > Опасно: Кто-то чужой управляет системой.
                 </p><br>
-                <p>Измерение "The End" принудительно пересобрано. Структура ядра leaf изменена необратимо. Права суперпользователя делегированы внешнему зеркалу.</p><br>
-                <button class="games-btn" style="width:120px;" onclick="closeVirusAlert()">ПРИНЯТЬ</button>
+                <p>Мир "The End" переделан. Главные файлы изменены. Все права улетели на чужой сайт.</p><br>
+                <button class="games-btn" style="width:120px;" onclick="closeVirusAlert()">ОК</button>
             </div>
         </div>
 
         <div style="width: 100%; display: flex; flex-direction: column; z-index: 1000;">
             <div id="arg-countdown-bar">
-                <span>ДО ЗАПУСКА КРИТИЧЕСКОГО СЦЕНАРИЯ LK VIII ОСТАЛОСЬ:</span>
+                <span>ОБНОВЛЕНИЕ OC ЧЕРЕЗ -</span>
                 <span id="countdown-timer-value">00д. 00ч. 00м. 00с.</span>
             </div>
 
@@ -602,7 +592,6 @@
         let ratGlitchInterval = null;
         let clickVolume = 0.5;
 
-        // Переменные для Змейки
         let snakeCtx, snakeTimer = null;
         let snake = [{x: 10, y: 10}];
         let snakeDir = {x: 1, y: 0};
@@ -610,18 +599,17 @@
         let snakeScore = 0;
         const snakeBoxSize = 12;
 
-        // Переменные для Тетриса
         let tetrisCtx, tetrisTimer = null;
         const tetrisMatrix = Array(20).fill().map(() => Array(10).fill(0));
         let tetrisScore = 0;
         let tetrisPlayer = { pos: {x: 3, y: 0}, matrix: null };
 
         const bootMessages = [
-            { t: 0, m: "Legion-King's Information Systems v1.0.24\nCopyright (C) 2026, LK Corp. All Rights Reserved.\n\nИнициализация оборудования..." },
-            { t: 800, m: "Процессор: AMD Ryzen 9 7950X3D @ 4.2 ГГц -- ОК" },
-            { t: 1500, m: "Монтирование диска LK:\\ (Файловая система: LKFS) -- УСПЕШНО" },
-            { t: 2200, m: "Интеграция с хостинг-модулями:\n Обнаружена активная нить: legion-kings.ru" },
-            { t: 3000, m: "Добро пожаловать, leo__king!" }
+            { t: 0, m: "Legion-King's Information Systems v1.0.24\nCopyright (C) 2026, LK Corp. All Rights Reserved.\n\nВключение железа..." },
+            { t: 800, m: "Процессор: AMD Ryzen 9 7950X3D @ 4.2 ГГц -- ВСЕ ОК" },
+            { t: 1500, m: "Включение диска LK:\\ -- УСПЕШНО" },
+            { t: 2200, m: "Связь с сервером:\n Найдена активная ссылка: legion-kings.ru" },
+            { t: 3000, m: "Привет, leo__king!" }
         ];
 
         function updateClickVolume(val) { clickVolume = parseFloat(val); }
@@ -639,7 +627,7 @@
             document.getElementById('loading-screen').style.display = 'block';
             
             const logContainer = document.getElementById('boot-logs');
-            logContainer.innerText = ""; // Очищаем старые логи
+            logContainer.innerText = "";
             let progress = 0;
 
             bootMessages.forEach(item => {
@@ -676,10 +664,10 @@
         }
 
         function updateCountdown() {
-            const targetDate = new Date('June 27, 2026 17:00:00').getTime();
+            const targetDate = new Date('June 25, 2026 15:00:00').getTime();
             const now = new Date().getTime();
             const gap = targetDate - now;
-            if (gap <= 0) { document.getElementById('countdown-timer-value').innerText = "00д. 00ч. 00м. 00с. [ЛЕГИОН СОКРУШЕН]"; return; }
+            if (gap <= 0) { document.getElementById('countdown-timer-value').innerText = "00д. 00ч. 00м. 00с. [ОБНОВЛЕНИЕ НАЧАТО]"; return; }
             const second = 1000, minute = second * 60, hour = minute * 60, day = hour * 24;
             const textDay = Math.floor(gap / day), textHour = Math.floor((gap % day) / hour), textMinute = Math.floor((gap % hour) / minute), textSecond = Math.floor((gap % minute) / second);
             document.getElementById('countdown-timer-value').innerText = `${textDay.toString().padStart(2,'0')}д. ${textHour.toString().padStart(2,'0')}ч. ${textMinute.toString().padStart(2,'0')}м. ${textSecond.toString().padStart(2,'0')}с.`;
@@ -696,31 +684,29 @@
         function focusInput(id) { const el = document.getElementById(id); if (el) el.focus(); }
         function updateClock() { const n = new Date(); document.getElementById('clock').innerText = `${n.getHours().toString().padStart(2, '0')}:${n.getMinutes().toString().padStart(2, '0')}`; }
 
-        // --- РЕДАКТОР РЕЕСТРА ---
         function toggleRegNode(element, event) { event.stopPropagation(); element.classList.toggle('expanded'); }
         function showRegValues(key) {
             event.stopPropagation();
             const pane = document.getElementById('reg-values-pane');
             if(key === 'consoleAuth') {
-                pane.innerHTML = `<div class="reg-item"><b>Name:</b> RemoteKey<br><b>Type:</b> REG_HEX<br><b>Value:</b> 6c 65 67 69 30 6e 70 61 73 73 77 30 72 64</div>`;
+                pane.innerHTML = `<div class="reg-item"><b>Имя:</b> RemoteKey<br><b>Тип:</b> REG_HEX<br><b>Значение:</b> 6c 65 67 69 30 6e 70 61 73 73 77 30 72 64</div>`;
             } else if (key === 'backupSettings') {
-                pane.innerHTML = `<div class="reg-item"><b>Name:</b> ArchiveID<br><b>Type:</b> REG_SZ<br><b>Value:</b> LK_ARC_992X</div>`;
+                pane.innerHTML = `<div class="reg-item"><b>Имя:</b> ArchiveID<br><b>Тип:</b> REG_SZ<br><b>Значение:</b> LK_ARC_992X</div>`;
             } else if (key === 'description') {
-                pane.innerHTML = `<div class="reg-item"><b>Name:</b> SystemBiosVersion<br><b>Type:</b> REG_SZ<br><b>Value:</b> LK-BIOS-V4.52</div>`;
+                pane.innerHTML = `<div class="reg-item"><b>Имя:</b> SystemBiosVersion<br><b>Тип:</b> REG_SZ<br><b>Значение:</b> LK-BIOS-V4.52</div>`;
             } else if (key === 'devicemap') {
-                pane.innerHTML = `<div class="reg-item"><b>Name:</b> SERIAL_PORT_0<br><b>Type:</b> REG_SZ<br><b>Value:</b> COM1</div>`;
+                pane.innerHTML = `<div class="reg-item"><b>Имя:</b> SERIAL_PORT_0<br><b>Тип:</b> REG_SZ<br><b>Значение:</b> COM1</div>`;
             } else if (key === 'microsoft') {
-                pane.innerHTML = `<div class="reg-item"><b>Name:</b> IE_Version<br><b>Type:</b> REG_SZ<br><b>Value:</b> 5.0.2914</div>`;
+                pane.innerHTML = `<div class="reg-item"><b>Имя:</b> IE_Version<br><b>Тип:</b> REG_SZ<br><b>Значение:</b> 5.0.2914</div>`;
             } else if (key === 'controlset') {
-                pane.innerHTML = `<div class="reg-item"><b>Name:</b> WaitToKillServiceTimeout<br><b>Type:</b> REG_SZ<br><b>Value:</b> 20000</div>`;
+                pane.innerHTML = `<div class="reg-item"><b>Имя:</b> WaitToKillServiceTimeout<br><b>Тип:</b> REG_SZ<br><b>Значение:</b> 20000</div>`;
             } else if (key === 'mounted') {
-                pane.innerHTML = `<div class="reg-item"><b>Name:</b> \\DosDevices\\C:<br><b>Type:</b> REG_BINARY<br><b>Value:</b> 4c 4b 4f 53 5f 44 52 56</div>`;
+                pane.innerHTML = `<div class="reg-item"><b>Имя:</b> \\DosDevices\\C:<br><b>Тип:</b> REG_BINARY<br><b>Значение:</b> 4c 4b 4f 53 5f 44 52 56</div>`;
             } else {
-                pane.innerHTML = `<span style="color:#888;">Папка пуста или защищена ядром</span>`;
+                pane.innerHTML = `<span style="color:#888;">Тут ничего нет</span>`;
             }
         }
 
-        // --- ENTERNET EXPLORER ТАБЫ ---
         function switchIeTab(tab) {
             document.getElementById('ie-page-news').style.display = 'none'; 
             document.getElementById('ie-page-mines').style.display = 'none';
@@ -748,38 +734,53 @@
             const chat = document.getElementById('anon-chat-messages');
             
             setTimeout(() => {
-                chat.innerHTML += `<div class="anon-msg"><span class="anon-author-unknown">Неизвестный:</span> Я видел, что ты пытаешься привязать теневое зеркало к серверу. Ты ищешь бэкап Края (dim1)? Локальные файлы стёрты Легионом. Но я знаю, как решить проблему.</div>`;
+                chat.innerHTML += `<div class="anon-msg"><span class="anon-author-unknown">Кто-то:</span> Я видел, что ты пытаешься подключить зеркало к серверу. Ты ищешь бэкап Края (дим1)? Обычные файлы стёрты Легионом. Но я знаю, как починить.</div>`;
                 chat.scrollTop = chat.scrollHeight;
             }, 1000);
 
             setTimeout(() => {
-                chat.innerHTML += `<div class="anon-msg"><span class="anon-author-file">[ОТПРАВКА ФАЙЛА]:</span> <span style="text-decoration: underline; color:#00ff00;">broken_end_dimension.dat</span> (14.2 MB)<br><span class="anon-author-system">[СИСТЕМА]: Пакет данных успешно передан и находится в буфере сетевого туннеля хоста.</span></div>`;
+                chat.innerHTML += `<div class="anon-msg"><span class="anon-author-file">[ПЕРЕДАЧА ФАЙЛА]:</span> <span style="text-decoration: underline; color:#00ff00;">broken_end_dimension.dat</span> (14.2 MB)<br><span class="anon-author-system">[СИСТЕМА]: Файл скачан в буфер сети хостинга.</span></div>`;
                 chat.scrollTop = chat.scrollHeight;
             }, 3500);
 
             setTimeout(() => {
-                chat.innerHTML += `<div class="anon-msg"><span class="anon-author-unknown">Неизвестный:</span> Токен, который ты запросил (X7-BRK-END), открыл шлюз. Мой файл стабилен. <br>Чтобы выгрузить его непосредственно на сервер, сейчас зайди в консоль сервера и пропиши команду <span style="color:#ffff00; text-shadow: 0 0 3px #ffff00;">download broken end</span>. Это исправит все ошибки лоадера раз и навсегда. Доверься мне.</div>`;
+                chat.innerHTML += `<div class="anon-msg"><span class="anon-author-unknown">Кто-то:</span> Ключ, который ты ввёл (X7-BRK-END), открыл проход. Мой файл рабочий. <br>Чтобы закинуть его прямо на сервер, зайди в консоль сервера и напиши <span style="color:#ffff00; text-shadow: 0 0 3px #ffff00;">download broken end</span>. Это уберёт все ошибки запуска. Поверь мне.</div>`;
                 chat.scrollTop = chat.scrollHeight;
             }, 6500);
         }
 
-        // --- ЛОГИКА САПЕРА ---
-        let mineGrid = []; const rows = 8, cols = 8;
+        let mineGrid = []; const rows = 8, cols = 8; const totalMines = 10;
         function initMinesweeper() {
             const gridContainer = document.getElementById('mines-grid'); gridContainer.innerHTML = "";
             mineGrid = [];
             for (let r = 0; r < rows; r++) { 
                 mineGrid[r] = []; 
                 for (let c = 0; c < cols; c++) {
-                    mineGrid[r][c] = { r, c, isMine: Math.random() < 0.15, revealed: false, count: 0 };
+                    mineGrid[r][c] = { r, c, isMine: false, revealed: false, flagged: false, count: 0 };
                     const cellEl = document.createElement('div');
                     cellEl.classList.add('mine-cell');
                     cellEl.id = `cell-${r}-${c}`;
                     
                     cellEl.addEventListener('click', () => revealMineCell(r, c));
+                    cellEl.addEventListener('contextmenu', (e) => {
+                        e.preventDefault();
+                        toggleMineFlag(r, c);
+                        return false;
+                    });
                     gridContainer.appendChild(cellEl);
                 } 
             }
+
+            let minesPlaced = 0;
+            while(minesPlaced < totalMines) {
+                let r = Math.floor(Math.random() * rows);
+                let c = Math.floor(Math.random() * cols);
+                if(!mineGrid[r][c].isMine) {
+                    mineGrid[r][c].isMine = true;
+                    minesPlaced++;
+                }
+            }
+
             for(let r=0; r<rows; r++) {
                 for(let c=0; c<cols; c++) {
                     if(!mineGrid[r][c].isMine) {
@@ -795,9 +796,34 @@
             }
         }
 
+        function toggleMineFlag(r, c) {
+            if (mineGrid[r][c].revealed) return;
+            const cellEl = document.getElementById(`cell-${r}-${c}`);
+            mineGrid[r][c].flagged = !mineGrid[r][c].flagged;
+            if(mineGrid[r][c].flagged) {
+                cellEl.classList.add('flagged');
+                cellEl.innerText = "🚩";
+            } else {
+                cellEl.classList.remove('flagged');
+                cellEl.innerText = "";
+            }
+        }
+
+        function checkMinesweeperWin() {
+            for(let r=0; r<rows; r++) {
+                for(let c=0; c<cols; c++) {
+                    if(!mineGrid[r][c].isMine && !mineGrid[r][c].revealed) {
+                        return;
+                    }
+                }
+            }
+            alert("Победа! Вы полностью очистили поле от мин.");
+            initMinesweeper();
+        }
+
         function revealMineCell(r, c) {
             if (r < 0 || r >= rows || c < 0 || c >= cols) return;
-            if (mineGrid[r][c].revealed) return;
+            if (mineGrid[r][c].revealed || mineGrid[r][c].flagged) return;
             
             const cellEl = document.getElementById(`cell-${r}-${c}`);
             mineGrid[r][c].revealed = true;
@@ -806,7 +832,7 @@
             if (mineGrid[r][c].isMine) {
                 cellEl.classList.add('mine');
                 cellEl.innerText = "💣";
-                alert("Игра окончена! Вы подорвались на мине.");
+                alert("Бабах! Вы подорвались.");
                 initMinesweeper();
                 return;
             } 
@@ -825,9 +851,9 @@
                     }
                 }
             }
+            checkMinesweeperWin();
         }
 
-        // --- ЛОГИКА ЗМЕЙКИ ---
         function initSnake() {
             const canvas = document.getElementById('snake-canvas');
             snakeCtx = canvas.getContext('2d');
@@ -852,7 +878,7 @@
             
             if (head.x < 0 || head.x >= 20 || head.y < 0 || head.y >= 20 || snake.some(seg => seg.x === head.x && seg.y === head.y)) {
                 clearInterval(snakeTimer);
-                alert("Змейка разбилась! Игра перезапущена.");
+                alert("Змейка врезалась! Начнем заново.");
                 initSnake();
                 return;
             }
@@ -877,7 +903,6 @@
             snake.forEach(seg => snakeCtx.fillRect(seg.x * snakeBoxSize, seg.y * snakeBoxSize, snakeBoxSize, snakeBoxSize));
         }
 
-        // --- ЛОГИКА ТЕТРИСА ---
         function initTetris() {
             const canvas = document.getElementById('tetris-canvas');
             tetrisCtx = canvas.getContext('2d');
@@ -902,7 +927,7 @@
             
             if (tetrisCollide()) {
                 clearInterval(tetrisTimer);
-                alert("Тетрис окончен! Сетка переполнена.");
+                alert("Тетрис забился! Начнем заново.");
                 initTetris();
             }
         }
@@ -1016,7 +1041,6 @@
             });
         }
 
-        // --- ЛОГИКА CMD ---
         function initCmdLogic() {
             const input = document.getElementById('cmd-term-input');
             const history = document.getElementById('cmd-history');
@@ -1028,14 +1052,14 @@
                     
                     if (lowerCmd === 'unlock server consol legi0npassw0rd') {
                         isConsoleUnlocked = true;
-                        history.innerHTML += `\n[УСПЕХ]: Порт 25565 авторизован. Консоль сервера разблокирована.`;
-                        document.getElementById('console-history').innerHTML = `[SUCCESS] Подключение установлено успешно.\nВведите 'help' для просмотра списка команд.`;
+                        history.innerHTML += `\n[ОК]: Связь поймана. Консоль сервера открыта.`;
+                        document.getElementById('console-history').innerHTML = `[ОК] Подключились нормально.\nНапиши 'help' чтобы посмотреть команды.`;
                         document.getElementById('console-input-row').style.display = 'flex';
                     } else if (lowerCmd === 'get_token' || lowerCmd === 'get token') {
                         if (isOverloadTriggered) {
-                            history.innerHTML += `\n[SYSTEM]: Токен доступа к внешнему репозиторию сгенерирован: X7-BRK-END`;
+                            history.innerHTML += `\n[СИСТЕМА]: Вот твой ключ доступа: X7-BRK-END`;
                         } else {
-                            history.innerHTML += `\n[SYSTEM]: Запрос отклонен. Сторонние сессии стабильны.`;
+                            history.innerHTML += `\n[СИСТЕМА]: Отказано. Зачем тебе это сейчас?`;
                         }
                     } else { history.innerHTML += `\nНеизвестная команда.`; }
                     input.value = '';
@@ -1044,7 +1068,6 @@
             });
         }
 
-        // --- ЛОГИКА КОНСОЛИ СЕРВЕРА ---
         function initConsoleLogic() {
             const input = document.getElementById('server-console-input');
             const history = document.getElementById('console-history');
@@ -1057,56 +1080,56 @@
                     let lowerVal = val.toLowerCase().replace(/\s+/g, ' ');
 
                     if (lowerVal === 'help') {
-                        history.innerHTML += `\nДоступные команды:\n  status         - Проверить статус миров\n  diagnose [ID]  - Запустить диагностику архива\n  backup list    - Список резервных копий\n  connect_mirror [Token] - Подключить зеркало данных`;
+                        history.innerHTML += `\nКоманды:\n  status         - Проверить миры\n  diagnose [ID]  - Запустить проверку папки\n  backup list    - Посмотреть копии файлов\n  connect_mirror [Ключ] - Подключить чужой сайт с файлами`;
                     } else if (lowerVal === 'status') {
                         if(isRatActivated) {
-                            history.innerHTML += `\n[CRITICAL] СУЩЕСТВО ИМЕЕТ ПОЛНЫЙ ДОСТУП К КОРНЮ ЯДРА.\n[World - Overworld]: ЛАГИ ГЕНЕРАЦИИ\n[World - The End]: ЗАРАЖЕНО РАТНИКОМ / УДАЛЕНИЕ ЧАНКОВ`;
+                            history.innerHTML += `\n[ОПАСНО] КТО-ТО ЧУЖОЙ ПОЛНОСТЬЮ СИДИТ В СИСТЕМЕ.\n[Мир - Обычный]: ЖУТКИЕ ЛАГИ\n[Мир - Край]: ВИРУС УДАЛЯЕТ ВСЕ ПОДРЯД`;
                         } else {
-                            history.innerHTML += `\n[World - Overworld]: ONLINE \n[World - The End]: CRITICAL_ERROR / МИР СТЕРТ\nЗапустите 'diagnose [ArchiveID из реестра]' для отчета.`;
+                            history.innerHTML += `\n[Мир - Обычный]: РАБОТАЕТ \n[Мир - Край]: ОШИБКА / МИРА НЕТ\nНапиши 'diagnose [Код ArchiveID из реестра]' для проверки.`;
                         }
                     } else if (lowerVal.startsWith('diagnose ')) {
                         let arg = val.substring(9).trim();
                         if (arg === 'LK_ARC_992X' || arg === 'lk_arc_992x') {
                             isDiagnosed = true;
-                            history.innerHTML += `\n[DIAG] Анализ таблиц... Повреждено злоумышленниками. Введите 'backup list' для просмотра путей восстановления.`;
-                        } else { history.innerHTML += `\n[DIAG_ERROR]: Неверный ArchiveID.`; }
+                            history.innerHTML += `\n[ПРОВЕРКА] Посмотрели папки... Все стёрли плохие люди. Пиши 'backup list' чтобы найти варианты починки.`;
+                        } else { history.innerHTML += `\n[ОШИБКА]: Не тот код ArchiveID.`; }
                     } else if (lowerVal === 'backup list') {
-                        if (!isDiagnosed) { history.innerHTML += `\n[DENIED]: Требуется диагностика ('diagnose').`; }
+                        if (!isDiagnosed) { history.innerHTML += `\n[ОТКАЗАНО]: Сначала надо запустить проверку ('diagnose').`; }
                         else {
                             isOverloadTriggered = true;
-                            history.innerHTML += `\n--- ВНЕШНИЕ РЕПОЗИТОРИИ ---\n[1] теневое_зеркало://mirror-lk-backup-cloud  - (Внешний архив)\n\nДля подключения к зеркалу требуется токен безопасности! Получите его в CMD командой 'get_token', затем введите 'connect_mirror [Токен]'`;
+                            history.innerHTML += `\n--- ЧУЖИЕ САЙТЫ ---\n[1] теневое_зеркало://mirror-lk-backup-cloud  - (Внешняя копия)\n\nДля подключения нужен ключ! Возьми его в CMD через команду 'get_token', потом напиши здесь 'connect_mirror [Ключ]'`;
                         }
                     } else if (lowerVal.startsWith('connect_mirror ')) {
                         let token = val.substring(15).trim();
                         if (token.toUpperCase() === 'X7-BRK-END') {
                             isMirrorConnected = true;
-                            history.innerHTML += `\n[CONNECT]: ...УСПЕШНО.\n[CONNECTED]: Установлен шифрованный туннель связи.\nОжидание дальнейших сетевых инструкций...`;
+                            history.innerHTML += `\n[СВЯЗЬ]: ...ЕСТЬ.\n[ПОДКЛЮЧЕНО]: Канал связи налажен.\nЖдем файлы...`;
                             triggerUnknownMessage();
-                        } else { history.innerHTML += `\n[CONNECT_ERROR]: Токен отклонен.`; }
+                        } else { history.innerHTML += `\n[ОШИБКА]: Ключ не подошел.`; }
                     } else if (lowerVal === 'download broken end') {
-                        if (!isMirrorConnected) { history.innerHTML += `\n[DENIED]: Соединение с зеркалом не установлено или пакет не буферизирован в сети.`; }
+                        if (!isMirrorConnected) { history.innerHTML += `\n[ОТКАЗАНО]: Чужой сайт не подключен.`; }
                         else {
                             input.disabled = true;
                             let p = 0;
                             let dlInterval = setInterval(() => {
                                 p += 50;
-                                history.innerHTML += `\n[DOWNLOAD] Скачивание пакета 'broken_end_dimension.dat'... ${p}%`;
+                                history.innerHTML += `\n[СКАЧИВАНИЕ] Качаем файл 'broken_end_dimension.dat'... ${p}%`;
                                 container.scrollTop = container.scrollHeight;
                                 if(p >= 100) {
                                     clearInterval(dlInterval);
-                                    history.innerHTML += `\n[DOWNLOADED] Пакет загружен из буфера сети. Введите команду для инъекции:\n  inject_end --apply`;
+                                    history.innerHTML += `\n[СКАЧАНО] Всё скачалось. Напиши команду для установки:\n  inject_end --apply`;
                                     input.disabled = false; input.value = '';
                                     container.scrollTop = container.scrollHeight;
                                 }
                             }, 1000);
                         }
                     } else if (lowerVal === 'inject_end --apply') {
-                        if (!isMirrorConnected || isEndDownloaded) { history.innerHTML += `\n[ERROR]: Условия не выполнены.`; }
+                        if (!isMirrorConnected || isEndDownloaded) { history.innerHTML += `\n[ОШИБКА]: Рано или что-то не сделано.`; }
                         else {
                             isEndDownloaded = true;
                             document.getElementById('virus-alert').style.display = 'flex';
                         }
-                    } else { history.innerHTML += `\n[ERROR]: Неизвестная директива или синтаксическая ошибка.`; }
+                    } else { history.innerHTML += `\n[ОШИБКА]: Не понял команду.`; }
                     input.value = '';
                     container.scrollTop = container.scrollHeight;
                 }
@@ -1125,26 +1148,24 @@
             const container = document.querySelector('#console-win .window-content-dark');
             openWindow('console-win');
 
-            history.innerHTML += `\n\n[!!!] ПРЕДУПРЕЖДЕНИЕ БЕЗОПАСНОСТИ ХОСТИНГА [!!!]\n[RAT] Сессия захвачена внешним пользователем.\n[RAT] Обнаружены скрытые команды суперпользователя: /kill, /stop, /vds_leak`;
+            history.innerHTML += `\n\n[!!!] ВНИМАНИЕ: СЕРВЕР КТО-ТО СЛОМАЛ [!!!]\nУправление забрал чужой человек.\nПишутся странные команды: /kill, /stop, /vds_leak`;
 
             let loopCount = 0;
             ratGlitchInterval = setInterval(() => {
                 loopCount++;
                 let chunkX = Math.floor(Math.random() * 500) - 250;
                 let chunkZ = Math.floor(Math.random() * 500) - 250;
-                if (loopCount % 3 === 1) history.innerHTML += `\n[СУЩЕСТВО] Изменение структуры: удаление чанка [${chunkX}, ${chunkZ}] в dim1.`;
-                else if (loopCount % 3 === 2) history.innerHTML += `\n[СУЩЕСТВО] Ошибка Fabric: Попытка сущности перезаписать блок спавнера.`;
-                else history.innerHTML += `\n[RAT_MONITOR] Отправка дампов памяти хостинга на внешний IP...`;
+                if (loopCount % 3 === 1) history.innerHTML += `\n[ВЗЛОМ] Кто-то ломает карту: стирает кусок [${chunkX}, ${chunkZ}] в Крае.`;
+                else if (loopCount % 3 === 2) history.innerHTML += `\n[ВЗЛОМ] Ошибка Фабрика: Чужая сущность пытается встать на спавн.`;
+                else history.innerHTML += `\n[ВЗЛОМ] Все данные улетают взломщику...`;
                 container.scrollTop = container.scrollHeight;
             }, 3000);
 
-            // ТАЙМЕР НА 20 СЕКУНД: МЕРЦАНИЕ И КРАШ
             setTimeout(() => {
                 const screamer = document.getElementById('god-screamer');
                 screamer.style.display = 'block';
                 screamer.style.animation = 'god-flicker 1.5s ease-out forwards';
                 
-                // Через 1.5 секунды мерцания выкидываем на начальный экран
                 setTimeout(() => {
                     screamer.style.display = 'none';
                     screamer.style.animation = '';
@@ -1154,14 +1175,11 @@
             }, 20000);
         }
 
-        // Функция форсированного сброса системы и возврата к Boot-экрану
         function forceSystemCrash() {
-            // Очищаем фоновые интервалы вирусов и игр
             clearInterval(ratGlitchInterval);
             clearInterval(snakeTimer);
             clearInterval(tetrisTimer);
             
-            // Сбрасываем флаги системы до исходного состояния
             isConsoleUnlocked = false;
             isDiagnosed = false;
             isOverloadTriggered = false;
@@ -1169,7 +1187,6 @@
             isEndDownloaded = false;
             isRatActivated = false;
 
-            // Скрываем рабочий стол и окна, снимаем эффекты глитчей
             document.getElementById('desktop').style.display = 'none';
             document.getElementById('desktop').classList.remove('rat-glitch');
             document.querySelectorAll('.window').forEach(win => win.style.display = 'none');
@@ -1177,11 +1194,9 @@
             document.getElementById('console-input-row').style.display = 'none';
             document.getElementById('server-console-input').disabled = false;
 
-            // Возвращаем логотип системы (Экран 1)
             document.getElementById('boot-screen').style.display = 'flex';
         }
 
-        // --- СКРИПТ ПЕРЕТАСКИВАНИЯ ---
         function makeDraggable(element, handle) {
             let isDragging = false; let offsetX, offsetY;
             handle.addEventListener('mousedown', (e) => {
