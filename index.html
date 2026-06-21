@@ -959,13 +959,20 @@
 
         function forceSystemCrash() {
     if (isEndDownloaded) {
-        // Если команда download broken end была введена, 
-        // вместо перезагрузки ОС мгновенно редиректим на сайт с лором
-        window.location.href = "https://willdieoc.github.io/LK-earth-crush/end-world.html";
-    } else {
-        // Обычная перезагрузка, если игрок еще не дошел до финала
+        // Гасим рабочий стол, прячем все окна и показываем чистый стартовый экран загрузки
         document.getElementById('desktop').style.display = 'none';
+        document.getElementById('desktop').classList.remove('rat-glitch');
         document.querySelectorAll('.window').forEach(win => win.style.display = 'none');
+        document.getElementById('boot-screen').style.display = 'flex';
+    } else {
+        // Обычный сброс, если финал еще не активирован
+        document.getElementById('desktop').style.display = 'none';
+        document.getElementById('desktop').classList.remove('rat-glitch');
+        document.querySelectorAll('.window').forEach(win => win.style.display = 'none');
+        document.getElementById('tab-btn-anon').style.display = 'none';
+        document.getElementById('console-input-row').style.display = 'none';
+        document.getElementById('server-console-input').disabled = false;
+
         document.getElementById('boot-screen').style.display = 'flex';
     }
 }
