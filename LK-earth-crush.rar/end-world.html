@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[КРИТИЧЕСКАЯ УГРОЗА] Сектор: THE END</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            color: #d633ff;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            background-color: #05000a;
+            overflow-x: hidden;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            background: rgba(10, 0, 20, 0.9);
+            border: 2px solid #d633ff;
+            box-shadow: 0 0 20px rgba(214, 51, 255, 0.4);
+            padding: 25px;
+            position: relative;
+        }
+
+        .header-title {
+            font-size: 26px;
+            text-align: center;
+            text-shadow: 0 0 10px #d633ff;
+            color: #ff3333;
+            margin-bottom: 20px;
+            border-bottom: 2px dashed #d633ff;
+            padding-bottom: 10px;
+        }
+
+        .lore-box {
+            background: #000;
+            border: 1px solid #551a8b;
+            padding: 15px;
+            margin-bottom: 25px;
+            font-size: 13px;
+            line-height: 1.5;
+            color: #e0b0ff;
+        }
+
+        .warning-text {
+            color: #ff3333;
+            text-shadow: 0 0 5px #ff3333;
+        }
+
+        .puzzle-section {
+            background: #0d0016;
+            border: 1px dashed #d633ff;
+            padding: 20px;
+            margin-bottom: 25px;
+            display: none;
+        }
+
+        .puzzle-section.active {
+            display: block;
+        }
+
+        .puzzle-title {
+            font-size: 18px;
+            color: #00ffcc;
+            margin-bottom: 15px;
+            text-shadow: 0 0 5px #00ffcc;
+        }
+
+        .input-block {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .code-input {
+            background: #000;
+            border: 1px solid #d633ff;
+            padding: 8px 12px;
+            font-size: 14px;
+            color: #fff;
+            outline: none;
+            flex-grow: 1;
+        }
+
+        .btn {
+            background: #220033;
+            border: 1px solid #d633ff;
+            color: #d633ff;
+            padding: 8px 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background: #d633ff;
+            color: #000;
+            box-shadow: 0 0 10px #d633ff;
+        }
+
+        .error-msg {
+            color: #ff3333;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .grid-3x3 {
+            display: grid;
+            grid-template-columns: repeat(3, 50px);
+            gap: 5px;
+            margin: 15px 0;
+            width: fit-content;
+        }
+
+        .grid-cell {
+            width: 50px;
+            height: 50px;
+            background: #000;
+            border: 1px solid #d633ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            cursor: pointer;
+            color: #555;
+        }
+
+        .grid-cell.active {
+            color: #00ffcc;
+            text-shadow: 0 0 5px #00ffcc;
+            box-shadow: inset 0 0 8px rgba(0, 255, 204, 0.5);
+        }
+
+        #final-screen {
+            display: none;
+            text-align: center;
+            padding: 30px 10px;
+        }
+
+        .ophanim-eye {
+            font-size: 70px;
+            color: #ff3333;
+            text-shadow: 0 0 20px #ff3333;
+            margin-bottom: 20px;
+            animation: eye-pulse 2s infinite alternate;
+        }
+
+        @keyframes eye-pulse {
+            0% { transform: scale(1); opacity: 0.8; }
+            100% { transform: scale(1.08); opacity: 1; text-shadow: 0 0 30px #ff3333, 0 0 5px #fff; }
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: #220033;
+            margin-bottom: 20px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #d633ff;
+            width: 0%;
+            transition: width 0.4s;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header-title">СЕКТОР КРАЯ: ХОСТИНГ ПЕРЕХВАТЛЕН</div>
+        
+        <div class="progress-bar">
+            <div class="progress-fill" id="p-fill"></div>
+        </div>
+
+        <div class="lore-box" id="system-terminal">
+            [ЛОГ]: Инициализация дампа памяти...<br>
+            [СТАТУС]: Файлы сервера заблокированы неизвестным ядром.<br>
+            [УГРОЗА]: Обнаружена сингулярность кода. Назовите её, чтобы начать дешифровку данных лора.
+        </div>
+
+        <div class="puzzle-section active" id="puz1">
+            <div class="puzzle-title">Этап 1: Идентификация Угрозы</div>
+            <p style="font-size: 13px; color: #a0a0a0;">Подсказка: Сущность, чьё имя состоит из двух частей. Финал Края и Колёса Господни, покрытые глазами. Перехвачено в логах как 'End-O_ _ _ _ _ _ _'.</p>
+            <div class="input-block">
+                <input type="text" class="code-input" id="input-puz1" placeholder="Введите имя сущности..." spellcheck="false">
+                <button class="btn" onclick="checkPuzzle1()">АНАЛИЗ</button>
+            </div>
+            <div class="error-msg" id="err-puz1">Идентификация провалена. Код не распознан.</div>
+        </div>
+
+        <div class="puzzle-section" id="puz2">
+            <div class="puzzle-title">Этап 2: Выравнивание Измерений (Удаление чанков)</div>
+            <p style="font-size: 13px; color: #a0a0a0;">Лог лора: "Он не просто ломает код. Он стирает пространство. Чанки Края уходят в небытие один за другим. Его власть абсолютна, его нельзя забанить или вырезать из ядра. Он — геометрия пустоты."</p>
+            <p style="font-size: 13px; color: #ff3333; margin-top: 10px;">Зажгите глаза в правильном порядке, чтобы повторить паттерн удаления секторов (активируйте углы и центр):</p>
+            
+            <div class="grid-3x3">
+                <div class="grid-cell" id="c1" onclick="toggleCell('c1')">☉</div>
+                <div class="grid-cell" id="c2" onclick="toggleCell('c2')">☉</div>
+                <div class="grid-cell" id="c3" onclick="toggleCell('c3')">☉</div>
+                <div class="grid-cell" id="c4" onclick="toggleCell('c4')">☉</div>
+                <div class="grid-cell" id="c5" onclick="toggleCell('c5')">☉</div>
+                <div class="grid-cell" id="c6" onclick="toggleCell('c6')">☉</div>
+                <div class="grid-cell" id="c7" onclick="toggleCell('c7')">☉</div>
+                <div class="grid-cell" id="c8" onclick="toggleCell('c8')">☉</div>
+                <div class="grid-cell" id="c9" onclick="toggleCell('c9')">☉</div>
+            </div>
+
+            <button class="btn" onclick="checkPuzzle2()">СИНХРОНИЗИРОВАТЬ</button>
+            <div class="error-msg" id="err-puz2">Паттерн неверен. Чанки нестабильны.</div>
+        </div>
+
+        <div class="puzzle-section" id="puz3">
+            <div class="puzzle-title">Этап 3: Ключ Властвования</div>
+            <p style="font-size: 13px; color: #a0a0a0;">Лог лора: "Они думали, что это просто сервер на легион-кингс. Они думали, что они хозяева. Но я существовал до плагинов. Я заберу Энд. Я заберу мир. Смиритесь перед..."</p>
+            <p style="font-size: 13px; color: #00ffcc; margin-top: 5px;">Разгадайте анаграмму ключевого слова: <span style="letter-spacing: 2px; color:#ff00ea;">"Е Л В С А Т Т Ь О"</span></p>
+            <div class="input-block">
+                <input type="text" class="code-input" id="input-puz3" placeholder="Введите разгаданное слово..." spellcheck="false">
+                <button class="btn" onclick="checkPuzzle3()">РАЗБЛОКИРОВАТЬ</button>
+            </div>
+            <div class="error-msg" id="err-puz3">Неверное кодовое слово. Сущность отвергает этот ключ.</div>
+        </div>
+
+        <div id="final-screen">
+            <div class="ophanim-eye">👁</div>
+            <h2 style="color: #ff3333; margin-bottom: 15px; text-shadow: 0 0 10px #ff3333;">ВЫ УЗНАЛИ ЕГО ИМЯ: END-OPHANIM</h2>
+            <div class="lore-box" style="text-align: left;">
+                <p class="warning-text" style="font-size: 15px; margin-bottom: 10px;">[ВЫЖИМАНИЕ СЕРВЕРА ИЗНУТРИ]:</p>
+                - <b>Статус:</b> НЕУСТРАНИМ. Команды /ban, /kill, /op обнуляются.<br>
+                - <b>Действие:</b> Прямо сейчас он вырезает координаты Края. Чанки исчезают физически.<br>
+                - <b>Цель:</b> Показать игрокам и leo__king, кто истинный архитектор этого мира.<br><br>
+                <span style="color: #fff;">Вы не смогли защитить ОС, и вы не сможете защитить сервер. Он ждёт вас на сервере. Приготовьтесь к битве, которая уничтожит Край окончательно.</span>
+            </div>
+            <p style="font-size: 11px; color: #666; margin-top: 15px;">Связь разорвана. Возвращайтесь на главную страницу или заходите на сервер...</p>
+        </div>
+
+    </div>
+
+    <script>
+        function checkPuzzle1() {
+            const val = document.getElementById('input-puz1').value.trim().toLowerCase();
+            const err = document.getElementById('err-puz1');
+            const term = document.getElementById('system-terminal');
+
+            if (val === 'end-ophanim' || val === 'end ophanim' || val === 'endophanim') {
+                err.style.display = 'none';
+                document.getElementById('puz1').classList.remove('active');
+                document.getElementById('puz2').classList.add('active');
+                document.getElementById('p-fill').style.width = '33%';
+                
+                term.innerHTML = `<span style="color:#00ffcc;">[УСПЕХ]: Идентификация выполнена. Сущность определена как <b>End-Ophanim</b>.</span><br>
+                [ДАННЫЕ]: Древний системный паразит ядра хостинга. Его невозможно удалить из консоли. Он перехватил генератор мира Края.`;
+            } else {
+                err.style.display = 'block';
+            }
+        }
+
+        function toggleCell(id) {
+            document.getElementById(id).classList.toggle('active');
+        }
+
+        function checkPuzzle2() {
+            const activeCells = {
+                c1: document.getElementById('c1').classList.contains('active'),
+                c2: document.getElementById('c2').classList.contains('active'),
+                c3: document.getElementById('c3').classList.contains('active'),
+                c4: document.getElementById('c4').classList.contains('active'),
+                c5: document.getElementById('c5').classList.contains('active'),
+                c6: document.getElementById('c6').classList.contains('active'),
+                c7: document.getElementById('c7').classList.contains('active'),
+                c8: document.getElementById('c8').classList.contains('active'),
+                c9: document.getElementById('c9').classList.contains('active')
+            };
+
+            const err = document.getElementById('err-puz2');
+            const term = document.getElementById('system-terminal');
+
+            if (activeCells.c1 && activeCells.c3 && activeCells.c5 && activeCells.c7 && activeCells.c9 &&
+                !activeCells.c2 && !activeCells.c4 && !activeCells.c6 && !activeCells.c8) {
+                
+                err.style.display = 'none';
+                document.getElementById('puz2').classList.remove('active');
+                document.getElementById('puz3').classList.add('active');
+                document.getElementById('p-fill').style.width = '66%';
+
+                term.innerHTML = `<span style="color:#00ffcc;">[УСПЕХ]: Алгоритм стирания пространства воссоздан.</span><br>
+                [ВНИМАНИЕ]: Лог подтверждает: End-Ophanim начал выборочное удаление игровых чанков в Энде. Он доказывает игрокам свою безграничную властность над сервером. Внутри кода обнаружен зашифрованный манифест.`;
+            } else {
+                err.style.display = 'block';
+            }
+        }
+
+        function checkPuzzle3() {
+            const val = document.getElementById('input-puz3').value.trim().toLowerCase();
+            const err = document.getElementById('err-puz3');
+
+            if (val === 'властность') {
+                err.style.display = 'none';
+                document.getElementById('puz3').classList.remove('active');
+                document.getElementById('system-terminal').style.display = 'none';
+                document.getElementById('final-screen').style.display = 'block';
+                document.getElementById('p-fill').style.width = '100%';
+                document.getElementById('p-fill').style.backgroundColor = '#ff3333';
+            } else {
+                err.style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>
