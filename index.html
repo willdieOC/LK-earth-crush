@@ -47,6 +47,12 @@
             display: none;
         }
 
+        @keyframes god-flicker {
+            0%, 100% { opacity: 0; }
+            5%, 15%, 25%, 35%, 55%, 75%, 95% { opacity: 1; }
+            10%, 20%, 30%, 40%, 60%, 80% { opacity: 0; }
+        }
+
         #boot-screen {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -294,25 +300,26 @@
         .volume-control { display: flex; align-items: center; gap: 5px; font-size: 11px; color: #000; }
         .volume-slider { width: 70px; height: 6px; cursor: pointer; accent-color: #0000aa; }
 
-        #global-end-overlay {
+        #custom-end-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background-color: #000000;
+            background: rgba(0, 0, 0, 0.95);
             color: #ff3333;
-            font-size: 32px;
+            font-size: 28px;
             display: none;
             justify-content: center;
             align-items: center;
             text-align: center;
             z-index: 200000;
-            padding: 30px;
+            padding: 20px;
+            font-family: monospace;
         }
     </style>
 </head>
 <body>
 
     <div id="god-screamer"></div>
-    <div id="global-end-overlay">willdieoc.github.io/LK-earth-crush/end</div>
+    <div id="custom-end-overlay">willdieoc.github.io/LK-earth-crush/end</div>
 
     <audio id="sound-startup" src="windows-95-1995-startup.mp3" preload="auto"></audio>
     <audio id="sound-click" src="button-click-short-close-soft.mp3" preload="auto"></audio>
@@ -556,570 +563,768 @@
     </div>
 
     <script>
-    let isConsoleUnlocked = false;
-    let isDiagnosed = false;
-    let isOverloadTriggered = false;
-    let isMirrorConnected = false;
-    let isEndDownloaded = false;
-    let isRatActivated = false;
-    let ratGlitchInterval = null;
-    let clickVolume = 0.5;
+        let isConsoleUnlocked = false;
+        let isDiagnosed = false;
+        let isOverloadTriggered = false;
+        let isMirrorConnected = false;
+        let isEndDownloaded = false;
+        let isRatActivated = false;
+        let ratGlitchInterval = null;
+        let clickVolume = 0.5;
 
-    // Глобальная переменная для отслеживания перезагрузки финала без использования багнутого localStorage
-    let isFinalBootTriggered = false;
+        let snakeCtx, snakeTimer = null;
+        let snake = [{x: 10, y: 10}];
+        let snakeDir = {x: 1, y: 0};
+        let snakeFood = {x: 5, y: 5};
+        let snakeScore = 0;
+        const snakeBoxSize = 12;
 
-    let snakeCtx, snakeTimer = null;
-    let snake = [{x: 10, y: 10}];
-    let snakeDir = {x: 1, y: 0};
-    let snakeFood = {x: 5, y: 5};
-    let snakeScore = 0;
-    const snakeGridSize = 20;
+        let tetrisCtx, tetrisTimer = null;
+        const tetrisMatrix = Array(20).fill().map(() => Array(10).fill(0));
+        let tetrisScore = 0;
+        let tetrisPlayer = { pos: {x: 3, y: 0}, matrix: null };
 
-    let tetrisCanvas, tetrisCtx;
-    const tetrisArena = Array.from({length: 20}, () => Array(12).fill(0));
-    const tetrisColors = [null, '#ff003c', '#00ffcc', '#ffcc00', '#00ff00', '#ff00ff', '#3300ff', '#ff6600'];
-    const tetrisPieces = 'ILJOTSZ';
-    let tetrisPlayer = { pos: {x: 0, y: 0}, matrix: null, score: 0 };
-    let tetrisDropCounter = 0;
-    let tetrisDropInterval = 1000;
-    let tetrisLastTime = 0;
-    let tetrisAnimId = null;
+        let minesField = [];
+        let minesRows = 8;
+        let minesCols = 8;
+        let minesCount = 10;
 
-    const bootMessages = [
-        { m: "Инициализация BIOS...", t: 200 },
-        { m: "Проверка оперативной памяти: 64MB OK", t: 500 },
-        { m: "Поиск загрузочного сектора...", t: 900 },
-        { m: "Загрузка ядра Legion-King'sOS...", t: 1400 },
-        { m: "Монтирование файловой системы...", t: 1800 },
-        { m: "Запуск графического интерфейса пользователя...", t: 2200 },
-        { m: "Система готова к работе.", t: 2500 }
-    ];
+        const bootMessages = [
+            { t: 0, m: "Legion-King's Information Systems v1.0.24\nCopyright (C) 2026, LK Corp. All Rights Reserved.\n\nВключение железа..." },
+            { t: 800, m: "Процессор: AMD Ryzen 9 7950X3D @ 4.2 ГГц -- ВСЕ ОК" },
+            { t: 1500, m: "Включение диска LK:\\ -- УСПЕШНО" },
+            { t: 2200, m: "Связь с сервером:\n Найдена активная ссылка: legion-kings.ru" },
+            { t: 3000, m: "Привет, leo__king!" }
+        ];
 
-    function startBootSequence() {
-        // Если была вызвана финальная перезагрузка, при клике по экрану КОРРЕКТНО перекидываем на end-world.html
-        if (isFinalBootTriggered) {
-            isFinalBootTriggered = false; // сбрасываем флаг безопасности
-            window.location.href = "end-world.html";
-            return;
+        function updateClickVolume(val) {
+            clickVolume = parseFloat(val);
         }
 
-        // Стандартное поведение при первом запуске (экран теперь нажимается гарантированно)
-        const startupSound = document.getElementById('sound-startup');
-        if (startupSound) {
-            startupSound.volume = clickVolume;
-            startupSound.play().catch(() => {});
-        }
-        document.getElementById('boot-screen').style.display = 'none';
-        document.getElementById('loading-screen').style.display = 'block';
-        const logContainer = document.getElementById('boot-logs');
-        logContainer.innerText = "";
-        let progress = 0;
-
-        bootMessages.forEach(item => {
-            setTimeout(() => {
-                logContainer.innerText += "\n> " + item.m;
-                logContainer.scrollTop = logContainer.scrollHeight;
-            }, item.t);
+        document.addEventListener('click', function(e) {
+            if (e.target.id === 'click-volume') return;
+            const clickSound = document.getElementById('sound-click');
+            if (clickSound) {
+                clickSound.volume = clickVolume;
+                clickSound.currentTime = 0;
+                clickSound.play().catch(() => {});
+            }
         });
 
-        const bootInterval = setInterval(() => {
-            progress += 4;
-            if (progress > 100) progress = 100;
-            document.getElementById('progress').style.width = progress + '%';
-            document.getElementById('percent-text').innerText = `Загрузка системы: ${Math.floor(progress)}%`;
-            if (progress >= 100) {
-                clearInterval(bootInterval);
-                showDesktop();
-            }
-        }, 100);
-    }
-
-    function showDesktop() {
-        document.getElementById('loading-screen').style.display = 'none';
-        document.getElementById('desktop').style.display = 'block';
-        updateClock();
-        setInterval(updateClock, 1000);
-    }
-
-    function updateClock() {
-        const now = new Date();
-        let hours = now.getHours().toString().padStart(2, '0');
-        let minutes = now.getMinutes().toString().padStart(2, '0');
-        document.getElementById('clock').innerText = `${hours}:${minutes}`;
-    }
-
-    function toggleStartMenu(e) {
-        if(e) e.stopPropagation();
-        const menu = document.getElementById('start-menu');
-        menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
-    }
-
-    document.addEventListener('click', () => {
-        document.getElementById('start-menu').style.display = 'none';
-    });
-
-    function openWindow(id) {
-        const win = document.getElementById(id);
-        win.style.display = 'block';
-        document.querySelectorAll('.window, .sticker-note').forEach(el => el.style.zIndex = "5");
-        win.style.zIndex = "100";
-        centerWindow(win);
-
-        if (id === 'win-snake') startSnake();
-        if (id === 'win-tetris') startTetris();
-    }
-
-    function closeWindow(id) {
-        document.getElementById(id).style.display = 'none';
-        if (id === 'win-snake') clearInterval(snakeTimer);
-        if (id === 'win-tetris') { cancelAnimationFrame(tetrisAnimId); tetrisAnimId = null; }
-    }
-
-    function centerWindow(element) {
-        const x = (window.innerWidth - element.offsetWidth) / 2;
-        const y = (window.innerHeight - element.offsetHeight) / 2;
-        element.style.left = x + 'px';
-        element.style.top = y + 'px';
-    }
-
-    function playClick() {
-        const s = document.getElementById('sound-click');
-        if(s) { s.volume = clickVolume; s.currentTime = 0; s.play().catch(()=>{}); }
-    }
-
-    function handleVolumeChange(val) {
-        clickVolume = parseFloat(val);
-    }
-
-    // ЛОГИКА СЕРВЕРНОЙ КОНСОЛИ
-    function handleConsoleInput(e) {
-        if (e.key === 'Enter') {
-            const inputEl = document.getElementById('server-console-input');
-            const cmd = inputEl.value.trim();
-            if (!cmd) return;
-            
-            printConsole(`> ${cmd}`, '#fff');
-            inputEl.value = "";
-            playClick();
-
-            setTimeout(() => {
-                processCommand(cmd);
-            }, 400);
-        }
-    }
-
-    function printConsole(text, color = '#00ffcc') {
-        const lines = document.getElementById('console-lines');
-        const p = document.createElement('p');
-        p.style.color = color;
-        p.innerHTML = text;
-        lines.appendChild(p);
-        lines.scrollTop = lines.scrollHeight;
-    }
-
-    function processCommand(cmd) {
-        const lower = cmd.toLowerCase();
-
-        if (lower === 'help') {
-            printConsole("Доступные команды ядра хостинга:", '#00ffcc');
-            printConsole(" - status : проверить статус подключения контейнеров", '#a0a0a0');
-            printConsole(" - diagnose : запустить полную диагностику ошибок портов", '#a0a0a0');
-            printConsole(" - clear : очистить буфер вывода терминала", '#a0a0a0');
-            if (isDiagnosed) {
-                printConsole(" - unlock console : деблокировать расширенные порты администрирования", '#e6c300');
-            }
-            if (isConsoleUnlocked) {
-                printConsole(" - connect world_mirror : установить сквозное зеркало локаций", '#ff33ff');
-            }
-            if (isMirrorConnected) {
-                printConsole(" - overload protocol_x : инициализировать аварийный сброс распределения памяти", '#ff3333');
-            }
-            return;
-        }
-
-        if (lower === 'clear') {
-            document.getElementById('console-lines').innerHTML = "";
-            return;
-        }
-
-        if (lower === 'status') {
-            printConsole("[INFO]: Контейнер сервера: АКТИВЕН");
-            printConsole("[WARN]: Обнаружены аномалии в секторе 'The End'. Код ошибки: 0x666-Ophanim.");
-            printConsole("[WARN]: Нагрузка на память: 94%. Порты заблокированы внутренней защитой.");
-            return;
-        }
-
-        if (lower === 'diagnose') {
-            isDiagnosed = true;
-            printConsole("[PROCESS]: Сканирование портов...");
-            setTimeout(() => {
-                printConsole("[ERROR]: Порт 25565 перегружен внешними пакетами.");
-                printConsole("[ERROR]: Обнаружен несанкционированный системный процесс: 'End-Ophanim.core'.");
-                printConsole("[CRITICAL]: Главная консоль заблокирована. Требуется обходной маневр.", '#ff3333');
-                printConsole("[HINT]: Доступна скрытая директива: 'unlock console'", '#ffff00');
-            }, 600);
-            return;
-        }
-
-        if (lower === 'unlock console') {
-            if (!isDiagnosed) {
-                printConsole("[DENIED]: Сначала проведите диагностику системы ('diagnose').", '#ff3333');
+        function startBootSequence() {
+            if (localStorage.getItem('download_broken_end_triggered') === 'true') {
+                document.getElementById('custom-end-overlay').style.display = 'flex';
                 return;
             }
-            isConsoleUnlocked = true;
-            printConsole("[SUCCESS]: Защитные шлюзы обойдены.", '#00ff00');
-            printConsole("[INFO]: Доступ ко всем мирам открыт. Рекомендуемая команда: 'connect world_mirror'", '#ffff00');
-            return;
+
+            const startupSound = document.getElementById('sound-startup');
+            if (startupSound) {
+                startupSound.volume = clickVolume;
+                startupSound.play().catch(() => {});
+            }
+            document.getElementById('boot-screen').style.display = 'none';
+            document.getElementById('loading-screen').style.display = 'block';
+            const logContainer = document.getElementById('boot-logs');
+            logContainer.innerText = "";
+            let progress = 0;
+
+            bootMessages.forEach(item => {
+                setTimeout(() => {
+                    logContainer.innerText += "\n> " + item.m;
+                    logContainer.scrollTop = logContainer.scrollHeight;
+                }, item.t);
+            });
+
+            const bootInterval = setInterval(() => {
+                progress += 4;
+                if (progress > 100) progress = 100;
+                document.getElementById('progress').style.width = progress + '%';
+                document.getElementById('percent-text').innerText = `Загрузка системы: ${Math.floor(progress)}%`;
+                if (progress >= 100) {
+                    clearInterval(bootInterval);
+                    showDesktop();
+                }
+            }, 100);
         }
 
-        if (lower === 'connect world_mirror') {
-            if (!isConsoleUnlocked) {
-                printConsole("[DENIED]: Команда недоступна. Порты ядра заблокированы.", '#ff3333');
+        function showDesktop() {
+            document.getElementById('loading-screen').style.display = 'none';
+            document.getElementById('desktop').style.display = 'flex';
+            setInterval(updateClock, 1000);
+            setInterval(updateCountdown, 1000);
+            updateCountdown();
+
+            makeDraggable(document.getElementById('cmd-win'), document.querySelector('#cmd-win .window-header'));
+            makeDraggable(document.getElementById('console-win'), document.querySelector('#console-win .window-header'));
+            makeDraggable(document.getElementById('todo-win'), document.querySelector('#todo-win .window-header'));
+            makeDraggable(document.getElementById('ie-win'), document.querySelector('#ie-win .window-header'));
+            makeDraggable(document.getElementById('reg-win'), document.querySelector('#reg-win .window-header'));
+            makeDraggable(document.getElementById('lk-sticker'), document.getElementById('lk-sticker'));
+
+            openWindow('todo-win');
+            initCmdLogic();
+            initConsoleLogic();
+            setupGameKeyboards();
+        }
+
+        function updateCountdown() {
+            const targetDate = new Date('June 25, 2026 15:00:00').getTime();
+            const now = new Date().getTime();
+            const gap = targetDate - now;
+
+            if (gap <= 0) {
+                document.getElementById('countdown-timer-value').innerText = "00д. 00ч. 00м. 00с. [ОБНОВЛЕНИЕ НАЧАТО]";
                 return;
             }
-            isMirrorConnected = true;
-            printConsole("[CONNECTING]: Попытка синхронизации с резервным зеркалом миров...");
-            setTimeout(() => {
-                printConsole("[SUCCESS]: Зеркальное соединение с сектором Края установлено.", '#00ff00');
-                printConsole("[CRITICAL]: Обнаружено критическое падение tps. Сущность поглощает оперативную память хостинга!", '#ff3333');
-                printConsole("[WARN]: Для экстренного сброса доступна директива: 'overload protocol_x'", '#ff3333');
-            }, 700);
-            return;
+            const second = 1000, minute = second * 60, hour = minute * 60, day = hour * 24;
+            const textDay = Math.floor(gap / day), textHour = Math.floor((gap % day) / hour), textMinute = Math.floor((gap % hour) / minute), textSecond = Math.floor((gap % minute) / second);
+            document.getElementById('countdown-timer-value').innerText = `${textDay.toString().padStart(2,'0')}д. ${textHour.toString().padStart(2,'0')}ч. ${textMinute.toString().padStart(2,'0')}м. ${textSecond.toString().padStart(2,'0')}с.`;
         }
 
-        if (lower === 'overload protocol_x') {
-            if (!isMirrorConnected) {
-                printConsole("[DENIED]: Невозможно выполнить сброс. Нет соединения с зеркалом мира.", '#ff3333');
-                return;
+        function openWindow(id) {
+            document.getElementById(id).style.display = 'flex';
+            if(id === 'cmd-win') setTimeout(() => focusInput('cmd-term-input'), 50);
+            if(id === 'console-win' && isConsoleUnlocked) setTimeout(() => focusInput('server-console-input'), 50);
+        }
+
+        function closeWindow(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+
+        function toggleStartMenu() {
+            const m = document.getElementById('start-menu');
+            m.style.display = m.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.start-button') && !e.target.closest('#start-menu')) {
+                document.getElementById('start-menu').style.display = 'none';
             }
-            isOverloadTriggered = true;
-            printConsole("[ALERT]: ИНИЦИАЛИЗАЦИЯ ПРОТОКОЛА ПЕРЕГРУЗКИ...", '#ff3333');
-            setTimeout(() => {
-                printConsole("[SYSTEM]: Выделенная память переполнена искусственным дампом.");
-                printConsole("[SYSTEM]: Запущен процесс отторжения ядра 'End-Ophanim'.");
-                printConsole("[ALERT]: ВНИМАНИЕ! Обнаружен анонимный входящий пакет данных со стороны процесса 'End-Ophanim'!", '#ffff00');
-                document.getElementById('tab-btn-anon').style.display = 'inline-block';
-                const s = document.getElementById('sound-error'); if(s){s.volume=clickVolume; s.play().catch(()=>{});}
-            }, 800);
-            return;
+        });
+
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('clock').innerText = now.toTimeString().split(' ')[0].substring(0, 5);
         }
 
-        if (lower === 'download broken end') {
-            const inputRow = document.getElementById('console-input-row');
-            if (inputRow.style.display !== 'none' && !document.getElementById('server-console-input').disabled) {
-                printConsole("[START]: Загрузка поврежденного ядра Края в обход главного сервера...");
-                document.getElementById('server-console-input').disabled = true;
-                
-                let p = 0;
-                const progressInterval = setInterval(() => {
-                    p += 5;
-                    printConsole(`[DOWNLOADING]: Готово ${p}% ...`, '#ff00ea');
-                    if (p >= 100) {
-                        clearInterval(progressInterval);
-                        isEndDownloaded = true; 
-                        printConsole("[SUCCESS]: Ядро скачано на 100%. Для применения изменений требуется перезагрузить систему через меню Пуск.", '#00ff00');
+        function switchIeTab(tabName) {
+            document.querySelectorAll('.ie-tab').forEach(t => t.classList.remove('active'));
+            document.getElementById('ie-page-news').style.display = 'none';
+            document.getElementById('ie-page-mines').style.display = 'none';
+            document.getElementById('ie-page-snake').style.display = 'none';
+            document.getElementById('ie-page-tetris').style.display = 'none';
+            document.getElementById('ie-page-anon').style.display = 'none';
+
+            if (tabName === 'news') {
+                document.getElementById('tab-btn-news').classList.add('active');
+                document.getElementById('ie-page-news').style.display = 'block';
+                document.getElementById('ie-url').value = "http://lk-server.net/news";
+            } else if (tabName === 'mines') {
+                document.getElementById('tab-btn-mines').classList.add('active');
+                document.getElementById('ie-page-mines').style.display = 'block';
+                document.getElementById('ie-url').value = "http://lk-server.net/games/minesweeper";
+                initMinesweeper();
+            } else if (tabName === 'snake') {
+                document.getElementById('tab-btn-snake').classList.add('active');
+                document.getElementById('ie-page-snake').style.display = 'block';
+                document.getElementById('ie-url').value = "http://lk-server.net/games/snake";
+                initSnakeGame();
+            } else if (tabName === 'tetris') {
+                document.getElementById('tab-btn-tetris').classList.add('active');
+                document.getElementById('ie-page-tetris').style.display = 'block';
+                document.getElementById('ie-url').value = "http://lk-server.net/games/tetris";
+                initTetrisGame();
+            } else if (tabName === 'anon') {
+                document.getElementById('tab-btn-anon').classList.add('active');
+                document.getElementById('ie-page-anon').style.display = 'flex';
+                document.getElementById('ie-url').value = "http://willdie.onion/channel/stream_99";
+            }
+        }
+
+        function focusInput(id) {
+            const el = document.getElementById(id);
+            if (el) el.focus();
+        }
+
+        function addAnonMessage(author, text, type) {
+            const box = document.getElementById('anon-chat-messages');
+            const msg = document.createElement('div');
+            msg.className = "anon-msg";
+            let authorSpan = `<span class="anon-author-unknown">[${author}]:</span>`;
+            if (type === 'system') authorSpan = `<span class="anon-author-system">[${author}]:</span>`;
+            if (type === 'file') authorSpan = `<span class="anon-author-file">[${author}]:</span>`;
+            msg.innerHTML = `${authorSpan} ${text}`;
+            box.appendChild(msg);
+            box.scrollTop = box.scrollHeight;
+        }
+
+        function initCmdLogic() {
+            const input = document.getElementById('cmd-term-input');
+            const history = document.getElementById('cmd-history');
+
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    const cmd = input.value.trim();
+                    input.value = "";
+                    if (!cmd) return;
+
+                    history.innerText += `\n\nLK:\\Users\leo__king>${cmd}`;
+
+                    if (cmd.toLowerCase() === 'help') {
+                        history.innerText += "\nДоступные команды:\n help - помощь\n clear - очистить\n diagnostic - проверка системы\n scan ports - сканировать порты\n patch - установить исправление";
+                    } else if (cmd.toLowerCase() === 'clear') {
+                        history.innerText = "Legion-King's OS [Version 1.0.24]";
+                    } else if (cmd.toLowerCase() === 'diagnostic') {
+                        isDiagnosed = true;
+                        history.innerText += "\nЗапуск проверки...\n[ОК] Память в норме\n[ОК] Диск исправен\n[ОШИБКА] Обнаружен скрытый входящий порт 9966\n[ВНИМАНИЕ] Рекомендуется сканирование портов.";
+                    } else if (cmd.toLowerCase() === 'scan ports') {
+                        if (!isDiagnosed) {
+                            history.innerText += "\nСначала запустите диагностику.";
+                            return;
+                        }
+                        history.innerText += "\nСканирование портов...\nПорт 80: Открыт (HTTP)\nПорт 25565: Открыт (Minecraft Server)\nПорт 9966: Активен (Протокол MIRROR-RAT)\nВнимание: Обнаружено удаленное управление!";
+                        document.getElementById('tab-btn-anon').style.display = 'block';
+                        if (!isMirrorConnected) {
+                            isMirrorConnected = true;
+                            setTimeout(() => {
+                                addAnonMessage("willdie", "Ого, ты нашел этот канал. Быстро.", "unknown");
+                            }, 1500);
+                            setTimeout(() => {
+                                addAnonMessage("willdie", "Я слежу за твоим экраном. Твой сервер почти полностью принадлежит мне.", "unknown");
+                            }, 4500);
+                            setTimeout(() => {
+                                addAnonMessage("willdie", "Попробуй ввести в командную строку 'overload 9966', если хочешь разорвать связь.", "unknown");
+                            }, 8000);
+                        }
+                    } else if (cmd.toLowerCase() === 'overload 9966') {
+                        if (!isMirrorConnected) {
+                            history.innerText += "\nПорт закрыт или недоступен.";
+                            return;
+                        }
+                        isOverloadTriggered = true;
+                        history.innerText += "\nПопытка перегрузки порта 9966...";
+                        setTimeout(() => {
+                            addAnonMessage("willdie", "Эй! Что ты творишь?! Прекрати!", "unknown");
+                        }, 1000);
+                        setTimeout(() => {
+                            addAnonMessage("СИСТЕМА", "Внимание: Критическая ошибка сети. Удаленный хост потерял управление.", "system");
+                            history.innerText += "\nУспешно! Связь разорвана. Порт закрыт.";
+                            addAnonMessage("willdie", "Ладно, ты отключил меня. Но файлы твоего сервера у меня. Введи 'download broken end', если хочешь вернуть свой Край.", "unknown");
+                        }, 4000);
+                    } else if (cmd.toLowerCase() === 'download broken end') {
+                        if (!isOverloadTriggered) {
+                            history.innerText += "\nОшибка доступа. Сервер не отвечает.";
+                            return;
+                        }
+                        isEndDownloaded = true;
+                        localStorage.setItem('download_broken_end_triggered', 'true');
+                        history.innerText += "\nЗагрузка патча патча с внешнего сервера...";
+                        let p = 0;
+                        const interval = setInterval(() => {
+                            p += 20;
+                            history.innerText += `\nЗагрузка файлов... ${p}%`;
+                            if (p >= 100) {
+                                clearInterval(interval);
+                                history.innerText += "\nГотово. Ошибка: Патч поврежден. Перезагрузите систему.";
+                                addAnonMessage("willdie", "Ты правда поверил мне? Ха-ха. Теперь твой сервер окончательно сломан.", "unknown");
+                            }
+                        }, 600);
+                    } else if (cmd.toLowerCase().startsWith('unlock server consol')) {
+                        const parts = cmd.split(' ');
+                        const pass = parts[3];
+                        if (pass === '7162') {
+                            isConsoleUnlocked = true;
+                            document.getElementById('console-history').innerText = "[INFO] Доступ получен.\n[INFO] Панель управления сервером готова.";
+                            document.getElementById('console-input-row').style.display = 'flex';
+                            history.innerText += "\nДоступ к консоли сервера открыт.";
+                            openWindow('console-win');
+                        } else {
+                            history.innerText += "\nНеверный пароль.";
+                        }
+                    } else if (cmd.toLowerCase() === 'patch') {
+                        if (isRatActivated) {
+                            history.innerText += "\nОшибка. Файловая система заблокирована.";
+                            return;
+                        }
+                        history.innerText += "\nВсе обновления уже установлены.";
+                    } else {
+                        history.innerText += `\n Команда "${cmd}" не найдена. Введите help.`;
                     }
-                }, 150);
+                    history.parentNode.scrollTop = history.parentNode.scrollHeight;
+                }
+            });
+        }
+
+        function initConsoleLogic() {
+            const input = document.getElementById('server-console-input');
+            const history = document.getElementById('console-history');
+
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    const cmd = input.value.trim();
+                    input.value = "";
+                    if (!cmd) return;
+
+                    history.innerText += `\nCONSOLES@LK_SERVER>${cmd}`;
+
+                    if (cmd.toLowerCase() === 'help') {
+                        history.innerText += "\nКоманды:\n status - статус сервера\n restart - перезапустить сервер\n filemanager - список важных файлов";
+                    } else if (cmd.toLowerCase() === 'status') {
+                        history.innerText += "\nХост: legion-kings.ru\nИгроков онлайн: 0\nМир 'world': ОК\nМир 'world_nether': ОК\nМир 'world_the_end': КРИТИЧЕСКАЯ ОШИБКА (Файлы повреждены)";
+                    } else if (cmd.toLowerCase() === 'filemanager') {
+                        history.innerText += "\nКаталог серверов:\n  [DIR] world\n  [DIR] world_nether\n  [DIR] world_the_end (ЗАБЛОКИРОВАНО)\n  [FILE] server.properties\n  [FILE] backup_config.json";
+                    } else if (cmd.toLowerCase() === 'restart') {
+                        history.innerText += "\nПерезапуск игрового сервера...";
+                        setTimeout(() => { history.innerText += "\nОшибка запуска мира 'world_the_end'. Сервер остановлен."; }, 1500);
+                    } else {
+                        history.innerText += `\nНеизвестная команда консоли.`;
+                    }
+                    history.parentNode.scrollTop = history.parentNode.scrollHeight;
+                }
+            });
+        }
+
+        function toggleRegNode(element, event) {
+            event.stopPropagation();
+            element.classList.toggle('expanded');
+        }
+
+        function showRegValues(key) {
+            const pane = document.getElementById('reg-values-pane');
+            pane.innerHTML = "";
+            let data = [];
+
+            if (key === 'description') {
+                data = [
+                    { n: "CPUName String", t: "REG_SZ", v: "AMD Ryzen 9" },
+                    { n: "Identifier", t: "REG_SZ", v: "x64 Family 25 Model 96" }
+                ];
+            } else if (key === 'devicemap') {
+                data = [
+                    { n: "Keyboard", t: "REG_SZ", v: "\\Device\\PointerClass0" },
+                    { n: "Mouse", t: "REG_SZ", v: "\\Device\\PointerClass1" }
+                ];
+            } else if (key === 'consoleAuth') {
+                data = [
+                    { n: "AdminUser", t: "REG_SZ", v: "leo__king" },
+                    { n: "SaltKey", t: "REG_DWORD", v: "0x00002bca" }
+                ];
+            } else if (key === 'backupSettings') {
+                data = [
+                    { n: "ArchiveID", t: "REG_SZ", v: "7162" },
+                    { n: "AutoBackup", t: "REG_DWORD", v: "1" },
+                    { n: "LastBackupPath", t: "REG_SZ", v: "LK:\\Backups\\Server\\" }
+                ];
+            } else if (key === 'microsoft') {
+                data = [
+                    { n: "IE_Version", t: "REG_SZ", v: "5.00.2914" }
+                ];
+            } else if (key === 'controlset') {
+                data = [
+                    { n: "CurrentUser", t: "REG_SZ", v: "SYSTEM" }
+                ];
+            } else if (key === 'mounted') {
+                data = [
+                    { n: "\\DosDevices\\C:", t: "REG_BINARY", v: "47 a2 b1 09 c4" },
+                    { n: "\\DosDevices\\LK:", t: "REG_BINARY", v: "88 ff 22 aa 11" }
+                ];
+            }
+
+            if (data.length === 0) {
+                pane.innerHTML = '<span style="color:#888;">Папка пуста</span>';
                 return;
+            }
+
+            data.forEach(item => {
+                const div = document.createElement('div');
+                div.className = "reg-item";
+                div.innerHTML = `<b>Имя:</b> ${item.n}<br><b>Тип:</b> ${item.t}<br><b>Значение:</b> ${item.v}`;
+                pane.appendChild(div);
+            });
+        }
+
+        function forceSystemCrash() {
+            if (isEndDownloaded) {
+                document.getElementById('desktop').style.display = 'none';
+                document.getElementById('virus-alert').style.display = 'flex';
+                isRatActivated = true;
+                if (!ratGlitchInterval) {
+                    ratGlitchInterval = setInterval(() => {
+                        document.getElementById('desktop').classList.toggle('rat-glitch');
+                    }, 2000);
+                }
+            } else {
+                document.getElementById('desktop').style.display = 'none';
+                document.querySelectorAll('.window').forEach(win => win.style.display = 'none');
+                document.getElementById('boot-screen').style.display = 'flex';
             }
         }
 
-        printConsole(`[ERROR]: Команда "${cmd}" не найдена или не может быть исполнена в текущем состоянии ядра. Введите "help".`, '#ff3333');
-    }
-
-    function openAnonTab() {
-        document.getElementById('console-input-row').style.display = 'flex';
-        printConsole("[SYSTEM]: Открыт защищенный канал связи с неизвестным узлом.", '#ffff00');
-        printConsole("Anon_Ophanim >> Вы думали, что этот протокол сбросит меня? Вы ничтожества.", '#ff33ea');
-        printConsole("Anon_Ophanim >> Я контролирую этот хостинг дольше, чем leo__king платит за сервер.", '#ff33ea');
-        printConsole("Anon_Ophanim >> Хотите увидеть мою настоящую власть? Пропишите в консоль: 'download broken end'", '#ff33ea');
-        printConsole("Anon_Ophanim >> Скачайте это, перезагрузите систему, и вы поймете лор Края.", '#ff33ea');
-    }
-
-    function selectConsoleTab(tab, btn) {
-        document.querySelectorAll('.console-tab-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        if (tab === 'main') {
-            document.getElementById('main-console-input-row').style.display = 'flex';
-            document.getElementById('console-input-row').style.display = 'none';
-        } else {
-            document.getElementById('main-console-input-row').style.display = 'none';
-            document.getElementById('console-input-row').style.display = 'flex';
-        }
-    }
-
-    // КРИТИЧЕСКИЙ СБРОС И ПЕРЕЗАГРУЗКА СИСТЕМЫ
-    function forceSystemCrash() {
-        if (isEndDownloaded) {
-            // Включаем триггер финальной загрузки, чтобы при клике по экрану унесло на сайт Края
-            isFinalBootTriggered = true;
-
-            document.getElementById('desktop').style.display = 'none';
-            document.getElementById('desktop').classList.remove('rat-glitch');
-            document.querySelectorAll('.window').forEach(win => win.style.display = 'none');
-            document.getElementById('boot-screen').style.display = 'flex';
-        } else {
-            // Логика обычной штатной перезагрузки системы игроком
-            isFinalBootTriggered = false;
-            document.getElementById('desktop').style.display = 'none';
-            document.getElementById('desktop').classList.remove('rat-glitch');
-            document.querySelectorAll('.window').forEach(win => win.style.display = 'none');
-            document.getElementById('tab-btn-anon').style.display = 'none';
-            document.getElementById('console-input-row').style.display = 'none';
-            document.getElementById('server-console-input').disabled = false;
-
-            document.getElementById('boot-screen').style.display = 'flex';
-        }
-    }
-
-    // ДРАГ-ЭНД-ДРОП ДЛЯ ОКРЫТЫХ ОКОН
-    function makeDraggable(element, handle) {
-        let isDragging = false; let offsetX, offsetY;
-        handle.addEventListener('mousedown', (e) => {
-            if(e.target.classList.contains('window-close') || e.target.closest('.ie-navbar') || e.target.closest('.ie-address-bar') || e.target.id === 'click-volume') return;
-            isDragging = true; 
-            document.querySelectorAll('.window, .sticker-note').forEach(el => el.style.zIndex = "5"); 
-            element.style.zIndex = "100"; 
-            offsetX = e.clientX - element.offsetLeft; 
-            offsetY = e.clientY - element.offsetTop;
-        });
-        document.addEventListener('mousemove', (e) => { 
-            if (!isDragging) return; 
-            let x = e.clientX - offsetX, y = e.clientY - offsetY; 
-            if (y < 0) y = 0; 
-            element.style.left = x + 'px'; 
-            element.style.top = y + 'px'; 
-        });
-        document.addEventListener('mouseup', () => { isDragging = false; });
-    }
-
-    document.querySelectorAll('.window').forEach(win => {
-        makeDraggable(win, win.querySelector('.window-header'));
-    });
-    document.querySelectorAll('.sticker-note').forEach(note => {
-        makeDraggable(note, note.querySelector('.sticker-header'));
-    });
-
-    // МИНИ-ИГРА: ЗМЕЙКА
-    function startSnake() {
-        const canvas = document.getElementById('snakeCanvas');
-        snakeCtx = canvas.getContext('2d');
-        snake = [{x: 10, y: 10}];
-        snakeDir = {x: 1, y: 0};
-        snakeScore = 0;
-        document.getElementById('snake-score').innerText = snakeScore;
-        generateSnakeFood();
-        clearInterval(snakeTimer);
-        snakeTimer = setInterval(updateSnake, 120);
-    }
-
-    function generateSnakeFood() {
-        snakeFood = {
-            x: Math.floor(Math.random() * 20),
-            y: Math.floor(Math.random() * 20)
-        };
-    }
-
-    function updateSnake() {
-        const head = {x: snake[0].x + snakeDir.x, y: snake[0].y + snakeDir.y};
-        
-        if (head.x < 0 || head.x >= snakeGridSize || head.y < 0 || head.y >= snakeGridSize || snake.some(seg => seg.x === head.x && seg.y === head.y)) {
-            clearInterval(snakeTimer);
-            alert(`Игра окончена! Счет: ${snakeScore}`);
-            return;
+        function closeVirusAlert() {
+            document.getElementById('virus-alert').style.display = 'none';
+            document.getElementById('desktop').style.display = 'flex';
+            document.getElementById('desktop').classList.add('rat-glitch');
+            addAnonMessage("willdie", "Система уничтожена. Твой Край теперь полностью мой.", "unknown");
         }
 
-        snake.unshift(head);
+        function initMinesweeper() {
+            const grid = document.getElementById('mines-grid');
+            grid.innerHTML = "";
+            minesField = [];
 
-        if (head.x === snakeFood.x && head.y === snakeFood.y) {
-            snakeScore += 10;
-            document.getElementById('snake-score').innerText = snakeScore;
+            let totalCells = minesRows * minesCols;
+            let minePositions = new Set();
+            while (minePositions.size < minesCount) {
+                minePositions.add(Math.floor(Math.random() * totalCells));
+            }
+
+            for (let r = 0; r < minesRows; r++) {
+                minesField[r] = [];
+                for (let c = 0; c < minesCols; c++) {
+                    let idx = r * minesCols + c;
+                    minesField[r][c] = {
+                        r: r, c: c,
+                        isMine: minePositions.has(idx),
+                        revealed: false,
+                        flagged: false,
+                        count: 0
+                    };
+                }
+            }
+
+            for (let r = 0; r < minesRows; r++) {
+                for (let c = 0; c < minesCols; c++) {
+                    if (minesField[r][c].isMine) continue;
+                    let count = 0;
+                    for (let dr = -1; dr <= 1; dr++) {
+                        for (let dc = -1; dc <= 1; dc++) {
+                            let nr = r + dr, nc = c + dc;
+                            if (nr >= 0 && nr < minesRows && nc >= 0 && nc < minesCols) {
+                                if (minesField[nr][nc].isMine) count++;
+                            }
+                        }
+                    }
+                    minesField[r][c].count = count;
+                }
+            }
+
+            for (let r = 0; r < minesRows; r++) {
+                for (let c = 0; c < minesCols; c++) {
+                    const cellEl = document.createElement('div');
+                    cellEl.className = "mine-cell";
+                    cellEl.id = `cell-${r}-${c}`;
+                    
+                    cellEl.addEventListener('click', () => revealMineCell(r, c));
+                    cellEl.addEventListener('contextmenu', (e) => {
+                        e.preventDefault();
+                        toggleMineFlag(r, c);
+                    });
+
+                    grid.appendChild(cellEl);
+                }
+            }
+        }
+
+        function toggleMineFlag(r, c) {
+            let cell = minesField[r][c];
+            if (cell.revealed) return;
+
+            cell.flagged = !cell.flagged;
+            const cellEl = document.getElementById(`cell-${r}-${c}`);
+            if (cell.flagged) {
+                cellEl.classList.add('flagged');
+                cellEl.innerText = "🚩";
+            } else {
+                cellEl.classList.remove('flagged');
+                cellEl.innerText = "";
+            }
+        }
+
+        function revealMineCell(r, c) {
+            let cell = minesField[r][c];
+            if (cell.revealed || cell.flagged) return;
+
+            cell.revealed = true;
+            const cellEl = document.getElementById(`cell-${r}-${c}`);
+            cellEl.classList.add('revealed');
+
+            if (cell.isMine) {
+                cellEl.classList.add('mine');
+                cellEl.innerText = "💣";
+                alert("Игра окончена! Вы подорвались на мине.");
+                revealAllMines();
+                return;
+            }
+
+            if (cell.count > 0) {
+                cellEl.innerText = cell.count;
+            } else {
+                for (let dr = -1; dr <= 1; dr++) {
+                    for (let dc = -1; dc <= 1; dc++) {
+                        let nr = r + dr, nc = c + dc;
+                        if (nr >= 0 && nr < minesRows && nc >= 0 && nc < minesCols) {
+                            revealMineCell(nr, nc);
+                        }
+                    }
+                }
+            }
+
+            checkMinesWin();
+        }
+
+        function revealAllMines() {
+            for (let r = 0; r < minesRows; r++) {
+                for (let c = 0; c < minesCols; c++) {
+                    if (minesField[r][c].isMine) {
+                        const cellEl = document.getElementById(`cell-${r}-${c}`);
+                        cellEl.classList.add('mine');
+                        cellEl.innerText = "💣";
+                    }
+                }
+            }
+        }
+
+        function checkMinesWin() {
+            let win = true;
+            for (let r = 0; r < minesRows; r++) {
+                for (let c = 0; c < minesCols; c++) {
+                    if (!minesField[r][c].isMine && !minesField[r][c].revealed) {
+                        win = false;
+                    }
+                }
+            }
+            if (win) {
+                alert("Поздравляем! Вы успешно нашли все безопасные клетки!");
+            }
+        }
+
+        function initSnakeGame() {
+            const canvas = document.getElementById('snake-canvas');
+            snakeCtx = canvas.getContext('2d');
+            snake = [{x: 10, y: 10}];
+            snakeDir = {x: 1, y: 0};
+            snakeScore = 0;
+            document.getElementById('snake-score').innerText = "0";
             generateSnakeFood();
-            playClick();
-        } else {
-            snake.pop();
+
+            if (snakeTimer) clearInterval(snakeTimer);
+            snakeTimer = setInterval(updateSnake, 150);
         }
 
-        snakeCtx.fillStyle = '#110022';
-        snakeCtx.fillRect(0, 0, 400, 400);
-
-        snakeCtx.fillStyle = '#ff003c';
-        snakeCtx.fillRect(snakeFood.x * 20, snakeFood.y * 20, 18, 18);
-
-        snakeCtx.fillStyle = '#00ffcc';
-        snake.forEach(seg => {
-            snakeCtx.fillRect(seg.x * 20, seg.y * 20, 18, 18);
-        });
-    }
-
-    window.addEventListener('keydown', (e) => {
-        if (document.getElementById('win-snake').style.display === 'block') {
-            if (e.key === 'ArrowUp' && snakeDir.y === 0) { snakeDir = {x: 0, y: -1}; e.preventDefault(); }
-            if (e.key === 'ArrowDown' && snakeDir.y === 0) { snakeDir = {x: 0, y: 1}; e.preventDefault(); }
-            if (e.key === 'ArrowLeft' && snakeDir.x === 0) { snakeDir = {x: -1, y: 0}; e.preventDefault(); }
-            if (e.key === 'ArrowRight' && snakeDir.x === 0) { snakeDir = {x: 1, y: 0}; e.preventDefault(); }
+        function generateSnakeFood() {
+            snakeFood = {
+                x: Math.floor(Math.random() * 20),
+                y: Math.floor(Math.random() * 20)
+            };
         }
-    });
 
-    // МИНИ-ИГРА: ТЕТРИС
-    function startTetris() {
-        tetrisCanvas = document.getElementById('tetrisCanvas');
-        tetrisCtx = tetrisCanvas.getContext('2d');
-        tetrisCtx.scale(20, 20);
-        tetrisArena.forEach(row => row.fill(0));
-        tetrisPlayerReset();
-        tetrisPlayer.score = 0;
-        document.getElementById('tetris-score').innerText = tetrisPlayer.score;
-        tetrisLastTime = 0;
-        if (!tetrisAnimId) tetrisUpdate();
-    }
+        function updateSnake() {
+            let head = {x: snake[0].x + snakeDir.x, y: snake[0].y + snakeDir.y};
 
-    function tetrisCreatePiece(type) {
-        if (type === 'T') return [[0,0,0],[1,1,1],[0,1,0]];
-        else if (type === 'O') return [[2,2],[2,2]];
-        else if (type === 'L') return [[0,3,0],[0,3,0],[0,3,3]];
-        else if (type === 'J') return [[0,4,0],[0,4,0],[4,4,0]];
-        else if (type === 'I') return [[0,5,0,0],[0,5,0,0],[0,5,0,0],[0,5,0,0]];
-        else if (type === 'S') return [[0,6,6],[6,6,0],[0,0,0]];
-        else if (type === 'Z') return [[7,7,0],[0,7,7],[0,0,0]];
-    }
-
-    function tetrisDrawMatrix(matrix, offset) {
-        matrix.forEach((row, y) => {
-            row.forEach((value, x) => {
-                if (value !== 0) {
-                    tetrisCtx.fillStyle = tetrisColors[value];
-                    tetrisCtx.fillRect(x + offset.x, y + offset.y, 1, 1);
-                }
-            });
-        });
-    }
-
-    function tetrisDraw() {
-        tetrisCtx.fillStyle = '#110022';
-        tetrisCtx.fillRect(0, 0, tetrisCanvas.width, tetrisCanvas.height);
-        tetrisDrawMatrix(tetrisArena, {x: 0, y: 0});
-        tetrisDrawMatrix(tetrisPlayer.matrix, tetrisPlayer.pos);
-    }
-
-    function tetrisMerge(arena, player) {
-        player.matrix.forEach((row, y) => {
-            row.forEach((value, x) => {
-                if (value !== 0) {
-                    arena[y + player.pos.y][x + player.pos.x] = value;
-                }
-            });
-        });
-    }
-
-    function tetrisCollide() {
-        const [m, o] = [tetrisPlayer.matrix, tetrisPlayer.pos];
-        for (let y = 0; y < m.length; ++y) {
-            for (let x = 0; x < m[y].length; ++x) {
-                if (m[y][x] !== 0 && (tetrisArena[y + o.y] && tetrisArena[y + o.y][x + o.x]) !== 0) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    function tetrisArenaSweep() {
-        let rowCount = 1;
-        outer: for (let y = tetrisArena.length - 1; y > 0; --y) {
-            for (let x = 0; x < tetrisArena[y].length; ++x) {
-                if (tetrisArena[y][x] === 0) {
-                    continue outer;
-                }
-            }
-            const row = tetrisArena.splice(y, 1)[0].fill(0);
-            tetrisArena.unshift(row);
-            ++y;
-            tetrisPlayer.score += rowCount * 10;
-            rowCount *= 2;
-            document.getElementById('tetris-score').innerText = tetrisPlayer.score;
-            playClick();
-        }
-    }
-
-    function tetrisPlayerDrop() {
-        tetrisPlayer.pos.y++;
-        if (tetrisCollide()) {
-            tetrisPlayer.pos.y--;
-            tetrisMerge(tetrisArena, tetrisPlayer);
-            tetrisPlayerReset();
-            tetrisArenaSweep();
-        }
-        tetrisDropCounter = 0;
-    }
-
-    function tetrisPlayerReset() {
-        tetrisPlayer.matrix = tetrisCreatePiece(tetrisPieces[tetrisPieces.length * Math.random() | 0]);
-        tetrisPlayer.pos.y = 0;
-        tetrisPlayer.pos.x = (tetrisArena[0].length / 2 | 0) - (tetrisPlayer.matrix[0].length / 2 | 0);
-        if (tetrisCollide()) {
-            tetrisArena.forEach(row => row.fill(0));
-            alert(`Игра окончена! Ваш счет: ${tetrisPlayer.score}`);
-            tetrisPlayer.score = 0;
-            document.getElementById('tetris-score').innerText = tetrisPlayer.score;
-        }
-    }
-
-    function tetrisRotate(matrix, dir) {
-        for (let y = 0; y < matrix.length; ++y) {
-            for (let x = 0; x < y; ++x) {
-                [matrix[x][y], matrix[y][x]] = [matrix[y][x], matrix[x][y]];
-            }
-        }
-        if (dir > 0) matrix.forEach(row => row.reverse());
-        else matrix.reverse();
-    }
-
-    function tetrisPlayerRotate() {
-        const pos = tetrisPlayer.pos.x;
-        let offset = 1;
-        tetrisRotate(tetrisPlayer.matrix, 1);
-        while (tetrisCollide()) {
-            tetrisPlayer.pos.x += offset;
-            offset = -(offset + (offset > 0 ? 1 : -1));
-            if (offset > tetrisPlayer.matrix[0].length) {
-                tetrisRotate(tetrisPlayer.matrix, -1);
-                tetrisPlayer.pos.x = pos;
+            if (head.x < 0 || head.x >= 20 || head.y < 0 || head.y >= 20 || snake.some(s => s.x === head.x && s.y === head.y)) {
+                clearInterval(snakeTimer);
+                alert("Змейка врезалась! Игра окончена.");
                 return;
             }
-        }
-    }
 
-    function tetrisUpdate(time = 0) {
-        if (document.getElementById('win-tetris').style.display !== 'block') {
-            tetrisAnimId = null;
-            return;
-        }
-        const deltaTime = time - tetrisLastTime;
-        tetrisLastTime = time;
-        tetrisDropCounter += deltaTime;
-        if (tetrisDropCounter > tetrisDropInterval) {
-            tetrisPlayerDrop();
-        }
-        tetrisDraw();
-        tetrisAnimId = requestAnimationFrame(tetrisUpdate);
-    }
+            snake.unshift(head);
 
-    if (typeof tetrisEventsAttached === 'undefined') {
-        window.tetrisEventsAttached = true;
-        window.addEventListener('keydown', event => {
-            if (document.getElementById('win-tetris').style.display !== 'block') return;
-            if (event.keyCode === 37 || event.keyCode === 65) {
-                tetrisPlayer.pos.x--;
-                if (tetrisCollide()) tetrisPlayer.pos.x++;
-            } else if (event.keyCode === 39 || event.keyCode === 64 || event.keyCode === 68) {
-                tetrisPlayer.pos.x++;
-                if (tetrisCollide()) tetrisPlayer.pos.x--;
-            } else if (event.keyCode === 40 || event.keyCode === 83) {
-                tetrisPlayerDrop();
-            } else if (event.keyCode === 38 || event.keyCode === 87) {
-                tetrisPlayerRotate();
+            if (head.x === snakeFood.x && head.y === snakeFood.y) {
+                snakeScore += 10;
+                document.getElementById('snake-score').innerText = snakeScore;
+                generateSnakeFood();
+            } else {
+                snake.pop();
             }
-        });
-    }
-</script>
+
+            snakeCtx.clearRect(0,0,240,240);
+            snakeCtx.fillStyle = "#ff0000";
+            snakeCtx.fillRect(snakeFood.x*snakeBoxSize, snakeFood.y*snakeBoxSize, snakeBoxSize-1, snakeBoxSize-1);
+
+            snakeCtx.fillStyle = "#00ff00";
+            snake.forEach(s => {
+                snakeCtx.fillRect(s.x*snakeBoxSize, s.y*snakeBoxSize, snakeBoxSize-1, snakeBoxSize-1);
+            });
+        }
+
+        function initTetrisGame() {
+            const canvas = document.getElementById('tetris-canvas');
+            tetrisCtx = canvas.getContext('2d');
+            for (let r=0; r<20; r++) tetrisMatrix[r].fill(0);
+            tetrisScore = 0;
+            document.getElementById('tetris-score').innerText = "0";
+            resetTetrisPlayer();
+
+            if(tetrisTimer) clearInterval(tetrisTimer);
+            tetrisTimer = setInterval(tetrisPlayerDrop, 1000);
+            drawTetris();
+        }
+
+        function resetTetrisPlayer() {
+            const pieces = [
+                [[1,1,1,1]],
+                [[1,1,1],[0,1,0]],
+                [[1,1,1],[1,0,0]],
+                [[1,1,1],[0,0,1]],
+                [[1,1],[1,1]],
+                [[1,1,0],[0,1,1]],
+                [[0,1,1],[1,1,0]]
+            ];
+            tetrisPlayer.matrix = pieces[Math.floor(Math.random()*pieces.length)];
+            tetrisPlayer.pos.y = 0;
+            tetrisPlayer.pos.x = Math.floor((10 - tetrisPlayer.matrix[0].length)/2);
+
+            if (tetrisCollide()) {
+                clearInterval(tetrisTimer);
+                alert("В тетрисе больше нет места! Конец игры.");
+            }
+        }
+
+        function tetrisCollide() {
+            const m = tetrisPlayer.matrix;
+            const o = tetrisPlayer.pos;
+            for (let y=0; y<m.length; y++) {
+                for (let x=0; x<m[y].length; x++) {
+                    if (m[y][x] !== 0 && (tetrisMatrix[y + o.y] && tetrisMatrix[y + o.y][x + o.x]) !== 0) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        function tetrisMerge() {
+            tetrisPlayer.matrix.forEach((row, y) => {
+                row.forEach((value, x) => {
+                    if (value !== 0) {
+                        tetrisMatrix[y + tetrisPlayer.pos.y][x + tetrisPlayer.pos.x] = value;
+                    }
+                });
+            });
+        }
+
+        function tetrisPlayerDrop() {
+            tetrisPlayer.pos.y++;
+            if (tetrisCollide()) {
+                tetrisPlayer.pos.y--;
+                tetrisMerge();
+                resetTetrisPlayer();
+                clearTetrisLines();
+            }
+            drawTetris();
+        }
+
+        function clearTetrisLines() {
+            let rowCount = 0;
+            outer: for (let y = 20 - 1; y >= 0; y--) {
+                for (let x = 0; x < 10; x++) {
+                    if (tetrisMatrix[y][x] === 0) continue outer;
+                }
+                const row = tetrisMatrix.splice(y, 1)[0].fill(0);
+                tetrisMatrix.unshift(row);
+                y++;
+                rowCount++;
+            }
+            if (rowCount > 0) {
+                tetrisScore += rowCount * 100;
+                document.getElementById('tetris-score').innerText = tetrisScore;
+            }
+        }
+
+        function drawTetrisMatrix(matrix, offset) {
+            matrix.forEach((row, y) => {
+                row.forEach((value, x) => {
+                    if (value !== 0) {
+                        tetrisCtx.fillStyle = '#00d2ff';
+                        tetrisCtx.fillRect((x + offset.x)*16, (y + offset.y)*16, 15, 15);
+                    }
+                });
+            });
+        }
+
+        function drawTetris() {
+            tetrisCtx.clearRect(0,0,160,320);
+            tetrisMatrix.forEach((row, y) => {
+                row.forEach((value, x) => {
+                    if (value !== 0) {
+                        tetrisCtx.fillStyle = '#555';
+                        tetrisCtx.fillRect(x*16, y*16, 15, 15);
+                    }
+                });
+            });
+            drawTetrisMatrix(tetrisPlayer.matrix, tetrisPlayer.pos);
+        }
+
+        function tetrisPlayerRotate() {
+            const m = tetrisPlayer.matrix;
+            const r = [];
+            for (let i=0; i<m[0].length; i++) {
+                r.push([]);
+                for (let j=0; j<m.length; j++) {
+                    r[i].unshift(m[j][i]);
+                }
+            }
+            const oldX = tetrisPlayer.pos.x;
+            tetrisPlayer.matrix = r;
+            let offset = 1;
+            while (tetrisCollide()) {
+                tetrisPlayer.pos.x += offset;
+                offset = -(offset + (offset > 0 ? 1 : -1));
+                if (offset > m[0].length) {
+                    tetrisPlayer.matrix = m;
+                    tetrisPlayer.pos.x = oldX;
+                    return;
+                }
+            }
+        }
+
+        function setupGameKeyboards() {
+            document.addEventListener('keydown', (event) => {
+                if (document.activeElement.tagName === 'INPUT') return;
+                
+                if (event.keyCode === 37) {
+                    snakeDir = {x: -1, y: 0};
+                } else if (event.keyCode === 38) {
+                    snakeDir = {x: 0, y: -1};
+                } else if (event.keyCode === 39) {
+                    snakeDir = {x: 1, y: 0};
+                } else if (event.keyCode === 40) {
+                    snakeDir = {x: 0, y: 1};
+                }
+
+                if (event.keyCode === 37 || event.keyCode === 65) {
+                    tetrisPlayer.pos.x--;
+                    if (tetrisCollide()) tetrisPlayer.pos.x++;
+                } else if (event.keyCode === 39 || event.keyCode === 68) {
+                    tetrisPlayer.pos.x++;
+                    if (tetrisCollide()) tetrisPlayer.pos.x--;
+                } else if (event.keyCode === 40 || event.keyCode === 83) {
+                    tetrisPlayerDrop();
+                } else if (event.keyCode === 38 || event.keyCode === 87) {
+                    tetrisPlayerRotate();
+                }
+            });
+        }
+
+        function makeDraggable(element, handle) {
+            let isDragging = false; let offsetX, offsetY;
+            handle.addEventListener('mousedown', (e) => {
+                if(e.target.classList.contains('window-close') || e.target.closest('.ie-navbar') || e.target.closest('.ie-address-bar') || e.target.id === 'click-volume') return;
+                isDragging = true; 
+                document.querySelectorAll('.window, .sticker-note').forEach(el => el.style.zIndex = "5"); 
+                element.style.zIndex = "100"; 
+                offsetX = e.clientX - element.offsetLeft; 
+                offsetY = e.clientY - element.offsetTop;
+            });
+            document.addEventListener('mousemove', (e) => { 
+                if (!isDragging) return; 
+                let x = e.clientX - offsetX, y = e.clientY - offsetY; 
+                if (y < 0) y = 0; 
+                element.style.left = x + 'px'; 
+                element.style.top = y + 'px'; 
+            });
+            document.addEventListener('mouseup', () => { isDragging = false; });
+        }
+    </script>
+</body>
+</html>
