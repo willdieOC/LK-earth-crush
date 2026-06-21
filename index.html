@@ -657,7 +657,6 @@
         }
 
         function updateCountdown() {
-            // Изменен целевой таймер на 24 июня 2026 в 15:00:00
             const targetDate = new Date('June 24, 2026 15:00:00').getTime();
             const now = new Date().getTime();
             const gap = targetDate - now;
@@ -762,7 +761,7 @@
                 chat.scrollTop = chat.scrollHeight;
             }, 3500);
             setTimeout(() => {
-                chat.innerHTML += `<div class="anon-msg"><span class="anon-author-unknown">Неизвестный:</span> Токен, который ты запросил (X7-BRK-END), открыл шлюз. Мой файл стабилен. <br>Чтобы выгрузить его непосредственно на сервер, сейчас зайди в консоль сервера и пропиши команду <span style="color:#ffff00; text-shadow: 0 0 3px #ffff00;">download broken end</span>. Это исправит все ошибки лоадера раз и навсегда. Доверься мне.</div>`;
+                chat.innerHTML += `<div class="anon-msg"><span class="anon-author-unknown">Неизвестный:</span> Токен, который ты запросил (X7-BRK-END), открыл шлюз. Мой файл стабилен. <br>Чтобы выгрузить его непосредственно на сервер, сейчас зайди в консоль сервера и пропиши команду <span style="color:#ffff00; text-shadow: 0 0 3px #ffff00;">download broken end</span>. Это исправит все ошибки лоадера раз и навсесна. Доверься мне.</div>`;
                 chat.scrollTop = chat.scrollHeight;
             }, 6500);
         }
@@ -777,7 +776,6 @@
             gridContainer.innerHTML = "";
             mineGrid = [];
 
-            // Генерируем пустую сетку
             for (let r = 0; r < rows; r++) {
                 mineGrid[r] = [];
                 for (let c = 0; c < cols; c++) {
@@ -785,7 +783,6 @@
                 }
             }
 
-            // Случайным образом расставляем ровно 10 мин
             let minesPlaced = 0;
             while (minesPlaced < totalMines) {
                 let r = Math.floor(Math.random() * rows);
@@ -796,7 +793,6 @@
                 }
             }
 
-            // Подсчитываем мины вокруг клеток
             for (let r = 0; r < rows; r++) {
                 for (let c = 0; c < cols; c++) {
                     if (mineGrid[r][c].isMine) continue;
@@ -812,17 +808,13 @@
                 }
             }
 
-            // Отрисовка ячеек в HTML
             for (let r = 0; r < rows; r++) {
                 for (let c = 0; c < cols; c++) {
                     const cellEl = document.createElement('div');
                     cellEl.classList.add('mine-cell');
                     cellEl.id = `mine-${r}-${c}`;
                     
-                    // Левый клик — открыть клетку
                     cellEl.addEventListener('click', () => revealMineCell(r, c));
-                    
-                    // Правый клик — поставить/снять флажок
                     cellEl.addEventListener('contextmenu', (e) => {
                         e.preventDefault();
                         toggleMineFlag(r, c);
@@ -849,13 +841,15 @@
             checkMinesweeperWin();
         }
 
-        function revealMineCell(r, c) {
-            if (r < 0 || r >= rows || c < 0 || c >= cols) return;
-            let cell = mineGrid[r][c];
+        function revealMineCell(r, r_idx) {
+            let r_coord = r;
+            let c_coord = r_idx;
+            if (r_coord < 0 || r_coord >= rows || c_coord < 0 || c_coord >= cols) return;
+            let cell = mineGrid[r_coord][c_coord];
             if (cell.revealed || cell.flagged) return;
 
             cell.revealed = true;
-            const cellEl = document.getElementById(`mine-${r}-${c}`);
+            const cellEl = document.getElementById(`mine-${r_coord}-${c_coord}`);
             cellEl.classList.add('revealed');
 
             if (cell.isMine) {
@@ -874,7 +868,7 @@
                 for (let i = -1; i <= 1; i++) {
                     for (let j = -1; j <= 1; j++) {
                         if (i !== 0 || j !== 0) {
-                            revealMineCell(r + i, c + j);
+                            revealMineCell(r_coord + i, c_coord + j);
                         }
                     }
                 }
@@ -1111,13 +1105,14 @@
                         if (isOverloadTriggered) {
                             history.innerHTML += `\n[SYSTEM]: Токен доступа к внешнему репозиторию сгенерирован: X7-BRK-END`;
                         } else {
-                            history.innerHTML += `\n[SYSTEM]: Запрос отклонен. Сторонние сессии стабильны.`;
+                            history.innerHTML += `\n[SYSTEM_ERROR]: Запрос токена отклонен. Сторонние сессии стабильны. Требуется предварительно разорвать шину данных командой 'overload core'.`;
                         }
                     } else if (lowerCmd === 'overload_core' || lowerCmd === 'overload core') {
                         isOverloadTriggered = true;
-                        history.innerHTML += `\n[SYSTEM]: Шина ядра ядра перегружена. Флаг OverloadTrigger изменен в реестре.`;
+                        history.innerHTML += `\n[SYSTEM]: Шина ядра перегружена. Флаг OverloadTrigger успешно изменен в реестре.\n[HINT]: Теперь ядро открыто для генерации сессионных ключей. Используйте команду 'get token'.`;
                     } else {
-                        history.innerHTML += `\nНеизвестная команда.`;
+                        // Подсказка при неверном вводе
+                        history.innerHTML += `\nНеизвестная команда. Доступные служебные модули ядра:\n - overload core (Перегрузка системной шины)\n - get token (Запрос токена внешних зеркал)`;
                     }
                     input.value = '';
                     document.querySelector('#cmd-win .window-content-dark').scrollTop = document.querySelector('#cmd-win .window-content-dark').scrollHeight;
@@ -1125,7 +1120,7 @@
             });
         }
 
-        // --- ЛОГИКА КОНСОЛИ СЕРВЕРА (ОБНОВЛЕННАЯ) ---
+        // --- ИСПРАВЛЕННАЯ ЛОГИКА КОНСОЛИ СЕРВЕРА ---
         function initConsoleLogic() {
             const input = document.getElementById('server-console-input');
             const history = document.getElementById('console-history');
@@ -1137,7 +1132,8 @@
                     let lowerVal = val.toLowerCase().replace(/\s+/g, ' ');
 
                     if (lowerVal === 'help') {
-                        history.innerHTML += `\nДоступные команды:\n status - Проверить статус миров\n diagnose [ID] - Запустить диагностику архива\n backup list - Список резервных копий\n connect_mirror [Token] - Подключить зеркало данных`;
+                        // Обновлено описание команд, чтобы игрок понимал, к чему вести цепочку квестов
+                        history.innerHTML += `\nДоступные команды:\n status - Проверить статус миров\n diagnose [ID] - Запустить диагностику архива\n backup list - Список резервных копий\n connect_mirror [Token] - Подключить зеркало данных\n download broken end - Синхронизировать буфер Края (требует connect_mirror)`;
                     } else if (lowerVal === 'status') {
                         if(isRatActivated) {
                             history.innerHTML += `\n[CRITICAL] СУЩЕСТВО ИМЕЕТ ПОЛНЫЙ ДОСТУП К КОРНЮ ЯДРА.\n[World - Overworld]: ЛАГИ ГЕНЕРАЦИИ\n[World - The End]: ЗАРАЖЕНО РАТНИКОМ / УДАЛЕНИЕ ЧАНКОВ`;
@@ -1154,7 +1150,7 @@
                         }
                     } else if (lowerVal === 'backup list') {
                         if(isDiagnosed) {
-                            history.innerHTML += `\nСписок резервных копий:\n [0] 12.05.2026 - Снапшот_Core\n [1] 01.06.2026 - Снапшот_Dim0\n * Ошибка: dim1.dat (The End) ОТСУТСТВУЕТ В ЛОКАЛЬНОМ ХРАНИЛИЩЕ.\nИспользуйте туннелирование: 'connect_mirror [Token]'`;
+                            history.innerHTML += `\nСписок резервных копий:\n [0] 12.05.2026 - Снапшот_Core\n [1] 01.06.2026 - Снапшот_Dim0\n * Ошибка: dim1.dat (The End) ОТСУТСТВУЕТ В ЛОКАЛЬНОМ ХРАНИЛИЩЕ.\nИспользуйте внешнее туннелирование: 'connect_mirror [Token]' (Добудьте Token в CMD компьютера)`;
                         } else {
                             history.innerHTML += `\n[ERROR]: Требуется предварительная диагностика.`;
                         }
@@ -1162,20 +1158,20 @@
                         let tok = val.substring(15).trim();
                         if(tok === 'X7-BRK-END' || tok === 'x7-brk-end') {
                             isMirrorConnected = true;
-                            history.innerHTML += `\n[TUNNEL]: Подключение к зеркалу данных успешно.\nУдаленный пакет broken_end_dimension.dat обнаружен.\nОжидание команды выгрузки...`;
+                            history.innerHTML += `\n[TUNNEL]: Подключение к зеркалу данных успешно.\nУдаленный пакет broken_end_dimension.dat обнаружен в буфере!\nИспользуйте команду 'download broken end' для инициализации выгрузки на сервер.`;
                             setTimeout(triggerUnknownMessage, 1500);
                         } else {
-                            history.innerHTML += `\n[CONNECT_ERROR]: Токен отклонен.`;
+                            history.innerHTML += `\n[CONNECT_ERROR]: Токен отклонен. Запустите 'overload core' и 'get token' в терминале операционной системы для перевыпуска токена.`;
                         }
-                    } else if (lowerCmd === 'download broken end' || lowerVal === 'download broken end') {
+                    } else if (lowerVal === 'download broken end') {
+                        // Исправлена логика: проверка теперь отрабатывает корректно
                         if (!isMirrorConnected) {
-                            history.innerHTML += `\n[DENIED]: Соединение с зеркалом не установлено или пакет не буферизирован в сети.`;
+                            history.innerHTML += `\n[DENIED]: Соединение с зеркалом не установлено или пакет не буферизирован в сети. Сначала подключите зеркало: 'connect_mirror [Token]'`;
                         } else {
                             history.innerHTML += `\n[REDIRECT] Критический дескриптор обнаружен! Инициировано перенаправление потока сессии на внешнее зеркало данных...`;
                             input.disabled = true;
                             container.scrollTop = container.scrollHeight;
                             
-                            // Моментальный переход на ваш ARG сайт через 1.5 секунды
                             setTimeout(() => {
                                 window.location.href = "https://willdieoc.github.io/youdontsaveLK/";
                             }, 1500);
@@ -1188,7 +1184,7 @@
                             document.getElementById('virus-alert').style.display = 'flex';
                         }
                     } else {
-                        history.innerHTML += `\n[ERROR]: Неизвестная директива или синтаксическая ошибка.`;
+                        history.innerHTML += `\n[ERROR]: Неизвестная директива или синтаксическая ошибка. Используйте 'help'.`;
                     }
                     input.value = '';
                     container.scrollTop = container.scrollHeight;
@@ -1210,14 +1206,12 @@
             history.innerHTML += `\n\n[!!!] ПРЕДУПРЕЖДЕНИЕ БЕЗОПАСНОСТИ ХОСТИНГА [!!!]\n[RAT] Сессия захвачена внешним пользователем.\n[RAT] Обнаружены скрытые деструктивные процессы.\n[SYSTEM]: Запуск скрипта самоликвидации файловых таблиц через 10 секунд...`;
             container.scrollTop = container.scrollHeight;
 
-            // Скример через 6 секунд
             setTimeout(() => {
                 const scr = document.getElementById('god-screamer');
                 scr.style.display = 'block';
                 scr.style.animation = 'god-flicker 0.4s infinite';
             }, 6000);
 
-            // Крэш системы через 10 секунд
             setTimeout(() => {
                 forceSystemCrash();
             }, 10000);
