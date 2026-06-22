@@ -488,7 +488,7 @@
             </div>
             <div class="window-content-dark" onclick="focusInput('cmd-term-input')">
                 <div id="cmd-history" class="cmd-output">Legion-King's OS [Version 1.0.24]
-Для авторизации удаленного хоста используйте: unlock server consol [пароль]</div>
+Для авторизации удаленного хоста используйте: unlock server consol [пароль]. Для того, что бы узнать команды напишите "help"</div>
                 <div class="input-line">
                     <span class="prefix">LK:\Users\leo__king></span>
                     <input type="text" id="cmd-term-input" class="dark-input" autocomplete="off" spellcheck="false">
@@ -1112,7 +1112,7 @@
                         history.innerHTML += `\n[SYSTEM]: Шина ядра перегружена. Флаг OverloadTrigger успешно изменен в реестре.\n[HINT]: Теперь ядро открыто для генерации сессионных ключей. Используйте команду 'get token'.`;
                     } else {
                         // Подсказка при неверном вводе
-                        history.innerHTML += `\nНеизвестная команда. Доступные служебные модули ядра:\n - overload core (Перегрузка системной шины)\n - get token (Запрос токена внешних зеркал)`;
+                        history.innerHTML += `\nДоступные служебные модули ядра:\n - overload core (Перегрузка системной шины)\n - get token (Запрос токена внешних зеркал)`;
                     }
                     input.value = '';
                     document.querySelector('#cmd-win .window-content-dark').scrollTop = document.querySelector('#cmd-win .window-content-dark').scrollHeight;
